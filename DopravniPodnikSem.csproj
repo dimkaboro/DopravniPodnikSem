@@ -8,16 +8,16 @@
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<Compile Remove="ViewModel" />
-		<EmbeddedResource Remove="ViewModel" />
-		<None Remove="ViewModel" />
-		<Page Remove="ViewModel" />
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Remove="ViewModel\**" />
+    <EmbeddedResource Remove="ViewModel\**" />
+    <None Remove="ViewModel\**" />
+    <Page Remove="ViewModel\**" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="Views" />
-	</ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
