@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DopravniPodnikSem.Models;
 
 namespace DopravniPodnikSem.Models
 {
     public class DopravniPlatba : BaseModel
     {
-        private int _biletId;
+        private int _biletId; // поле
         private decimal _cena;
-        private DateTime _datumnakupu;
+        private DateTime _datumNakupu;
         private string _typPlatby;
 
         public int BiletId
@@ -27,8 +28,8 @@ namespace DopravniPodnikSem.Models
 
         public DateTime DatumNakupu
         {
-            get => _datumnakupu;
-            set => SetField(ref _datumnakupu, value);
+            get => _datumNakupu;
+            set => SetField(ref _datumNakupu, value);
         }
 
         public string TypPlatby

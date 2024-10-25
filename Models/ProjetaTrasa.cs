@@ -11,7 +11,6 @@ namespace DopravniPodnikSem.Models
         private int _projetaTrasaId;
         private DateTime _casStart;
         private DateTime _casEnd;
-        private int _linkaId;
 
         public int ProjetaTrasaId
         {
@@ -31,11 +30,7 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _casEnd, value);
         }
 
-        public int LinkaId
-        {
-            get => _linkaId;
-            set => SetField(ref _linkaId, value);
-        }
+        public virtual ICollection<JizdniRad> JizdniRady { get; set; }
     }
 }
 

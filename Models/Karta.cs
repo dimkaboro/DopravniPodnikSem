@@ -6,21 +6,30 @@ using System.Threading.Tasks;
 
 namespace DopravniPodnikSem.Models
 {
-    public class Karta : DopravniPlatba
+    public class Karta : BaseModel
     {
-        private int _cislouctu;
-        private int _cislokarty;
+        private int _biletId;
+        private int _cisloUctu;
+        private int _cisloKarty;
+
+        public int BiletId
+        {
+            get => _biletId;
+            set => SetField(ref _biletId, value);
+        }
 
         public int CisloUctu
         {
-            get => _cislouctu;
-            set => SetField(ref _cislouctu, value);
+            get => _cisloUctu;
+            set => SetField(ref _cisloUctu, value);
         }
 
         public int CisloKarty
         {
-            get => _cislokarty;
-            set => SetField(ref _cislokarty, value);
+            get => _cisloKarty;
+            set => SetField(ref _cisloKarty, value);
         }
+
+        public virtual DopravniPlatba DopravniPlatba { get; set; }
     }
 }

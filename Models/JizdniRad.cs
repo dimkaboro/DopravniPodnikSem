@@ -12,7 +12,7 @@ namespace DopravniPodnikSem.Models
         private DateTime _casOdjezdu;
         private DateTime _casPrijezdu;
         private string _den;
-        private int _linkaId;
+        private int _projetaTrasaId;
 
         public int JizdniRadId
         {
@@ -38,11 +38,14 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _den, value);
         }
 
-        public int LinkaId
+        public int ProjetaTrasaId
         {
-            get => _linkaId;
-            set => SetField(ref _linkaId, value);
+            get => _projetaTrasaId;
+            set => SetField(ref _projetaTrasaId, value);
         }
+
+        // Навигационное свойство для связи с ProjetaTrasa
+        public virtual ProjetaTrasa ProjetaTrasa { get; set; }
     }
 }
 

@@ -11,7 +11,7 @@ namespace DopravniPodnikSem.Models
         private int _garazId;
         private string _nazev;
         private string _adresa;
-        private int _kapacita;
+        private int _zamestnanecId;
 
         public int GarazId
         {
@@ -31,11 +31,14 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _adresa, value);
         }
 
-        public int Kapacita
+        public int ZamestnanecId
         {
-            get => _kapacita;
-            set => SetField(ref _kapacita, value);
+            get => _zamestnanecId;
+            set => SetField(ref _zamestnanecId, value);
         }
+
+        public virtual Zamestnanec Zamestnanec { get; set; }
+        public virtual ICollection<Vozidlo> Vozidla { get; set; }
     }
 }
 

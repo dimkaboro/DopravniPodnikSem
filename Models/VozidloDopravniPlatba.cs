@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DopravniPodnikSem.Models;
 
 namespace DopravniPodnikSem.Models
 {
-    public class Hotovost : BaseModel
+    public class VozidloDopravniPlatba : BaseModel
     {
         private int _biletId;
-        private decimal _prijato;
-        private decimal _vraceno;
+        private int _vozidloId;
 
         public int BiletId
         {
@@ -18,18 +18,13 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _biletId, value);
         }
 
-        public decimal Prijato
+        public int VozidloId
         {
-            get => _prijato;
-            set => SetField(ref _prijato, value);
-        }
-
-        public decimal Vraceno
-        {
-            get => _vraceno;
-            set => SetField(ref _vraceno, value);
+            get => _vozidloId;
+            set => SetField(ref _vozidloId, value);
         }
 
         public virtual DopravniPlatba DopravniPlatba { get; set; }
+        public virtual Vozidlo Vozidlo { get; set; }
     }
 }
