@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DopravniPodnikSem.Models
 {
-    public class Hotovost : BaseModel
+    public class Hotovost : DopravniPlatba
     {
         private int _biletId;
         private decimal _prijato;

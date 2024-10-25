@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DopravniPodnikSem.Models
 {
-    public class Faktura : BaseModel
+    public class Faktura : DopravniPlatba
     {
         private int _biletId;
         private int _cisloUctu;
