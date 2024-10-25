@@ -9,10 +9,11 @@ namespace DopravniPodnikSem.Models
     public class Vozidlo : BaseModel
     {
         private int _vozidloId;
-        private string _spz;
+        private string _registracniCislo;
         private string _typ;
-        private DateTime _datumVyroby;
+        private int _kapacita;
         private int _garazId;
+        private int _udrzbaVozidelId;
 
         public int VozidloId
         {
@@ -20,10 +21,10 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _vozidloId, value);
         }
 
-        public string SPZ
+        public string RegistracniCislo
         {
-            get => _spz;
-            set => SetField(ref _spz, value);
+            get => _registracniCislo;
+            set => SetField(ref _registracniCislo, value);
         }
 
         public string Typ
@@ -32,10 +33,10 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _typ, value);
         }
 
-        public DateTime DatumVyroby
+        public int Kapacita
         {
-            get => _datumVyroby;
-            set => SetField(ref _datumVyroby, value);
+            get => _kapacita;
+            set => SetField(ref _kapacita, value);
         }
 
         public int GarazId
@@ -43,6 +44,16 @@ namespace DopravniPodnikSem.Models
             get => _garazId;
             set => SetField(ref _garazId, value);
         }
+
+        public int UdrzbaVozidelId
+        {
+            get => _udrzbaVozidelId;
+            set => SetField(ref _udrzbaVozidelId, value);
+        }
+
+        // Навигационные свойства для связей с Garaz и UdrzbaVozidla
+        public virtual Garaz Garaz { get; set; }
+        public virtual UdrzbaVozidla UdrzbaVozidla { get; set; }
     }
 }
 

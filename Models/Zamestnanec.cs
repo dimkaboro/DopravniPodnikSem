@@ -14,7 +14,7 @@ namespace DopravniPodnikSem.Models
         private string _pozice;
         private decimal _plat;
         private DateTime _datumNastupu;
-        private int _zamestnanecZamestnanecId;
+        private int? _zamestnanecZamestnanecId; // Самоссылка на ID другого Zamestnanec
 
         public int ZamestnanecId
         {
@@ -52,10 +52,16 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _datumNastupu, value);
         }
 
-        public int ZamestnanecZamestnanecId
+        public int? ZamestnanecZamestnanecId
         {
             get => _zamestnanecZamestnanecId;
             set => SetField(ref _zamestnanecZamestnanecId, value);
         }
+
+        // Навигационные свойства
+        public virtual ICollection<Garaz> Garaze { get; set; } // Связанные Garaz
+        public virtual Zamestnanec Vedouci { get; set; } // Связь с руководителем
+        public virtual ICollection<Zamestnanec> Podrizeni { get; set; } // Связь с подчинёнными
     }
 }
+

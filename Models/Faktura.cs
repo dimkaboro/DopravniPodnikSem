@@ -6,21 +6,30 @@ using System.Threading.Tasks;
 
 namespace DopravniPodnikSem.Models
 {
-    public class Faktura : DopravniPlatba
+    public class Faktura : BaseModel
     {
-        private int _cislouctu;
-        private DateTime _datumsplatnosti;
+        private int _biletId;
+        private int _cisloUctu;
+        private DateTime _datumSplatnosti;
+
+        public int BiletId
+        {
+            get => _biletId;
+            set => SetField(ref _biletId, value);
+        }
 
         public int CisloUctu
         {
-            get => _cislouctu;
-            set => SetField(ref _cislouctu, value);
+            get => _cisloUctu;
+            set => SetField(ref _cisloUctu, value);
         }
 
         public DateTime DatumSplatnosti
         {
-            get => _datumsplatnosti;
-            set => SetField(ref _datumsplatnosti, value);
+            get => _datumSplatnosti;
+            set => SetField(ref _datumSplatnosti, value);
         }
+
+        public virtual DopravniPlatba DopravniPlatba { get; set; }
     }
 }
