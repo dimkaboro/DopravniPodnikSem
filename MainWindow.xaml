@@ -1,0 +1,17 @@
+﻿<Window x:Class="DopravniPodnikSem.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dopravni Podnik" Height="200" Width="400">
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button Content="Тестировать подключение к базе данных" 
+                    Width="250" 
+                    Height="40" 
+                    Click="TestConnectionButton_Click" 
+                    Margin="0,0,0,20"/>
+            <TextBlock x:Name="ConnectionStatusTextBlock" 
+                       FontSize="14" 
+                       TextAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</Window>
