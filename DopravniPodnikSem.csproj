@@ -9,14 +9,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="ViewModel\**" />
-		<EmbeddedResource Remove="ViewModel\**" />
-		<None Remove="ViewModel\**" />
-		<Page Remove="ViewModel\**" />
+		<Compile Remove="ViewModel" />
+		<EmbeddedResource Remove="ViewModel" />
+		<None Remove="ViewModel" />
+		<Page Remove="ViewModel" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Views\" />
+		<Folder Include="Views" />
 	</ItemGroup>
 
 	<ItemGroup>
