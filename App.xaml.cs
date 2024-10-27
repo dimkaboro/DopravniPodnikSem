@@ -37,13 +37,8 @@ namespace DopravniPodnikSem
             // Регистрация IConfiguration
             services.AddSingleton<IConfiguration>(Configuration);
 
-            // Регистрация DbContext с использованием строки подключения из конфигурации
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseOracle(Configuration.GetConnectionString("DefaultConnection")));
-
-            // Регистрация сервисов
-            services.AddTransient<DatabaseService>();
-            // Добавьте другие сервисы по мере необходимости
+            // Регистрация сервисов (убираем DatabaseService временно)
+            // services.AddTransient<DatabaseService>(); // Уберите это
 
             // Регистрация Views
             services.AddSingleton<MainWindow>();
@@ -56,7 +51,7 @@ namespace DopravniPodnikSem
 
             // Получение MainWindow из DI контейнера
             var mainWindow = ServiceProvider.GetService<MainWindow>();
-            mainWindow.Show();
+
         }
     }
 }

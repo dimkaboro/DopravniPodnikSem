@@ -31,24 +31,6 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        public string TypUdrzby
-        {
-            get => _udrzbaVozidla.TypUdrzby;
-            set
-            {
-                _udrzbaVozidla.TypUdrzby = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public decimal Naklady
-        {
-            get => _udrzbaVozidla.Naklady;
-            set
-            {
-                _udrzbaVozidla.Naklady = value;
-                OnPropertyChanged();
-            }
         }
     }
-}
+

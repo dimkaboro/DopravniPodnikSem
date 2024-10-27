@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DopravniPodnikSem.Services;
 using System.Windows;
+using System.Windows.Media.Animation;
 
 namespace DopravniPodnikSem
 {
@@ -18,35 +19,67 @@ namespace DopravniPodnikSem
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly DatabaseService _databaseTester;
+        private bool _isMenuOpen = false; // Переменная для отслеживания состояния меню
 
-        // Стандартный конструктор без параметров
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        // Ваш существующий конструктор
-        public MainWindow(DatabaseService databaseTester) : this()
+        private void BurgerButton_Click(object sender, RoutedEventArgs e)
         {
-            _databaseTester = databaseTester;
-        }
-
-        private async void TestConnectionButton_Click(object sender, RoutedEventArgs e)
-        {
-            ConnectionStatusTextBlock.Text = "Проверка подключения...";
-            bool isConnected = await _databaseTester.TestConnectionAsync();
-
-            if (isConnected)
+            if (_isMenuOpen)
             {
-                ConnectionStatusTextBlock.Text = "Соединение успешно!";
-                ConnectionStatusTextBlock.Foreground = System.Windows.Media.Brushes.Green;
+                // Закрываем меню
+                MenuColumn.Width = new GridLength(0);
+                SideMenu.Visibility = Visibility.Collapsed; // Скрываем меню
+                _isMenuOpen = false;
             }
             else
             {
-                ConnectionStatusTextBlock.Text = "Ошибка подключения.";
-                ConnectionStatusTextBlock.Foreground = System.Windows.Media.Brushes.Red;
+                // Открываем меню
+                SideMenu.Visibility = Visibility.Visible; // Показываем меню
+                MenuColumn.Width = new GridLength(228);
+                _isMenuOpen = true;
             }
+        }
+
+        private void OpenMenu()
+        {
+            SideMenu.Visibility = Visibility.Visible; // Показываем меню
+
+            // Запускаем анимацию открытия
+            var openAnimation = (Storyboard)FindResource("OpenMenuAnimation");
+            openAnimation.Completed += (s, e) =>
+            {
+                MenuColumn.Width = new GridLength(200); // Устанавливаем ширину колонки после завершения анимации
+            };
+            openAnimation.Begin(); // Запускаем анимацию открытия
+            _isMenuOpen = true; // Обновляем состояние
+        }
+
+        private void CloseMenu()
+        {
+            // Запускаем анимацию закрытия
+            var closeAnimation = (Storyboard)FindResource("CloseMenuAnimation");
+            closeAnimation.Completed += (s, e) =>
+            {
+                SideMenu.Visibility = Visibility.Collapsed; // Скрываем меню после завершения анимации
+                MenuColumn.Width = new GridLength(0); // Устанавливаем ширину колонки после завершения анимации
+            };
+            closeAnimation.Begin(); // Запускаем анимацию закрытия
+            _isMenuOpen = false; // Обновляем состояние
+        }
+
+        // Обработчики событий для кнопок Login и Registration
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Логика для входа
+        }
+
+        private void RegistrationButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Логика для регистрации
         }
     }
 }
