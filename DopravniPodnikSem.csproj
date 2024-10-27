@@ -8,12 +8,12 @@
 		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="ViewModel\**" />
-    <EmbeddedResource Remove="ViewModel\**" />
-    <None Remove="ViewModel\**" />
-    <Page Remove="ViewModel\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="ViewModel*" />
+		<EmbeddedResource Remove="ViewModel*" />
+		<None Remove="ViewModel*" />
+		<Page Remove="ViewModel*" />
+	</ItemGroup>
 
   <ItemGroup>
     <None Remove="Resources\Image\Logo2.png" />
