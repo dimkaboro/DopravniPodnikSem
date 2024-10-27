@@ -30,5 +30,10 @@ namespace DopravniPodnikSem.ViewModels
                 OnPropertyChanged();
             }
         }
+
+
+
+        }
+
     }
-}
+

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DopravniPodnikSem.Models
 {
-    public class Karta : BaseModel
+    public class Karta : DopravniPlatba
     {
         private int _biletId;
         private int _cisloUctu;

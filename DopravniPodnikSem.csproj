@@ -16,6 +16,16 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Image\Logo2.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Image\Logo2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Views\" />
   </ItemGroup>
 

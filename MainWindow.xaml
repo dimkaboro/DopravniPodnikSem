@@ -1,17 +1,33 @@
 ﻿<Window x:Class="DopravniPodnikSem.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Dopravni Podnik" Height="200" Width="400">
+        Title="Dopravni Podnik" Height="600" Width="850">
+
     <Grid>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Button Content="Тестировать подключение к базе данных" 
-                    Width="250" 
-                    Height="40" 
-                    Click="TestConnectionButton_Click" 
-                    Margin="0,0,0,20"/>
-            <TextBlock x:Name="ConnectionStatusTextBlock" 
-                       FontSize="14" 
-                       TextAlignment="Center"/>
-        </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="MenuColumn" Width="0"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Боковое меню -->
+        <Border x:Name="SideMenu" Background="#272B2F" Width="228" HorizontalAlignment="Left">
+            <StackPanel Margin="10">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0,10">
+                    <Image Source="Resources/Image/Logo2.png" Width="50" Height="50" Opacity="0.8" />
+                    <TextBlock Text="Dopravni Podnik" FontSize="16" FontWeight="Bold" Foreground="White" TextAlignment="Center" Margin="0,5,0,10"/>
+                </StackPanel>
+                <Button Content="Login" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="LoginButton_Click" />
+                <Button Content="Registration" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="RegistrationButton_Click" />
+            </StackPanel>
+        </Border>
+
+        <!-- Основное содержимое -->
+        <Grid Grid.Column="1" Background="#D4DDE1">
+            <Button Style="{StaticResource HamburgerButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BurgerButton_Click" />
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+                <Image Source="pack://application:,,,/Resources/Image/Logo2.png" Width="100" Height="80" Margin="0,0,0,10" Opacity="0.8" />
+                <TextBlock Text="Dopravni Podnik" FontSize="30" FontWeight="Bold" Foreground="#2d3033" TextAlignment="Center" FontFamily="Gill Sans" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
