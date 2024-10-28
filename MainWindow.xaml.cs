@@ -9,8 +9,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DopravniPodnikSem.Services;
-using System.Windows;
 using System.Windows.Media.Animation;
+using DopravniPodnikSem.Views;
 
 namespace DopravniPodnikSem
 {
@@ -19,7 +19,7 @@ namespace DopravniPodnikSem
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool _isMenuOpen = false; // Переменная для отслеживания состояния меню
+        private bool _isMenuOpen = false;
 
         public MainWindow()
         {
@@ -32,50 +32,55 @@ namespace DopravniPodnikSem
             {
                 // Закрываем меню
                 MenuColumn.Width = new GridLength(0);
-                SideMenu.Visibility = Visibility.Collapsed; // Скрываем меню
+                SideMenu.Visibility = Visibility.Collapsed;
                 _isMenuOpen = false;
             }
             else
             {
                 // Открываем меню
-                SideMenu.Visibility = Visibility.Visible; // Показываем меню
+                SideMenu.Visibility = Visibility.Visible;
                 MenuColumn.Width = new GridLength(228);
                 _isMenuOpen = true;
             }
         }
 
-        private void OpenMenu()
+        private void HomeButton_Click(object sender, RoutedEventArgs e)
         {
-            SideMenu.Visibility = Visibility.Visible; // Показываем меню
-
-            // Запускаем анимацию открытия
-            var openAnimation = (Storyboard)FindResource("OpenMenuAnimation");
-            openAnimation.Completed += (s, e) =>
+            // Устанавливаем основное содержимое в MainContent на главный экран
+            MainContent.Content = new StackPanel
             {
-                MenuColumn.Width = new GridLength(200); // Устанавливаем ширину колонки после завершения анимации
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Width = 400,
+                Children =
+                {
+                    new Image
+                    {
+                        Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Image/Logo2.png")),
+                        Width = 100,
+                        Height = 80,
+                        Margin = new Thickness(0, 0, 0, 10),
+                        Opacity = 0.8
+                    },
+                    new TextBlock
+                    {
+                        Text = "Dopravni Podnik",
+                        FontSize = 30,
+                        FontWeight = FontWeights.Bold,
+                        Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2d3033")),
+                        TextAlignment = TextAlignment.Center,
+                        FontFamily = new FontFamily("Gill Sans")
+                    }
+                }
             };
-            openAnimation.Begin(); // Запускаем анимацию открытия
-            _isMenuOpen = true; // Обновляем состояние
         }
 
-        private void CloseMenu()
-        {
-            // Запускаем анимацию закрытия
-            var closeAnimation = (Storyboard)FindResource("CloseMenuAnimation");
-            closeAnimation.Completed += (s, e) =>
-            {
-                SideMenu.Visibility = Visibility.Collapsed; // Скрываем меню после завершения анимации
-                MenuColumn.Width = new GridLength(0); // Устанавливаем ширину колонки после завершения анимации
-            };
-            closeAnimation.Begin(); // Запускаем анимацию закрытия
-            _isMenuOpen = false; // Обновляем состояние
-        }
-
-        // Обработчики событий для кнопок Login и Registration
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            // Логика для входа
+            // Устанавливаем содержимое на LoginView
+            MainContent.Content = new Views.LoginView();
         }
+
 
         private void RegistrationButton_Click(object sender, RoutedEventArgs e)
         {
