@@ -16,18 +16,25 @@
                     <Image Source="Resources/Image/Logo2.png" Width="50" Height="50" Opacity="0.8" />
                     <TextBlock Text="Dopravni Podnik" FontSize="16" FontWeight="Bold" Foreground="White" TextAlignment="Center" Margin="0,5,0,10"/>
                 </StackPanel>
+                <Button Content="Home" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="HomeButton_Click" />
                 <Button Content="Login" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="LoginButton_Click" />
                 <Button Content="Registration" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="RegistrationButton_Click" />
             </StackPanel>
         </Border>
 
-        <!-- Основное содержимое -->
+        <!-- Основное содержимое с ContentControl -->
         <Grid Grid.Column="1" Background="#D4DDE1">
-            <Button Style="{StaticResource HamburgerButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BurgerButton_Click" />
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
-                <Image Source="pack://application:,,,/Resources/Image/Logo2.png" Width="100" Height="80" Margin="0,0,0,10" Opacity="0.8" />
-                <TextBlock Text="Dopravni Podnik" FontSize="30" FontWeight="Bold" Foreground="#2d3033" TextAlignment="Center" FontFamily="Gill Sans" />
-            </StackPanel>
+            <!-- Контейнер для динамического контента -->
+            <ContentControl x:Name="MainContent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <!-- Главный экран (по умолчанию) -->
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+                    <Image Source="pack://application:,,,/Resources/Image/Logo2.png" Width="100" Height="80" Margin="0,0,0,10" Opacity="0.8" />
+                    <TextBlock Text="Dopravni Podnik" FontSize="30" FontWeight="Bold" Foreground="#2d3033" TextAlignment="Center" FontFamily="Gill Sans" />
+                </StackPanel>
+            </ContentControl>
+
+            <!-- Бургер-кнопка, всегда наверху -->
+            <Button x:Name="BurgerButton" Style="{StaticResource HamburgerButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="BurgerButton_Click" />
         </Grid>
     </Grid>
 </Window>
