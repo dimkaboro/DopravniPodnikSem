@@ -84,7 +84,7 @@ namespace DopravniPodnikSem
 
         private void RegistrationButton_Click(object sender, RoutedEventArgs e)
         {
-            // Логика для регистрации
+            MainContent.Content = new Views.RegistrationView();
         }
     }
 }

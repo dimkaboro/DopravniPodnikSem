@@ -1,10 +1,9 @@
-﻿using DopravniPodnikSem.ViewModels;
-using System.Windows;
+﻿using System.Windows.Controls;
 using DopravniPodnikSem.ViewModels;
 
 namespace DopravniPodnikSem.Views
 {
-    public partial class RegistrationView : Window
+    public partial class RegistrationView : UserControl
     {
         public RegistrationView()
         {

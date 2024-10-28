@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="DopravniPodnikSem.Views.RegistrationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="pack://application:,,,/Resources/Image/loginbackground.jpg"
+                        Stretch="Fill" Opacity="0.5" />
+        </Grid.Background>
+
+        <!-- Основной контейнер -->
+        <Border Background="#212529" Opacity="0.95" CornerRadius="10" Padding="15" Width="280" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel>
+                <!-- Заголовок регистрации -->
+                <TextBlock Text="REGISTER" FontSize="18" FontWeight="Bold" Foreground="DarkGray" TextAlignment="Center" Margin="0,0,0,10"/>
+
+                <!-- Иконка пользователя -->
+                <Image Source="pack://application:,,,/Resources/Image/user_icon.png"
+                       Width="70" Height="70" Margin="0,0,0,10" HorizontalAlignment="Center"/>
+
+                <!-- Индикатор этапов регистрации -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,15">
+                    <Ellipse Width="8" Height="8" Margin="3" Fill="{Binding Path=Step1IndicatorColor}" />
+                    <Ellipse Width="8" Height="8" Margin="3" Fill="{Binding Path=Step2IndicatorColor}" />
+                    <Ellipse Width="8" Height="8" Margin="3" Fill="{Binding Path=Step3IndicatorColor}" />
+                </StackPanel>
+
+                <!-- Контент для текущего шага -->
+                <ContentControl Content="{Binding StepContent}" HorizontalAlignment="Stretch" />
+
+                <!-- Кнопки управления -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                    <Button Content="Back" Command="{Binding BackCommand}" Style="{StaticResource CustomButtonStyle}" Margin="3,0" Width="100" Visibility="{Binding IsBackVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <Button Content="{Binding NextButtonText}" Command="{Binding NextCommand}" Style="{StaticResource CustomButtonStyle}" Margin="3,0" Width="100"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
