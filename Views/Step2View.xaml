@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="DopravniPodnikSem.Views.Step2View"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <TextBlock Text="City" Foreground="Gray" Margin="0,5"/>
+        <Border Style="{StaticResource RoundedInputBorderStyle}">
+            <TextBox Width="250" Text="{Binding City}" Style="{StaticResource EnhancedTextBoxStyle}"/>
+        </Border>
+        
+        <TextBlock Text="Street" Foreground="Gray" Margin="0,5"/>
+        <Border Style="{StaticResource RoundedInputBorderStyle}">
+            <TextBox Width="250" Text="{Binding Street}" Style="{StaticResource EnhancedTextBoxStyle}"/>
+        </Border>
+        
+        <TextBlock Text="House Number" Foreground="Gray" Margin="0,5"/>
+        <Border Style="{StaticResource RoundedInputBorderStyle}">
+            <TextBox Width="250" Text="{Binding HouseNumber}" Style="{StaticResource EnhancedTextBoxStyle}"/>
+        </Border>
+        
+        <TextBlock Text="Post Code" Foreground="Gray" Margin="0,5"/>
+        <Border Style="{StaticResource RoundedInputBorderStyle}">
+            <TextBox Width="250" Text="{Binding PostCode}" Style="{StaticResource EnhancedTextBoxStyle}"/>
+        </Border>
+        
+        <TextBlock Text="Apartment Number" Foreground="Gray" Margin="0,5"/>
+        <Border Style="{StaticResource RoundedInputBorderStyle}">
+            <TextBox Width="250" Text="{Binding ApartmentNumber}" Style="{StaticResource EnhancedTextBoxStyle}"/>
+        </Border>
+    </StackPanel>
+</UserControl>

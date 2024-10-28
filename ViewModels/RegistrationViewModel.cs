@@ -1,70 +1,106 @@
-﻿using System.Windows.Input;
+﻿using DopravniPodnikSem.Views;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace DopravniPodnikSem.ViewModels
 {
     public class RegistrationViewModel : INotifyPropertyChanged
     {
-        private string _name;
-        private string _surname;
-        private string _phoneNumber;
+        private readonly Brush _highlightColor = (Brush)new BrushConverter().ConvertFrom("#6C63FF");
+        public Brush Step1IndicatorColor => _currentStep == 1 ? _highlightColor : Brushes.DarkGray;
+        public Brush Step2IndicatorColor => _currentStep == 2 ? _highlightColor : Brushes.DarkGray;
+        public Brush Step3IndicatorColor => _currentStep == 3 ? _highlightColor : Brushes.DarkGray;
 
-        public string Name
+        private int _currentStep = 1;
+        private UserControl _stepContent;
+
+        public string NextButtonText
         {
-            get => _name;
+            get => _currentStep == 3 ? "Finish" : "Next";
+        }
+
+        public UserControl StepContent
+        {
+            get => _stepContent;
             set
             {
-                _name = value;
-                OnPropertyChanged();
+                _stepContent = value;
+                OnPropertyChanged(nameof(StepContent));
             }
         }
 
-        public string Surname
-        {
-            get => _surname;
-            set
-            {
-                _surname = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string PhoneNumber
-        {
-            get => _phoneNumber;
-            set
-            {
-                _phoneNumber = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand CancelCommand { get; }
         public ICommand NextCommand { get; }
+        public ICommand BackCommand { get; }
+
+        public bool IsBackVisible => _currentStep > 1;
+
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string PhoneNumber { get; set; }
+        public string City { get; set; }
+        public string Street { get; set; }
+        public string HouseNumber { get; set; }
+        public string PostCode { get; set; }
+        public string ApartmentNumber { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
 
         public RegistrationViewModel()
         {
-            CancelCommand = new ViewModelCommand(param => Cancel());
-            NextCommand = new ViewModelCommand(param => Next());
+            NextCommand = new ViewModelCommand(NextStep);
+            BackCommand = new ViewModelCommand(BackStep);
+            UpdateStepContent();
         }
 
-        private void Cancel()
+        private void NextStep(object obj)
         {
-            // Реализация логики для Cancel, например, закрытие окна
-            MessageBox.Show("Registration cancelled.");
+            if (_currentStep < 3)
+            {
+                _currentStep++;
+                UpdateStepContent();
+            }
+            else
+            {
+                // Завершение регистрации
+                // Здесь добавьте логику для сохранения данных, например, в базу данных.
+            }
         }
 
-        private void Next()
+        private void BackStep(object obj)
         {
-            // Реализация логики для Next, например, переход к следующему шагу
-            MessageBox.Show("Proceeding to the next step.");
+            if (_currentStep > 1)
+            {
+                _currentStep--;
+                UpdateStepContent();
+            }
+        }
+
+        private void UpdateStepContent()
+        {
+            OnPropertyChanged(nameof(Step1IndicatorColor));
+            OnPropertyChanged(nameof(Step2IndicatorColor));
+            OnPropertyChanged(nameof(Step3IndicatorColor));
+            OnPropertyChanged(nameof(IsBackVisible));
+            OnPropertyChanged(nameof(NextButtonText));
+
+            switch (_currentStep)
+            {
+                case 1:
+                    StepContent = new Step1View();
+                    break;
+                case 2:
+                    StepContent = new Step2View();
+                    break;
+                case 3:
+                    StepContent = new Step3View();
+                    break;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
