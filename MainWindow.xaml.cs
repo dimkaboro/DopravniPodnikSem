@@ -24,6 +24,7 @@ namespace DopravniPodnikSem
         public MainWindow()
         {
             InitializeComponent();
+            this.Closing += MainWindow_Closing;
         }
 
         private void BurgerButton_Click(object sender, RoutedEventArgs e)
@@ -85,6 +86,16 @@ namespace DopravniPodnikSem
         private void RegistrationButton_Click(object sender, RoutedEventArgs e)
         {
             MainContent.Content = new Views.RegistrationView();
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
