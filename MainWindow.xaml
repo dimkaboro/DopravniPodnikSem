@@ -19,8 +19,8 @@
                 <Button Content="Home" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="HomeButton_Click" />
                 <Button Content="Login" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="LoginButton_Click" />
                 <Button Content="Registration" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="RegistrationButton_Click" />
-                <Button Content="Exit" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,10" VerticalAlignment="Bottom" Click="ExitButton_Click" />
-
+                <Button Content="Exit" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ExitButton_Click" />
+                <Button Content="Check connect to DB" Style="{StaticResource MenuButtonStyle}" Command="{Binding CheckDatabaseConnectionCommand}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" />
             </StackPanel>
         </Border>
 
