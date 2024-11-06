@@ -11,6 +11,8 @@ using System.Windows.Shapes;
 using DopravniPodnikSem.Services;
 using System.Windows.Media.Animation;
 using DopravniPodnikSem.Views;
+using DopravniPodnikSem.ViewModels;
+using Microsoft.Extensions.Configuration;
 
 namespace DopravniPodnikSem
 {
@@ -21,9 +23,21 @@ namespace DopravniPodnikSem
     {
         private bool _isMenuOpen = false;
 
+        private readonly DatabaseService _databaseService;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            // Настройка конфигурации для DatabaseService (по необходимости)
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+            _databaseService = new DatabaseService(configuration);
+
+            // Установка DataContext с экземпляром NavigationVM
+            DataContext = new NavigationVM(_databaseService);
+
             this.Closing += MainWindow_Closing;
         }
 

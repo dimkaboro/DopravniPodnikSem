@@ -33,7 +33,6 @@ namespace DopravniPodnikSem.Services
             catch (Exception ex)
             {
                 // Логирование ошибки (можно заменить на более продвинутый механизм логирования)
-                Console.WriteLine($"Ошибка подключения к базе данных: {ex.Message}");
                 return false;
             }
         }
