@@ -55,7 +55,7 @@ namespace DopravniPodnikSem.ViewModels
         private async void ExecuteCheckDatabaseConnection(object parameter)
         {
             bool isConnected = await _databaseService.TestConnectionAsync();
-            MessageBox.Show(isConnected ? "Подключение успешно!" : "Ошибка подключения!");
+            MessageBox.Show(isConnected ? "Succes!" : "Denied!");
         }
     }
 }
