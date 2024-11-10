@@ -14,6 +14,7 @@ namespace DopravniPodnikSem.Models
         private string _ridicPrukaz;
         private DateTime _datumNarozeni;
         private int _vozidloVozidloId;
+        private int _jizdaJizdaId;
 
         public int RidicId
         {
@@ -50,5 +51,15 @@ namespace DopravniPodnikSem.Models
             get => _vozidloVozidloId;
             set => SetField(ref _vozidloVozidloId, value);
         }
+
+        public int JizdaJizdaId
+        {
+            get => _jizdaJizdaId;
+            set => SetField(ref _jizdaJizdaId, value);
+        }
+
+        // Навигационные свойства
+        public virtual Vozidlo Vozidlo { get; set; } // Связь с Vozidlo
+        public virtual Jizda Jizda { get; set; }     // Связь с Jizda
     }
 }

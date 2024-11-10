@@ -11,9 +11,10 @@ namespace DopravniPodnikSem.Models
         private int _vozidloId;
         private string _registracniCislo;
         private string _typ;
-        private int _kapacita;
-        private int _garazId;
-        private int _udrzbaVozidelId;
+        private int? _kapacita;
+        private int _garazeGarazId;
+        private int _udrzbaVozidlaUdrzbaId;
+        private int _jizdaJizdaId;
 
         public int VozidloId
         {
@@ -33,27 +34,34 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _typ, value);
         }
 
-        public int Kapacita
+        public int? Kapacita
         {
             get => _kapacita;
             set => SetField(ref _kapacita, value);
         }
 
-        public int GarazId
+        public int GarazeGarazId
         {
-            get => _garazId;
-            set => SetField(ref _garazId, value);
+            get => _garazeGarazId;
+            set => SetField(ref _garazeGarazId, value);
         }
 
-        public int UdrzbaVozidelId
+        public int UdrzbaVozidlaUdrzbaId
         {
-            get => _udrzbaVozidelId;
-            set => SetField(ref _udrzbaVozidelId, value);
+            get => _udrzbaVozidlaUdrzbaId;
+            set => SetField(ref _udrzbaVozidlaUdrzbaId, value);
         }
 
-        // Навигационные свойства для связей с Garaz и UdrzbaVozidla
-        public virtual Garaz Garaz { get; set; }
-        public virtual UdrzbaVozidla UdrzbaVozidla { get; set; }
+        public int JizdaJizdaId
+        {
+            get => _jizdaJizdaId;
+            set => SetField(ref _jizdaJizdaId, value);
+        }
+
+        // Навигационные свойства
+        public virtual Garaz Garaz { get; set; }             // Связь с Garaz
+        public virtual UdrzbaVozidla UdrzbaVozidla { get; set; } // Связь с UdrzbaVozidla
+        public virtual Jizda Jizda { get; set; }             // Связь с Jizda
     }
 }
 
