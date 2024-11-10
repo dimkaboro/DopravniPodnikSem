@@ -33,7 +33,9 @@
                     <Button Content="Back" Command="{Binding BackCommand}" Style="{StaticResource CustomButtonStyle}" Margin="3,0" Width="100" Visibility="{Binding IsBackVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <Button Content="{Binding NextButtonText}" Command="{Binding NextCommand}" Style="{StaticResource CustomButtonStyle}" Margin="3,0" Width="100"/>
                 </StackPanel>
-            </StackPanel>
+
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="#ff6666" FontSize="12" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center" Width="250" Margin="0,10,0,0"/>
+             </StackPanel>
         </Border>
     </Grid>
 </UserControl>
