@@ -1,5 +1,6 @@
 ﻿using DopravniPodnikSem.Views;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -15,11 +16,9 @@ namespace DopravniPodnikSem.ViewModels
 
         private int _currentStep = 1;
         private UserControl _stepContent;
+        private string _errorMessage;
 
-        public string NextButtonText
-        {
-            get => _currentStep == 3 ? "Finish" : "Next";
-        }
+        public string NextButtonText => _currentStep == 3 ? "Finish" : "Next";
 
         public UserControl StepContent
         {
@@ -28,6 +27,16 @@ namespace DopravniPodnikSem.ViewModels
             {
                 _stepContent = value;
                 OnPropertyChanged(nameof(StepContent));
+            }
+        }
+
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
+                _errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
             }
         }
 
@@ -56,6 +65,57 @@ namespace DopravniPodnikSem.ViewModels
 
         private void NextStep(object obj)
         {
+            // Проверка на пустые поля для текущего этапа
+            if (IsAnyFieldEmpty())
+            {
+                ErrorMessage = "Fill all fields";
+                return;
+            }
+
+            // Проверка для каждого этапа
+            switch (_currentStep)
+            {
+                case 1:
+                    if (!IsValidPhoneNumber(PhoneNumber))
+                    {
+                        ErrorMessage = "Invalid phone number format. Example: +420123456789";
+                        return;
+                    }
+                    break;
+
+                case 2:
+                    if (!IsValidHouseNumber(HouseNumber))
+                    {
+                        ErrorMessage = "House Number must be a number and no more than 4 digits.";
+                        return;
+                    }
+
+                    if (!IsValidPostCode(PostCode))
+                    {
+                        ErrorMessage = "Post Code must be a number and no more than 6 digits.";
+                        return;
+                    }
+
+                    if (!IsValidApartmentNumber(ApartmentNumber))
+                    {
+                        ErrorMessage = "Apartment Number must be a number and no more than 4 digits.";
+                        return;
+                    }
+                    break;
+
+                case 3:
+                    if (!IsValidEmail(Email))
+                    {
+                        ErrorMessage = "Invalid email format.";
+                        return;
+                    }
+                    break;
+            }
+
+            // Если проверка пройдена, очищаем сообщение об ошибке
+            ErrorMessage = string.Empty;
+
+            // Переход на следующий шаг
             if (_currentStep < 3)
             {
                 _currentStep++;
@@ -75,6 +135,46 @@ namespace DopravniPodnikSem.ViewModels
                 _currentStep--;
                 UpdateStepContent();
             }
+        }
+
+        private bool IsAnyFieldEmpty()
+        {
+            return string.IsNullOrWhiteSpace(Name) ||
+                   string.IsNullOrWhiteSpace(Surname) ||
+                   string.IsNullOrWhiteSpace(PhoneNumber) ||
+                   (_currentStep == 2 && (string.IsNullOrWhiteSpace(City) ||
+                                          string.IsNullOrWhiteSpace(Street) ||
+                                          string.IsNullOrWhiteSpace(HouseNumber) ||
+                                          string.IsNullOrWhiteSpace(PostCode))) ||
+                   (_currentStep == 3 && (string.IsNullOrWhiteSpace(Email) ||
+                                          string.IsNullOrWhiteSpace(Password)));
+        }
+
+        private bool IsValidPhoneNumber(string phoneNumber)
+        {
+            var phonePattern = @"^\+420\d{9}$";
+            return Regex.IsMatch(phoneNumber, phonePattern);
+        }
+
+        private bool IsValidHouseNumber(string houseNumber)
+        {
+            return int.TryParse(houseNumber, out _) && houseNumber.Length <= 4;
+        }
+
+        private bool IsValidPostCode(string postCode)
+        {
+            return int.TryParse(postCode, out _) && postCode.Length <= 6;
+        }
+
+        private bool IsValidApartmentNumber(string apartmentNumber)
+        {
+            return int.TryParse(apartmentNumber, out _) && apartmentNumber.Length <= 4;
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            return Regex.IsMatch(email, emailPattern);
         }
 
         private void UpdateStepContent()
