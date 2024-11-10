@@ -14,7 +14,15 @@ namespace DopravniPodnikSem.Models
         private string _pozice;
         private decimal _plat;
         private DateTime _datumNastupu;
-        private int? _zamestnanecZamestnanecId; // Самоссылка на ID другого Zamestnanec
+        private int? _zamestnanecZamestnanecId;
+        private string _email;
+        private string _heslo;
+        private string _cisloTelefonu;
+        private string _mesto;
+        private string _ulice;
+        private string _cisloBudovy;
+        private string _zipCode;
+        private string _cisloBytu;
 
         public int ZamestnanecId
         {
@@ -56,6 +64,54 @@ namespace DopravniPodnikSem.Models
         {
             get => _zamestnanecZamestnanecId;
             set => SetField(ref _zamestnanecZamestnanecId, value);
+        }
+
+        public string Email
+        {
+            get => _email;
+            set => SetField(ref _email, value);
+        }
+
+        public string Heslo
+        {
+            get => _heslo;
+            set => SetField(ref _heslo, value);
+        }
+
+        public string CisloTelefonu
+        {
+            get => _cisloTelefonu;
+            set => SetField(ref _cisloTelefonu, value);
+        }
+
+        public string Mesto
+        {
+            get => _mesto;
+            set => SetField(ref _mesto, value);
+        }
+
+        public string Ulice
+        {
+            get => _ulice;
+            set => SetField(ref _ulice, value);
+        }
+
+        public string CisloBudovy
+        {
+            get => _cisloBudovy;
+            set => SetField(ref _cisloBudovy, value);
+        }
+
+        public string ZipCode
+        {
+            get => _zipCode;
+            set => SetField(ref _zipCode, value);
+        }
+
+        public string CisloBytu
+        {
+            get => _cisloBytu;
+            set => SetField(ref _cisloBytu, value);
         }
 
         // Навигационные свойства

@@ -41,12 +41,42 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        public int Kapacita
+        public int? Kapacita
         {
             get => _vozidlo.Kapacita;
             set
             {
                 _vozidlo.Kapacita = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int GarazeGarazId
+        {
+            get => _vozidlo.GarazeGarazId;
+            set
+            {
+                _vozidlo.GarazeGarazId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int UdrzbaVozidlaUdrzbaId
+        {
+            get => _vozidlo.UdrzbaVozidlaUdrzbaId;
+            set
+            {
+                _vozidlo.UdrzbaVozidlaUdrzbaId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int JizdaJizdaId
+        {
+            get => _vozidlo.JizdaJizdaId;
+            set
+            {
+                _vozidlo.JizdaJizdaId = value;
                 OnPropertyChanged();
             }
         }

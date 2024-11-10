@@ -16,7 +16,6 @@ namespace DopravniPodnikSem.ViewModels
             _dopravniPlatba = dopravniPlatba ?? throw new ArgumentNullException(nameof(dopravniPlatba));
         }
 
-        // Общие свойства для всех типов DopravniPlatba
         public int BiletId
         {
             get => _dopravniPlatba.BiletId;
@@ -64,6 +63,19 @@ namespace DopravniPodnikSem.ViewModels
                 if (_dopravniPlatba.TypPlatby != value)
                 {
                     _dopravniPlatba.TypPlatby = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public int JizdaJizdaId
+        {
+            get => _dopravniPlatba.JizdaJizdaId;
+            set
+            {
+                if (_dopravniPlatba.JizdaJizdaId != value)
+                {
+                    _dopravniPlatba.JizdaJizdaId = value;
                     OnPropertyChanged();
                 }
             }

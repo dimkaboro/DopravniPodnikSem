@@ -10,7 +10,6 @@ namespace DopravniPodnikSem.Models
     {
         private int _linkaId;
         private string _nazev;
-        private string _popis;
         private string _typ;
         private int _zastavkaId;
 
@@ -26,11 +25,7 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _nazev, value);
         }
 
-        public string Popis
-        {
-            get => _popis;
-            set => SetField(ref _popis, value);
-        }
+      
 
         public string Typ
         {

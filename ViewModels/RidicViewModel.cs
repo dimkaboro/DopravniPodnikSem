@@ -60,5 +60,25 @@ namespace DopravniPodnikSem.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public int VozidloVozidloId
+        {
+            get => _ridic.VozidloVozidloId;
+            set
+            {
+                _ridic.VozidloVozidloId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int JizdaJizdaId
+        {
+            get => _ridic.JizdaJizdaId;
+            set
+            {
+                _ridic.JizdaJizdaId = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

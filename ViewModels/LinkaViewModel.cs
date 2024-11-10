@@ -31,15 +31,6 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        public string Popis
-        {
-            get => _linka.Popis;
-            set
-            {
-                _linka.Popis = value;
-                OnPropertyChanged();
-            }
-        }
 
         public string Typ
         {

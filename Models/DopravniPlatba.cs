@@ -9,10 +9,11 @@ namespace DopravniPodnikSem.Models
 {
     public class DopravniPlatba : BaseModel
     {
-        private int _biletId; // поле
+        private int _biletId;
         private decimal _cena;
         private DateTime _datumNakupu;
         private string _typPlatby;
+        private int _jizdaJizdaId;
 
         public int BiletId
         {
@@ -37,5 +38,14 @@ namespace DopravniPodnikSem.Models
             get => _typPlatby;
             set => SetField(ref _typPlatby, value);
         }
+
+        public int JizdaJizdaId
+        {
+            get => _jizdaJizdaId;
+            set => SetField(ref _jizdaJizdaId, value);
+        }
+
+        // Навигационное свойство
+        public virtual Jizda Jizda { get; set; } // Связь с Jizda
     }
 }
