@@ -10,12 +10,12 @@ namespace DopravniPodnikSem.Repository.Interfaces
 {
     public interface IUserDataRepository
     {
-        Task<UserData> CheckCredentials(NetworkCredential cred);
+        Task<Zamestnanec> CheckCredentials(NetworkCredential cred);
         Task<int> RegisterNewUserData(NetworkCredential cred);
-        Task UpdateUserEmail(UserData user);
-        void UpdateUserPassword(UserData user, NetworkCredential pass);
+        Task UpdateUserEmail(Zamestnanec zamestnanec);
+        void UpdateUserPassword(Zamestnanec zamestnanec, NetworkCredential pass);
 
-        Task<UserData> GetUserEmailByUserId(int id);
-        Task<UserData> GetUserByUserId(int id);
+        Task<Zamestnanec> GetUserEmailByUserId(int id);
+        Task<Zamestnanec> GetUserByUserId(int id);
     }
 }

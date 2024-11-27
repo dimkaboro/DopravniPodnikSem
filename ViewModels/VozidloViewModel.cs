@@ -70,15 +70,5 @@ namespace DopravniPodnikSem.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        public int JizdaJizdaId
-        {
-            get => _vozidlo.JizdaJizdaId;
-            set
-            {
-                _vozidlo.JizdaJizdaId = value;
-                OnPropertyChanged();
-            }
-        }
     }
 }

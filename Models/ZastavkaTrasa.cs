@@ -10,8 +10,8 @@ namespace DopravniPodnikSem.Models
     {
         private int _zastavkaTrasaId;
         private DateTime _casPrijezdu;
-        private DateTime _casOdjezdu;
-        private int _linkaId;
+        private int _jizdaId;
+        private int _zastavkaId;
 
         public int ZastavkaTrasaId
         {
@@ -25,19 +25,20 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _casPrijezdu, value);
         }
 
-        public DateTime CasOdjezdu
+        public int JizdaId
         {
-            get => _casOdjezdu;
-            set => SetField(ref _casOdjezdu, value);
+            get => _jizdaId;
+            set => SetField(ref _jizdaId, value);
         }
 
-        public int LinkaId
+        public int ZastavkaId
         {
-            get => _linkaId;
-            set => SetField(ref _linkaId, value);
+            get => _zastavkaId;
+            set => SetField(ref _zastavkaId, value);
         }
 
-        // Навигационное свойство для связи с Linka
-        public virtual Linka Linka { get; set; }
+        // Навигационные свойства
+        public virtual Jizda Jizda { get; set; }
+        public virtual Zastavka Zastavka { get; set; }
     }
 }

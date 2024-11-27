@@ -11,7 +11,6 @@ namespace DopravniPodnikSem.Models
         private int _linkaId;
         private string _nazev;
         private string _typ;
-        private int _zastavkaId;
 
         public int LinkaId
         {
@@ -25,25 +24,14 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _nazev, value);
         }
 
-      
-
         public string Typ
         {
             get => _typ;
             set => SetField(ref _typ, value);
         }
 
-        public int ZastavkaId
-        {
-            get => _zastavkaId;
-            set => SetField(ref _zastavkaId, value);
-        }
-
-        // Навигационное свойство для связи с Zastavka
-        public virtual Zastavka Zastavka { get; set; }
-
-        // Навигационное свойство для коллекции Zastavky, если необходимо для других целей
-        public virtual ICollection<Zastavka> Zastavky { get; set; }
+        // Навигационное свойство для связи с Jizda
+        public virtual ICollection<Jizda> Jizdy { get; set; } = new List<Jizda>();
     }
 }
 

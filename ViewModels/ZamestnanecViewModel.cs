@@ -1,10 +1,11 @@
 ﻿using DopravniPodnikSem.Models;
+using DopravniPodnikSem.Models.Enum;
 
 namespace DopravniPodnikSem.ViewModels
 {
     public class ZamestnanecViewModel : BaseViewModel
     {
-        private Zamestnanec _zamestnanec;
+        private readonly Zamestnanec _zamestnanec;
 
         public ZamestnanecViewModel(Zamestnanec zamestnanec)
         {
@@ -51,7 +52,7 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        public decimal Plat
+        public int Plat
         {
             get => _zamestnanec.Plat;
             set
@@ -61,7 +62,7 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        public DateTime DatumNastupu
+        public DateTime? DatumNastupu
         {
             get => _zamestnanec.DatumNastupu;
             set
@@ -101,52 +102,51 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        public string Mesto
+        public int AdresaId
         {
-            get => _zamestnanec.Mesto;
+            get => _zamestnanec.AdresaId;
             set
             {
-                _zamestnanec.Mesto = value;
+                _zamestnanec.AdresaId = value;
                 OnPropertyChanged();
             }
         }
 
-        public string Ulice
+        public int RoleId
         {
-            get => _zamestnanec.Ulice;
+            get => _zamestnanec.RoleId;
             set
             {
-                _zamestnanec.Ulice = value;
+                _zamestnanec.RoleId = value;
                 OnPropertyChanged();
             }
         }
 
-        public string CisloBudovy
+        public int SouborId
         {
-            get => _zamestnanec.CisloBudovy;
+            get => _zamestnanec.SouborId;
             set
             {
-                _zamestnanec.CisloBudovy = value;
+                _zamestnanec.SouborId = value;
                 OnPropertyChanged();
             }
         }
 
-        public string ZipCode
-        {
-            get => _zamestnanec.ZipCode;
-            set
-            {
-                _zamestnanec.ZipCode = value;
-                OnPropertyChanged();
-            }
-        }
+        // Навигационные свойства
+        public AdresaViewModel AdresaViewModel => new AdresaViewModel(_zamestnanec.Adresa);
+        public SouboryViewModel SouborViewModel => new SouboryViewModel(_zamestnanec.Soubor);
 
-        public string CisloBytu
+        public ZamestnanecViewModel VedouciViewModel => _zamestnanec.Vedouci != null ? new ZamestnanecViewModel(_zamestnanec.Vedouci) : null;
+
+        public IEnumerable<ZamestnanecViewModel> PodrizeniViewModel => _zamestnanec.Podrizeni?.Select(z => new ZamestnanecViewModel(z));
+
+        // Свойство для Role (из Enum)
+        public Role Role
         {
-            get => _zamestnanec.CisloBytu;
+            get => (Role)_zamestnanec.RoleId;
             set
             {
-                _zamestnanec.CisloBytu = value;
+                _zamestnanec.RoleId = (int)value;
                 OnPropertyChanged();
             }
         }

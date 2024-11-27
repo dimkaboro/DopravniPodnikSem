@@ -31,9 +31,15 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-
-
+        public string Popis
+        {
+            get => _udrzbaVozidla.Popis;
+            set
+            {
+                _udrzbaVozidla.Popis = value;
+                OnPropertyChanged();
+            }
         }
-
     }
+}
 

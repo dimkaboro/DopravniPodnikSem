@@ -11,7 +11,6 @@ namespace DopravniPodnikSem.Models
         private int _zastavkaId;
         private string _nazev;
         private string _gpsSouradnice;
-        private string _adresa;
 
         public int ZastavkaId
         {
@@ -29,12 +28,6 @@ namespace DopravniPodnikSem.Models
         {
             get => _gpsSouradnice;
             set => SetField(ref _gpsSouradnice, value);
-        }
-
-        public string Adresa
-        {
-            get => _adresa;
-            set => SetField(ref _adresa, value);
         }
     }
 }

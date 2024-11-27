@@ -28,20 +28,20 @@ namespace DopravniPodnikSem.ViewModels
 
         public DateTime CasStart
         {
-            get => _jizda.CasStart;
+            get => _jizda.CasOd;
             set
             {
-                _jizda.CasStart = value;
+                _jizda.CasOd = value;
                 OnPropertyChanged();
             }
         }
 
         public DateTime CasEnd
         {
-            get => _jizda.CasEnd;
+            get => _jizda.CasDo;
             set
             {
-                _jizda.CasEnd = value;
+                _jizda.CasDo = value;
                 OnPropertyChanged();
             }
         }
@@ -56,14 +56,19 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        public int LinkaLinkaId
+        public int LinkaId
         {
-            get => _jizda.LinkaLinkaId;
+            get => _jizda.LinkaId;
             set
             {
-                _jizda.LinkaLinkaId = value;
+                _jizda.LinkaId = value;
                 OnPropertyChanged();
             }
         }
+
+        // Навигационные свойства
+        public virtual Linka Linka => _jizda.Linka;  // Связь с Linka
+        public virtual Ridic Ridic => _jizda.Ridic;  // Связь с Ridic
+        public virtual Vozidlo Vozidlo => _jizda.Vozidlo; // Связь с Vozidlo
     }
 }

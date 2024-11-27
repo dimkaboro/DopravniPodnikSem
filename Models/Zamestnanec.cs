@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DopravniPodnikSem.Models.Enum;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,17 +13,15 @@ namespace DopravniPodnikSem.Models
         private string _jmeno;
         private string _prijmeni;
         private string _pozice;
-        private decimal _plat;
-        private DateTime _datumNastupu;
-        private int? _zamestnanecZamestnanecId;
+        private int _plat;
+        private DateTime? _datumNastupu;
+        private int? _zamestnanecZamestnanecId; // связь с руководителем
         private string _email;
         private string _heslo;
         private string _cisloTelefonu;
-        private string _mesto;
-        private string _ulice;
-        private string _cisloBudovy;
-        private string _zipCode;
-        private string _cisloBytu;
+        private int _adresaId; // Внешний ключ на таблицу адресов
+        private int _roleId; // Внешний ключ на роль сотрудника
+        private int _souborId; // Внешний ключ на таблицу файлов
 
         public int ZamestnanecId
         {
@@ -48,13 +47,13 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _pozice, value);
         }
 
-        public decimal Plat
+        public int Plat
         {
             get => _plat;
             set => SetField(ref _plat, value);
         }
 
-        public DateTime DatumNastupu
+        public DateTime? DatumNastupu
         {
             get => _datumNastupu;
             set => SetField(ref _datumNastupu, value);
@@ -84,40 +83,30 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _cisloTelefonu, value);
         }
 
-        public string Mesto
+        public int AdresaId
         {
-            get => _mesto;
-            set => SetField(ref _mesto, value);
+            get => _adresaId;
+            set => SetField(ref _adresaId, value);
         }
 
-        public string Ulice
+        public int RoleId
         {
-            get => _ulice;
-            set => SetField(ref _ulice, value);
+            get => _roleId;
+            set => SetField(ref _roleId, value);
         }
 
-        public string CisloBudovy
+        public int SouborId
         {
-            get => _cisloBudovy;
-            set => SetField(ref _cisloBudovy, value);
-        }
-
-        public string ZipCode
-        {
-            get => _zipCode;
-            set => SetField(ref _zipCode, value);
-        }
-
-        public string CisloBytu
-        {
-            get => _cisloBytu;
-            set => SetField(ref _cisloBytu, value);
+            get => _souborId;
+            set => SetField(ref _souborId, value);
         }
 
         // Навигационные свойства
-        public virtual ICollection<Garaz> Garaze { get; set; } // Связанные Garaz
+        public virtual Adresa Adresa { get; set; } // Связь с таблицей адресов
+        public virtual Role Role { get; set; } // Связь с таблицей ролей
+        public virtual Soubory Soubor { get; set; } // Связь с таблицей файлов
         public virtual Zamestnanec Vedouci { get; set; } // Связь с руководителем
-        public virtual ICollection<Zamestnanec> Podrizeni { get; set; } // Связь с подчинёнными
+        public virtual ICollection<Zamestnanec> Podrizeni { get; set; } = new List<Zamestnanec>(); // Связь с подчинёнными
     }
 }
 

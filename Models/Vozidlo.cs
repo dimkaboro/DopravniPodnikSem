@@ -14,7 +14,6 @@ namespace DopravniPodnikSem.Models
         private int? _kapacita;
         private int _garazeGarazId;
         private int _udrzbaVozidlaUdrzbaId;
-        private int _jizdaJizdaId;
 
         public int VozidloId
         {
@@ -52,16 +51,9 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _udrzbaVozidlaUdrzbaId, value);
         }
 
-        public int JizdaJizdaId
-        {
-            get => _jizdaJizdaId;
-            set => SetField(ref _jizdaJizdaId, value);
-        }
-
         // Навигационные свойства
         public virtual Garaz Garaz { get; set; }             // Связь с Garaz
         public virtual UdrzbaVozidla UdrzbaVozidla { get; set; } // Связь с UdrzbaVozidla
-        public virtual Jizda Jizda { get; set; }             // Связь с Jizda
     }
 }
 

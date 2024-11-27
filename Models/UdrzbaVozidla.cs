@@ -29,8 +29,6 @@ namespace DopravniPodnikSem.Models
             get => _popis;
             set => SetField(ref _popis, value);
         }
-
-        public virtual ICollection<Vozidlo> Vozidla { get; set; }
     }
 }
 

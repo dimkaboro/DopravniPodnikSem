@@ -31,13 +31,23 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-
         public string Typ
         {
             get => _linka.Typ;
             set
             {
                 _linka.Typ = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // Свойство для работы с навигационным свойством Jizdy
+        public ICollection<Jizda> Jizdy
+        {
+            get => _linka.Jizdy;
+            set
+            {
+                _linka.Jizdy = value;
                 OnPropertyChanged();
             }
         }

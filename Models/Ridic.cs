@@ -12,9 +12,7 @@ namespace DopravniPodnikSem.Models
         private string _jmeno;
         private string _prijmeni;
         private string _ridicPrukaz;
-        private DateTime _datumNarozeni;
-        private int _vozidloVozidloId;
-        private int _jizdaJizdaId;
+        private DateTime? _datumNarozeni; // Сделано nullable, так как поле необязательное
 
         public int RidicId
         {
@@ -40,26 +38,13 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _ridicPrukaz, value);
         }
 
-        public DateTime DatumNarozeni
+        public DateTime? DatumNarozeni
         {
             get => _datumNarozeni;
             set => SetField(ref _datumNarozeni, value);
         }
 
-        public int VozidloVozidloId
-        {
-            get => _vozidloVozidloId;
-            set => SetField(ref _vozidloVozidloId, value);
-        }
-
-        public int JizdaJizdaId
-        {
-            get => _jizdaJizdaId;
-            set => SetField(ref _jizdaJizdaId, value);
-        }
-
-        // Навигационные свойства
-        public virtual Vozidlo Vozidlo { get; set; } // Связь с Vozidlo
-        public virtual Jizda Jizda { get; set; }     // Связь с Jizda
+        // Навигационные свойства для Jizdy
+        public virtual ICollection<Jizda> Jizdy { get; set; } = new List<Jizda>();
     }
 }

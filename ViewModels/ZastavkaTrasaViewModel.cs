@@ -1,10 +1,15 @@
 ﻿using DopravniPodnikSem.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DopravniPodnikSem.ViewModels
 {
     public class ZastavkaTrasaViewModel : BaseViewModel
     {
-        private ZastavkaTrasa _zastavkaTrasa;
+        private readonly ZastavkaTrasa _zastavkaTrasa;
 
         public ZastavkaTrasaViewModel(ZastavkaTrasa zastavkaTrasa)
         {
@@ -31,14 +36,29 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        public DateTime CasOdjezdu
+        public int JizdaId
         {
-            get => _zastavkaTrasa.CasOdjezdu;
+            get => _zastavkaTrasa.JizdaId;
             set
             {
-                _zastavkaTrasa.CasOdjezdu = value;
+                _zastavkaTrasa.JizdaId = value;
                 OnPropertyChanged();
             }
         }
+
+        public int ZastavkaId
+        {
+            get => _zastavkaTrasa.ZastavkaId;
+            set
+            {
+                _zastavkaTrasa.ZastavkaId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // Навигационные свойства
+        public JizdaViewModel JizdaViewModel => _zastavkaTrasa.Jizda != null ? new JizdaViewModel(_zastavkaTrasa.Jizda) : null;
+
+        public ZastavkaViewModel ZastavkaViewModel => _zastavkaTrasa.Zastavka != null ? new ZastavkaViewModel(_zastavkaTrasa.Zastavka) : null;
     }
 }

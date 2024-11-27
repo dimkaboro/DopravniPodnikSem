@@ -12,6 +12,7 @@ namespace DopravniPodnikSem.Models
         private int _cisloUctu;
         private DateTime _datumSplatnosti;
 
+        // Свойства для доступа к полям таблицы faktury
         public int BiletId
         {
             get => _biletId;
@@ -30,6 +31,7 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _datumSplatnosti, value);
         }
 
+        // Навигационное свойство для связи с DopravniPlatba
         public virtual DopravniPlatba DopravniPlatba { get; set; }
     }
 }
