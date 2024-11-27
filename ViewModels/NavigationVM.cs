@@ -27,7 +27,7 @@ namespace DopravniPodnikSem.ViewModels
         }
 
         // Метод для навигации после успешной авторизации
-        public void Authorized(UserData user)
+        public void Authorized(Zamestnanec zamestnanec)
         {
             // Открытие главного окна после успешной авторизации
             var mainWindow = new MainWindow();

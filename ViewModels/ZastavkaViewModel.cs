@@ -40,15 +40,5 @@ namespace DopravniPodnikSem.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        public string Adresa
-        {
-            get => _zastavka.Adresa;
-            set
-            {
-                _zastavka.Adresa = value;
-                OnPropertyChanged();
-            }
-        }
     }
 }

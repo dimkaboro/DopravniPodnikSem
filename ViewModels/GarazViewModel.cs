@@ -40,5 +40,12 @@ namespace DopravniPodnikSem.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        // Навигационные свойства для связи с Zamestnanec и Vozidla
+        public ZamestnanecViewModel ZamestnanecViewModel => new ZamestnanecViewModel(_garaz.Zamestnanec);
+
+        public IEnumerable<VozidloViewModel> VozidlaViewModel => _garaz.Vozidla?.Select(v => new VozidloViewModel(v));
+
+        // Дополнительные методы для обработки данных (например, фильтрация, сортировка) могут быть добавлены здесь.
     }
 }

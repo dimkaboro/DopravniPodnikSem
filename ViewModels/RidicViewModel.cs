@@ -51,32 +51,12 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        public DateTime DatumNarozeni
+        public DateTime? DatumNarozeni
         {
             get => _ridic.DatumNarozeni;
             set
             {
                 _ridic.DatumNarozeni = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int VozidloVozidloId
-        {
-            get => _ridic.VozidloVozidloId;
-            set
-            {
-                _ridic.VozidloVozidloId = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int JizdaJizdaId
-        {
-            get => _ridic.JizdaJizdaId;
-            set
-            {
-                _ridic.JizdaJizdaId = value;
                 OnPropertyChanged();
             }
         }

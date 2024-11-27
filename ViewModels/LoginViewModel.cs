@@ -62,14 +62,14 @@ private async void ExecuteLoginCommand(object obj)
 {
     try
     {
-        UserData user = await Task.Run(() => _userDataRepository.CheckCredentials(new NetworkCredential(UserName, Password)));
-        if (user == null)
+        Zamestnanec zamestnanec = await Task.Run(() => _userDataRepository.CheckCredentials(new NetworkCredential(UserName, Password)));
+        if (zamestnanec == null)
         {
             ErrorMessage = "Неверное имя пользователя или пароль";
         }
         else
         {
-            _navigation.Authorized(user);
+            _navigation.Authorized(zamestnanec);
         }
     }
     catch
