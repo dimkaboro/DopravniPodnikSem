@@ -1,6 +1,8 @@
-﻿using DopravniPodnikSem.Views;
+﻿using DopravniPodnikSem.Services;
+using DopravniPodnikSem.Views;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -9,6 +11,8 @@ namespace DopravniPodnikSem.ViewModels
 {
     public class RegistrationViewModel : INotifyPropertyChanged
     {
+        private readonly DatabaseService _databaseService;
+
         private readonly Brush _highlightColor = (Brush)new BrushConverter().ConvertFrom("#6C63FF");
         public Brush Step1IndicatorColor => _currentStep == 1 ? _highlightColor : Brushes.DarkGray;
         public Brush Step2IndicatorColor => _currentStep == 2 ? _highlightColor : Brushes.DarkGray;
@@ -56,23 +60,23 @@ namespace DopravniPodnikSem.ViewModels
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public RegistrationViewModel()
+        public RegistrationViewModel(DatabaseService databaseService)
         {
+            _databaseService = databaseService;
             NextCommand = new ViewModelCommand(NextStep);
             BackCommand = new ViewModelCommand(BackStep);
             UpdateStepContent();
         }
 
+
         private void NextStep(object obj)
         {
-            // Проверка на пустые поля для текущего этапа
             if (IsAnyFieldEmpty())
             {
                 ErrorMessage = "Fill all fields";
                 return;
             }
 
-            // Проверка для каждого этапа
             switch (_currentStep)
             {
                 case 1:
@@ -112,10 +116,8 @@ namespace DopravniPodnikSem.ViewModels
                     break;
             }
 
-            // Если проверка пройдена, очищаем сообщение об ошибке
             ErrorMessage = string.Empty;
 
-            // Переход на следующий шаг
             if (_currentStep < 3)
             {
                 _currentStep++;
@@ -123,10 +125,10 @@ namespace DopravniPodnikSem.ViewModels
             }
             else
             {
-                // Завершение регистрации
-                // Здесь добавьте логику для сохранения данных, например, в базу данных.
+                CompleteRegistrationAsync();
             }
         }
+
 
         private void BackStep(object obj)
         {
@@ -136,6 +138,7 @@ namespace DopravniPodnikSem.ViewModels
                 UpdateStepContent();
             }
         }
+
 
         private bool IsAnyFieldEmpty()
         {
@@ -150,32 +153,38 @@ namespace DopravniPodnikSem.ViewModels
                                           string.IsNullOrWhiteSpace(Password)));
         }
 
+
         private bool IsValidPhoneNumber(string phoneNumber)
         {
             var phonePattern = @"^\+420\d{9}$";
             return Regex.IsMatch(phoneNumber, phonePattern);
         }
 
+
         private bool IsValidHouseNumber(string houseNumber)
         {
             return int.TryParse(houseNumber, out _) && houseNumber.Length <= 4;
         }
+
 
         private bool IsValidPostCode(string postCode)
         {
             return int.TryParse(postCode, out _) && postCode.Length <= 6;
         }
 
+
         private bool IsValidApartmentNumber(string apartmentNumber)
         {
             return int.TryParse(apartmentNumber, out _) && apartmentNumber.Length <= 4;
         }
+
 
         private bool IsValidEmail(string email)
         {
             var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
             return Regex.IsMatch(email, emailPattern);
         }
+
 
         private void UpdateStepContent()
         {
@@ -199,7 +208,37 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
+
+        private async Task CompleteRegistrationAsync()
+        {
+            try
+            {
+                var passwordService = new PasswordService();
+                string hashedPassword = passwordService.HashPassword(Password);
+
+                int addressID = await _databaseService.GetAddressIdAsync(City, Street, HouseNumber, PostCode, ApartmentNumber);
+
+                if (addressID == 0)
+                {
+                    addressID = await _databaseService.AddAddressAsync(City, Street, HouseNumber, PostCode, ApartmentNumber);
+                    await _databaseService.AddEmployeeAsync(Name, Surname, Email, hashedPassword, PhoneNumber, addressID);
+                }
+                else
+                {
+                    await _databaseService.AddEmployeeAsync(Name, Surname, Email, hashedPassword, PhoneNumber, addressID);
+                }
+
+                MessageBox.Show("Registration completed successfully!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

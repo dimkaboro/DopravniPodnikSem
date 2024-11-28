@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using DopravniPodnikSem.Services;
 using Microsoft.EntityFrameworkCore;
+using DopravniPodnikSem.ViewModels;
 
 
 namespace DopravniPodnikSem
@@ -16,17 +17,15 @@ namespace DopravniPodnikSem
     public partial class App : Application
     {
         public IConfiguration Configuration { get; }
-        public ServiceProvider ServiceProvider { get; }
+        public static ServiceProvider ServiceProvider { get; private set; }
 
         public App()
         {
-            // Настройка конфигурации
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
             Configuration = builder.Build();
 
-            // Настройка сервисов
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
             ServiceProvider = serviceCollection.BuildServiceProvider();
@@ -34,24 +33,21 @@ namespace DopravniPodnikSem
 
         private void ConfigureServices(ServiceCollection services)
         {
-            // Регистрация IConfiguration
             services.AddSingleton<IConfiguration>(Configuration);
 
-            // Регистрация сервисов (убираем DatabaseService временно)
-            // services.AddTransient<DatabaseService>(); // Уберите это
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseOracle(Configuration.GetConnectionString("DefaultConnection")));
 
-            // Регистрация Views
-            services.AddSingleton<MainWindow>();
-            // Добавьте другие Views по мере необходимости
+            services.AddTransient<DatabaseService>();
+            services.AddTransient<RegistrationViewModel>();
         }
+
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            // Получение MainWindow из DI контейнера
             var mainWindow = ServiceProvider.GetService<MainWindow>();
-
         }
     }
 }

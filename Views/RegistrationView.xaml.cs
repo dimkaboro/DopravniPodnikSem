@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using DopravniPodnikSem.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DopravniPodnikSem.Views
 {
@@ -8,7 +9,7 @@ namespace DopravniPodnikSem.Views
         public RegistrationView()
         {
             InitializeComponent();
-            DataContext = new RegistrationViewModel();
+            DataContext = App.ServiceProvider.GetService<RegistrationViewModel>();
         }
     }
 }
