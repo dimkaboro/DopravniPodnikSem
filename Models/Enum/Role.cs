@@ -8,9 +8,9 @@ namespace DopravniPodnikSem.Models.Enum
 {
     public enum Role
     {
-        Guest = 3,
+        Administrator = 1,
         Zamestnanec = 2,
-        Administrator = 1
+        Guest = 3
     }
 
     public static class RoleService
