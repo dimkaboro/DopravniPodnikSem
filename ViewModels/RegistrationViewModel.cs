@@ -68,12 +68,11 @@ namespace DopravniPodnikSem.ViewModels
             UpdateStepContent();
         }
 
-
         private void NextStep(object obj)
         {
             if (IsAnyFieldEmpty())
             {
-                ErrorMessage = "Fill all fields";
+                ErrorMessage = "Заполните все поля";
                 return;
             }
 
@@ -82,7 +81,7 @@ namespace DopravniPodnikSem.ViewModels
                 case 1:
                     if (!IsValidPhoneNumber(PhoneNumber))
                     {
-                        ErrorMessage = "Invalid phone number format. Example: +420123456789";
+                        ErrorMessage = "Неверный формат номера телефона. Пример: +420123456789";
                         return;
                     }
                     break;
@@ -90,19 +89,19 @@ namespace DopravniPodnikSem.ViewModels
                 case 2:
                     if (!IsValidHouseNumber(HouseNumber))
                     {
-                        ErrorMessage = "House Number must be a number and no more than 4 digits.";
+                        ErrorMessage = "Номер дома должен быть числом и не более 4 цифр.";
                         return;
                     }
 
                     if (!IsValidPostCode(PostCode))
                     {
-                        ErrorMessage = "Post Code must be a number and no more than 6 digits.";
+                        ErrorMessage = "Почтовый индекс должен быть числом и не более 6 цифр.";
                         return;
                     }
 
                     if (!IsValidApartmentNumber(ApartmentNumber))
                     {
-                        ErrorMessage = "Apartment Number must be a number and no more than 4 digits.";
+                        ErrorMessage = "Номер квартиры должен быть числом и не более 4 цифр.";
                         return;
                     }
                     break;
@@ -110,7 +109,7 @@ namespace DopravniPodnikSem.ViewModels
                 case 3:
                     if (!IsValidEmail(Email))
                     {
-                        ErrorMessage = "Invalid email format.";
+                        ErrorMessage = "Неверный формат электронной почты.";
                         return;
                     }
                     break;
@@ -129,7 +128,6 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-
         private void BackStep(object obj)
         {
             if (_currentStep > 1)
@@ -138,7 +136,6 @@ namespace DopravniPodnikSem.ViewModels
                 UpdateStepContent();
             }
         }
-
 
         private bool IsAnyFieldEmpty()
         {
@@ -153,38 +150,32 @@ namespace DopravniPodnikSem.ViewModels
                                           string.IsNullOrWhiteSpace(Password)));
         }
 
-
         private bool IsValidPhoneNumber(string phoneNumber)
         {
             var phonePattern = @"^\+420\d{9}$";
             return Regex.IsMatch(phoneNumber, phonePattern);
         }
 
-
         private bool IsValidHouseNumber(string houseNumber)
         {
             return int.TryParse(houseNumber, out _) && houseNumber.Length <= 4;
         }
-
 
         private bool IsValidPostCode(string postCode)
         {
             return int.TryParse(postCode, out _) && postCode.Length <= 6;
         }
 
-
         private bool IsValidApartmentNumber(string apartmentNumber)
         {
             return int.TryParse(apartmentNumber, out _) && apartmentNumber.Length <= 4;
         }
-
 
         private bool IsValidEmail(string email)
         {
             var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
             return Regex.IsMatch(email, emailPattern);
         }
-
 
         private void UpdateStepContent()
         {
@@ -208,7 +199,6 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-
         private async Task CompleteRegistrationAsync()
         {
             try
@@ -228,14 +218,13 @@ namespace DopravniPodnikSem.ViewModels
                     await _databaseService.AddEmployeeAsync(Name, Surname, Email, hashedPassword, PhoneNumber, addressID);
                 }
 
-                MessageBox.Show("Registration completed successfully!");
+                MessageBox.Show("Регистрация успешно завершена!");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                MessageBox.Show($"Произошла ошибка: {ex.Message}");
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

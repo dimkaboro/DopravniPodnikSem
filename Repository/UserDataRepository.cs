@@ -1,4 +1,5 @@
-﻿using DopravniPodnikSem.Repository.Interfaces;
+﻿
+using DopravniPodnikSem.Repository.Interfaces;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,22 @@ namespace DopravniPodnikSem.Repository
     public class UserDataRepository : IUserDataRepository
     {
         private readonly DatabaseService _databaseService;
+        private readonly PasswordService _passwordService;
 
-        public UserDataRepository(DatabaseService databaseService)
+        public UserDataRepository(DatabaseService databaseService, PasswordService passwordService)
         {
             _databaseService = databaseService;
+            _passwordService = passwordService;
+        }
+
+        public async Task<int> AddAddressAsync(string mesto, string ulice, string cisloBudovy, string zipCode, string cisloBytu)
+        {
+            return await _databaseService.AddAddressAsync(mesto, ulice, cisloBudovy, zipCode, cisloBytu);
+        }
+
+        public async Task AddEmployeeAsync(string jmeno, string prijmeni, string email, string heslo, string cisloTelefonu, int adresa)
+        {
+            await _databaseService.AddEmployeeAsync(jmeno, prijmeni, email, heslo, cisloTelefonu, adresa);
         }
 
         public async Task<Zamestnanec> CheckCredentialsAsync(string email, string password)
@@ -54,6 +67,54 @@ namespace DopravniPodnikSem.Repository
                 }
             }
             return null;
+        }
+
+        public async Task<int> GetAddressIdAsync(string mesto, string ulice, string cisloBudovy, string zipCode, string cisloBytu)
+        {
+            return await _databaseService.GetAddressIdAsync(mesto, ulice, cisloBudovy, zipCode, cisloBytu);
+        }
+
+        public async Task RegisterNewUserAsync(Zamestnanec zamestnanec)
+        {
+            using (var connection = _databaseService.GetConnection())
+            {
+                await connection.OpenAsync();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // Хеширование пароля
+                        zamestnanec.Heslo = _passwordService.HashPassword(zamestnanec.Heslo);
+
+                        // Добавление адреса
+                        int addressId = await AddAddressAsync(
+                            zamestnanec.Adresa.Mesto,
+                            zamestnanec.Adresa.Ulice,
+                            zamestnanec.Adresa.CisloBudovy,
+                            zamestnanec.Adresa.ZipCode,
+                            zamestnanec.Adresa.CisloBytu
+                        );
+                        zamestnanec.AdresaId = addressId;
+
+                        // Добавление сотрудника
+                        await AddEmployeeAsync(
+                            zamestnanec.Jmeno,
+                            zamestnanec.Prijmeni,
+                            zamestnanec.Email,
+                            zamestnanec.Heslo,
+                            zamestnanec.CisloTelefonu,
+                            zamestnanec.AdresaId
+                        );
+
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
         }
 
         //        private readonly string _connectionString;
