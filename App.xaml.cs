@@ -7,6 +7,9 @@ using System.IO;
 using DopravniPodnikSem.Services;
 using Microsoft.EntityFrameworkCore;
 using DopravniPodnikSem.ViewModels;
+using DopravniPodnikSem.Repository.Interfaces;
+using DopravniPodnikSem.Repository;
+
 
 
 namespace DopravniPodnikSem
@@ -38,8 +41,13 @@ namespace DopravniPodnikSem
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseOracle(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddTransient<IUserDataRepository, UserDataRepository>();
             services.AddTransient<DatabaseService>();
+            services.AddTransient<PasswordService>();
+
+            services.AddSingleton<NavigationVM>();
             services.AddTransient<RegistrationViewModel>();
+            services.AddTransient<LoginViewModel>();
         }
 
 

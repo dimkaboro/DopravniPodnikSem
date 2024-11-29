@@ -8,79 +8,85 @@ using DopravniPodnikSem.Models;
 using DopravniPodnikSem.Repository.Interfaces;
 using DopravniPodnikSem.ViewModels;
 using Microsoft.EntityFrameworkCore.Metadata;
+using System.Windows;
 
 namespace DopravniPodnikSem.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
-        private string _userName;
-private SecureString _password;
-private string _errorMessage;
-private readonly IUserDataRepository _userDataRepository;
-private readonly NavigationVM _navigation;
+        private string _email;
+        private string _password;
+        private string _errorMessage;
+        private readonly IUserDataRepository _userDataRepository;
+        private readonly NavigationVM _navigation;
 
-public string UserName
-{
-    get => _userName;
-    set
-    {
-        _userName = value;
-        OnPropertyChanged();
-    }
-}
-
-public SecureString Password
-{
-    get => _password;
-    set
-    {
-        _password = value;
-        OnPropertyChanged();
-    }
-}
-
-public string ErrorMessage
-{
-    get => _errorMessage;
-    set
-    {
-        _errorMessage = value;
-        OnPropertyChanged();
-    }
-}
-
-public ICommand LoginCommand { get; }
-
-public LoginViewModel(IUserDataRepository userDataRepository, NavigationVM navigation)
-{
-    _userDataRepository = userDataRepository;
-    _navigation = navigation;
-    LoginCommand = new ViewModelCommand(ExecuteLoginCommand, CanExecuteLoginCommand);
-}
-
-private async void ExecuteLoginCommand(object obj)
-{
-    try
-    {
-        Zamestnanec zamestnanec = await Task.Run(() => _userDataRepository.CheckCredentials(new NetworkCredential(UserName, Password)));
-        if (zamestnanec == null)
+        public string Email
         {
-            ErrorMessage = "Неверное имя пользователя или пароль";
+            get => _email;
+            set
+            {
+                _email = value;
+                OnPropertyChanged();
+            }
         }
-        else
-        {
-            _navigation.Authorized(zamestnanec);
-        }
-    }
-    catch
-    {
-        ErrorMessage = "Ошибка при попытке подключения";
-    }
-}
 
-private bool CanExecuteLoginCommand(object obj)
-{
-    return !string.IsNullOrWhiteSpace(UserName) && Password != null && Password.Length > 0;
-}
+        public string Password
+        {
+            get => _password;
+            set
+            {
+                _password = value;
+                OnPropertyChanged(nameof(Password));
+            }
+        }
+
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
+                _errorMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand LoginCommand { get; }
+
+        public LoginViewModel(IUserDataRepository userDataRepository, NavigationVM navigation)
+        {
+            _userDataRepository = userDataRepository;
+            _navigation = navigation;
+            LoginCommand = new ViewModelCommand(ExecuteLoginCommand, CanExecuteLoginCommand);
+        }
+
+        private async void ExecuteLoginCommand(object obj)
+        {
+            try
+            {
+                // Проверяем учетные данные
+                var user = await _userDataRepository.CheckCredentialsAsync(Email, Password);
+
+                if (user == null)
+                {
+                    ErrorMessage = "Invalid email or password.";
+                }
+                else
+                {
+                    // Авторизация успешна
+                    MessageBox.Show("Authorization completed successfully!");
+                    _navigation.Authorized(user); // Перенаправляем пользователя после авторизации
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error during login: {ex.Message}";
+            }
+        }
+
+        private bool CanExecuteLoginCommand(object obj)
+        {
+            // Команда активна только при заполненных полях
+            return !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password);
+        }
     }
 }
