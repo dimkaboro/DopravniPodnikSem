@@ -1,16 +1,9 @@
 ﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using DopravniPodnikSem.Services;
-using System.Windows.Media.Animation;
-using DopravniPodnikSem.Views;
 using DopravniPodnikSem.ViewModels;
 using Microsoft.Extensions.Configuration;
 
@@ -22,21 +15,24 @@ namespace DopravniPodnikSem
     public partial class MainWindow : Window
     {
         private bool _isMenuOpen = false;
-
-        private readonly DatabaseService _databaseService;
+        private readonly NavigationVM _navigationVM;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            // Настройка конфигурации для DatabaseService (по необходимости)
+            // Настройка конфигурации для DatabaseService
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
-            _databaseService = new DatabaseService(configuration);
+            var databaseService = new DatabaseService(configuration);
 
             // Установка DataContext с экземпляром NavigationVM
-            DataContext = new NavigationVM(_databaseService);
+            _navigationVM = new NavigationVM(databaseService);
+            DataContext = _navigationVM;  // Устанавливаем DataContext на NavigationVM
+
+            // Сразу устанавливаем роль как null
+            _navigationVM.UserRole = null;
 
             this.Closing += MainWindow_Closing;
         }
@@ -96,7 +92,6 @@ namespace DopravniPodnikSem
             MainContent.Content = new Views.LoginView();
         }
 
-
         private void RegistrationButton_Click(object sender, RoutedEventArgs e)
         {
             MainContent.Content = new Views.RegistrationView();
@@ -107,7 +102,7 @@ namespace DopravniPodnikSem
             Application.Current.Shutdown();
         }
 
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             Application.Current.Shutdown();
         }

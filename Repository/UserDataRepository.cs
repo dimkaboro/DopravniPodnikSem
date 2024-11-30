@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DopravniPodnikSem.Models;
 using DopravniPodnikSem.Services;
+using DopravniPodnikSem.Models.Enum;
 
 namespace DopravniPodnikSem.Repository
 {
@@ -39,9 +40,18 @@ namespace DopravniPodnikSem.Repository
             using (var connection = _databaseService.GetConnection())
             {
                 var command = new OracleCommand(@"
-                    SELECT ZAMESTNANEC_ID, JMENO, PRIJMENI, EMAIL, HESLO, POZICE 
-                    FROM ZAMESTNANCI 
-                    WHERE EMAIL = :Email", connection);
+            SELECT 
+                z.zamestnanec_id, 
+                z.jmeno, 
+                z.prijmeni, 
+                z.email, 
+                z.heslo, 
+                z.pozice,
+                r.role_id, 
+                r.nazev AS role_name
+            FROM zamestnanci z
+            INNER JOIN role r ON z.role_role_id = r.role_id
+            WHERE z.email = :Email", connection);
 
                 command.Parameters.Add(new OracleParameter(":Email", email));
 
@@ -49,18 +59,17 @@ namespace DopravniPodnikSem.Repository
                 {
                     if (await reader.ReadAsync())
                     {
-                        string storedHash = reader.GetString(reader.GetOrdinal("HESLO"));
-                        var passwordService = new PasswordService();
-
-                        if (passwordService.VerifyPassword(password, storedHash))
+                        string storedHash = reader.GetString(reader.GetOrdinal("heslo"));
+                        if (_passwordService.VerifyPassword(password, storedHash))
                         {
                             return new Zamestnanec
                             {
-                                ZamestnanecId = reader.GetInt32(reader.GetOrdinal("ZAMESTNANEC_ID")),
-                                Jmeno = reader.GetString(reader.GetOrdinal("JMENO")),
-                                Prijmeni = reader.GetString(reader.GetOrdinal("PRIJMENI")),
-                                Email = reader.GetString(reader.GetOrdinal("EMAIL")),
-                                Pozice = reader.GetString(reader.GetOrdinal("POZICE"))
+                                ZamestnanecId = reader.GetInt32(reader.GetOrdinal("zamestnanec_id")),
+                                Jmeno = reader.GetString(reader.GetOrdinal("jmeno")),
+                                Prijmeni = reader.GetString(reader.GetOrdinal("prijmeni")),
+                                Email = reader.GetString(reader.GetOrdinal("email")),
+                                Pozice = reader.GetString(reader.GetOrdinal("pozice")),
+                                Role = (Role)reader.GetInt32(reader.GetOrdinal("role_id")) // Преобразование ID роли в enum Role
                             };
                         }
                     }

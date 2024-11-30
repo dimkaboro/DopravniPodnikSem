@@ -1,14 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Oracle.ManagedDataAccess.Client;
-using System;
-using System.Net;
-using System.Security;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using DopravniPodnikSem.Models;
 using DopravniPodnikSem.Repository.Interfaces;
-using DopravniPodnikSem.ViewModels;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System.Windows;
 
 namespace DopravniPodnikSem.ViewModels
 {
@@ -19,6 +13,8 @@ namespace DopravniPodnikSem.ViewModels
         private string _errorMessage;
         private readonly IUserDataRepository _userDataRepository;
         private readonly NavigationVM _navigation;
+
+        public event Action RequestClose; // Событие для закрытия окна
 
         public string Email
         {
@@ -63,7 +59,6 @@ namespace DopravniPodnikSem.ViewModels
         {
             try
             {
-                // Проверяем учетные данные
                 var user = await _userDataRepository.CheckCredentialsAsync(Email, Password);
 
                 if (user == null)
@@ -73,8 +68,12 @@ namespace DopravniPodnikSem.ViewModels
                 else
                 {
                     // Авторизация успешна
-                    MessageBox.Show("Authorization completed successfully!");
-                    _navigation.Authorized(user); // Перенаправляем пользователя после авторизации
+                    MessageBox.Show($"Welcome, {user.Jmeno}!");
+
+                    // Передаем данные в NavigationVM
+                    _navigation.Authorized(user);
+
+                    // Старое окно пока не закрывается
                 }
             }
             catch (Exception ex)

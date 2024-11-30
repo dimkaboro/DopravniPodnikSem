@@ -1,7 +1,16 @@
 ﻿<Window x:Class="DopravniPodnikSem.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:DopravniPodnikSem.ViewModels"
+        xmlns:conv="clr-namespace:DopravniPodnikSem.Converters"
         Title="Dopravni Podnik" Height="650" Width="900">
+
+    <Window.Resources>
+        <!-- Регистрация конвертеров -->
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <conv:RoleToStringConverter x:Key="RoleToStringConverter"/>
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -16,9 +25,11 @@
                     <Image Source="Resources/Image/Logo2.png" Width="50" Height="50" Opacity="0.8" />
                     <TextBlock Text="Dopravni Podnik" FontSize="16" FontWeight="Bold" Foreground="White" TextAlignment="Center" Margin="0,5,0,10"/>
                 </StackPanel>
+
+                <!-- Кнопки меню -->
                 <Button Content="Home" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="HomeButton_Click" />
-                <Button Content="Login" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="LoginButton_Click" />
-                <Button Content="Registration" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="RegistrationButton_Click" />
+                <Button Content="Login" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="LoginButton_Click" Visibility="{Binding IsLoginButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Button Content="Registration" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="RegistrationButton_Click" Visibility="{Binding IsRegistrationButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="Exit" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ExitButton_Click" />
                 <Button Content="Check connect to DB" Style="{StaticResource MenuButtonStyle}" Command="{Binding CheckDatabaseConnectionCommand}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" />
             </StackPanel>
@@ -37,6 +48,12 @@
 
             <!-- Бургер-кнопка, всегда наверху -->
             <Button x:Name="BurgerButton" Style="{StaticResource HamburgerButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="BurgerButton_Click" />
+
+            <!-- Информация о роли пользователя (отображается снизу справа) -->
+            <TextBlock Text="{Binding UserRole, Converter={StaticResource RoleToStringConverter}}"
+                       HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
+                       FontSize="14" FontWeight="Bold" Foreground="Black"
+                       Visibility="{Binding IsRoleInfoVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </Grid>
     </Grid>
 </Window>
