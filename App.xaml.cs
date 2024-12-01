@@ -56,6 +56,8 @@ namespace DopravniPodnikSem
             base.OnStartup(e);
 
             var mainWindow = ServiceProvider.GetService<MainWindow>();
+            var adminWindow = ServiceProvider.GetService<AdminWindow>();
+            var employeeWindow = ServiceProvider.GetService<EmployeeWindow>();
         }
     }
 }

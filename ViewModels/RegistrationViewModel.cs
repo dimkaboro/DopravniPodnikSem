@@ -1,5 +1,6 @@
 ﻿using DopravniPodnikSem.Services;
 using DopravniPodnikSem.Views;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -12,6 +13,7 @@ namespace DopravniPodnikSem.ViewModels
     public class RegistrationViewModel : INotifyPropertyChanged
     {
         private readonly DatabaseService _databaseService;
+        private readonly NavigationVM _navigation;
 
         private readonly Brush _highlightColor = (Brush)new BrushConverter().ConvertFrom("#6C63FF");
         public Brush Step1IndicatorColor => _currentStep == 1 ? _highlightColor : Brushes.DarkGray;
@@ -60,11 +62,12 @@ namespace DopravniPodnikSem.ViewModels
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public RegistrationViewModel(DatabaseService databaseService)
+        public RegistrationViewModel(DatabaseService databaseService, NavigationVM navigation)
         {
             _databaseService = databaseService;
             NextCommand = new ViewModelCommand(NextStep);
             BackCommand = new ViewModelCommand(BackStep);
+            _navigation = navigation;
             UpdateStepContent();
         }
 
@@ -219,6 +222,7 @@ namespace DopravniPodnikSem.ViewModels
                 }
 
                 MessageBox.Show("Регистрация успешно завершена!");
+                _navigation.Registered();
             }
             catch (Exception ex)
             {

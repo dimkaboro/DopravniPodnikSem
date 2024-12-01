@@ -22,16 +22,12 @@ public class NavigationVM : INotifyPropertyChanged
             {
                 _userRole = value;
                 OnPropertyChanged(nameof(UserRole));
-                OnPropertyChanged(nameof(IsLoginButtonVisible));
-                OnPropertyChanged(nameof(IsRegistrationButtonVisible));
                 OnPropertyChanged(nameof(IsRoleInfoVisible));
             }
         }
     }
 
     // Свойства для управления видимостью кнопок
-    public bool IsLoginButtonVisible => UserRole == null; // Кнопка Login видна, если UserRole == null
-    public bool IsRegistrationButtonVisible => UserRole == null; // Кнопка Registration видна, если UserRole == null
     public bool IsRoleInfoVisible => UserRole != null; // Видимость информации о роли, если UserRole != null
 
     public ICommand CheckDatabaseConnectionCommand { get; }
@@ -47,22 +43,41 @@ public class NavigationVM : INotifyPropertyChanged
     public void Authorized(Zamestnanec zamestnanec)
     {
         UserRole = zamestnanec.Role; // Устанавливаем роль пользователя
-        CloseLoginWindow();
-
-        var mainWindow = new MainWindow
+        
+        if (UserRole == Role.Administrator)
         {
-            DataContext = this // Передаем текущий NavigationVM
-        };
-        mainWindow.Show();
+            var adminWindow = new AdminWindow
+            {
+                DataContext = this // Передаем текущий NavigationVM
+            };
+            adminWindow.Show();
+        }
+        else if (UserRole == Role.Zamestnanec)
+        {
+            var employeeWindow = new EmployeeWindow
+            {
+                DataContext = this // Передаем текущий NavigationVM
+            };
+            employeeWindow.Show();
+        }
+
+        foreach (Window window in Application.Current.Windows)
+        {
+            if (window is MainWindow)
+            {
+                window.Close();
+                break;
+            }
+        }
     }
 
-    private void CloseLoginWindow()
+    public void Registered()
     {
         foreach (Window window in Application.Current.Windows)
         {
-            if (window is LoginView)
+            if (window is MainWindow mainWindow)
             {
-                window.Close();
+                mainWindow.MainContent.Content = new LoginView();
                 break;
             }
         }
