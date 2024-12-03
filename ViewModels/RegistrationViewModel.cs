@@ -75,7 +75,7 @@ namespace DopravniPodnikSem.ViewModels
         {
             if (IsAnyFieldEmpty())
             {
-                ErrorMessage = "Заполните все поля";
+                ErrorMessage = "Fill in all the field";
                 return;
             }
 
@@ -84,7 +84,7 @@ namespace DopravniPodnikSem.ViewModels
                 case 1:
                     if (!IsValidPhoneNumber(PhoneNumber))
                     {
-                        ErrorMessage = "Неверный формат номера телефона. Пример: +420123456789";
+                        ErrorMessage = "Invalid phone number format. Example: +420123456789";
                         return;
                     }
                     break;
@@ -92,19 +92,19 @@ namespace DopravniPodnikSem.ViewModels
                 case 2:
                     if (!IsValidHouseNumber(HouseNumber))
                     {
-                        ErrorMessage = "Номер дома должен быть числом и не более 4 цифр.";
+                        ErrorMessage = "The house number must be a number and no more than 4 digits.";
                         return;
                     }
 
                     if (!IsValidPostCode(PostCode))
                     {
-                        ErrorMessage = "Почтовый индекс должен быть числом и не более 6 цифр.";
+                        ErrorMessage = "The postal code must be a number and no more than 6 digits.";
                         return;
                     }
 
                     if (!IsValidApartmentNumber(ApartmentNumber))
                     {
-                        ErrorMessage = "Номер квартиры должен быть числом и не более 4 цифр.";
+                        ErrorMessage = "The apartment number must be a number and no more than 4 digits.";
                         return;
                     }
                     break;
@@ -112,7 +112,7 @@ namespace DopravniPodnikSem.ViewModels
                 case 3:
                     if (!IsValidEmail(Email))
                     {
-                        ErrorMessage = "Неверный формат электронной почты.";
+                        ErrorMessage = "Invalid email format.";
                         return;
                     }
                     break;
@@ -221,12 +221,12 @@ namespace DopravniPodnikSem.ViewModels
                     await _databaseService.AddEmployeeAsync(Name, Surname, Email, hashedPassword, PhoneNumber, addressID);
                 }
 
-                MessageBox.Show("Регистрация успешно завершена!");
+                MessageBox.Show("Registration completed successfully!");
                 _navigation.Registered();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Произошла ошибка: {ex.Message}");
+                MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
 

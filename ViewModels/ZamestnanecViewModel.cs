@@ -62,7 +62,7 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        public DateTime? DatumNastupu
+        public DateOnly DatumNastupu
         {
             get => _zamestnanec.DatumNastupu;
             set

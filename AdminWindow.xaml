@@ -29,6 +29,7 @@
                 </StackPanel>
 
                 <!-- Кнопки меню -->
+                <Button Content="Profile" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ProfileButton_Click"/>
                 <Button Content="Home" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="HomeButton_Click" />
                 <Button Content="Exit" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ExitButton_Click" />
                 <Button Content="Check connect to DB" Style="{StaticResource MenuButtonStyle}" Command="{Binding CheckDatabaseConnectionCommand}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" />

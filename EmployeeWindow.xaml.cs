@@ -1,4 +1,7 @@
-﻿using DopravniPodnikSem.Services;
+﻿using DopravniPodnikSem.Repository;
+using DopravniPodnikSem.Repository.Interfaces;
+using DopravniPodnikSem.Services;
+using DopravniPodnikSem.Views;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -23,6 +26,8 @@ namespace DopravniPodnikSem
     {
         private bool _isMenuOpen = false;
         private readonly NavigationVM _navigationVM;
+        private readonly IUserDataRepository _userDataRepository;
+        private readonly PasswordService _passwordService;
 
         public EmployeeWindow()
         {
@@ -33,6 +38,8 @@ namespace DopravniPodnikSem
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
             var databaseService = new DatabaseService(configuration);
+
+            _userDataRepository = new UserDataRepository(databaseService, _passwordService);
 
             // Установка DataContext с экземпляром NavigationVM
             _navigationVM = new NavigationVM(databaseService);
@@ -58,6 +65,15 @@ namespace DopravniPodnikSem
                 MenuColumn.Width = new GridLength(228);
                 _isMenuOpen = true;
             }
+        }
+
+        private void ProfileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var profileView = new ProfileView
+            {
+                DataContext = new ProfileViewModel(_userDataRepository, CurrentSession.LoggedInUser.ZamestnanecId, CurrentSession.LoggedInUser.AdresaId)
+            };
+            MainContent.Content = profileView;
         }
 
         private void HomeButton_Click(object sender, RoutedEventArgs e)

@@ -70,6 +70,9 @@ namespace DopravniPodnikSem.ViewModels
                     // Авторизация успешна
                     MessageBox.Show($"Welcome, {user.Jmeno}!");
 
+                    // Сохраняем авторизованного пользователя в CurrentSession
+                    CurrentSession.LoggedInUser = await _userDataRepository.GetUserDetailsAsync(user.ZamestnanecId);
+
                     // Передаем данные в NavigationVM
                     _navigation.Authorized(user);
 
