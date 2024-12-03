@@ -1,23 +1,30 @@
-﻿using System.Text;
+﻿using DopravniPodnikSem.Services;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using DopravniPodnikSem.Services;
-using DopravniPodnikSem.ViewModels;
-using Microsoft.Extensions.Configuration;
+using System.Windows.Shapes;
 
 namespace DopravniPodnikSem
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Логика взаимодействия для AdminWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class AdminWindow : Window
     {
         private bool _isMenuOpen = false;
         private readonly NavigationVM _navigationVM;
 
-        public MainWindow()
+        public AdminWindow()
         {
             InitializeComponent();
 
@@ -82,17 +89,6 @@ namespace DopravniPodnikSem
                     }
                 }
             };
-        }
-
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Устанавливаем содержимое на LoginView
-            MainContent.Content = new Views.LoginView();
-        }
-
-        private void RegistrationButton_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new Views.RegistrationView();
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)

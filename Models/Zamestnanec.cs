@@ -1,9 +1,6 @@
 ﻿using DopravniPodnikSem.Models.Enum;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DopravniPodnikSem.Models
 {
@@ -95,6 +92,12 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _roleId, value);
         }
 
+        public Role Role
+        {
+            get => (Role)RoleId; // Преобразуем RoleId в enum
+            set => RoleId = (int)value; // Преобразуем enum в RoleId
+        }
+
         public int SouborId
         {
             get => _souborId;
@@ -103,10 +106,8 @@ namespace DopravniPodnikSem.Models
 
         // Навигационные свойства
         public virtual Adresa Adresa { get; set; } // Связь с таблицей адресов
-        public virtual Role Role { get; set; } // Связь с таблицей ролей
         public virtual Soubory Soubor { get; set; } // Связь с таблицей файлов
         public virtual Zamestnanec Vedouci { get; set; } // Связь с руководителем
         public virtual ICollection<Zamestnanec> Podrizeni { get; set; } = new List<Zamestnanec>(); // Связь с подчинёнными
     }
 }
-
