@@ -107,6 +107,22 @@ namespace DopravniPodnikSem
             };
         }
 
+
+        private void LinkyButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new LinkyView();
+        }
+
+        private void RidiciButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new RidiciView();
+        }
+
+        private void VozidlaButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new VozidlaView();
+        }
+
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
