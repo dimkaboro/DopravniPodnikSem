@@ -11,7 +11,7 @@ namespace DopravniPodnikSem.Models
         private string _prijmeni;
         private string _pozice;
         private int _plat;
-        private DateTime? _datumNastupu;
+        private DateOnly _datumNastupu;
         private int? _zamestnanecZamestnanecId; // связь с руководителем
         private string _email;
         private string _heslo;
@@ -50,7 +50,7 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _plat, value);
         }
 
-        public DateTime? DatumNastupu
+        public DateOnly DatumNastupu
         {
             get => _datumNastupu;
             set => SetField(ref _datumNastupu, value);

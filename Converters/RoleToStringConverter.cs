@@ -14,17 +14,17 @@ namespace DopravniPodnikSem.Converters
                 switch (role)
                 {
                     case Role.Administrator:
-                        return "Вы вошли как Админ";
+                        return "Administrator";
                     case Role.Zamestnanec:
-                        return "Вы вошли как Сотрудник";
+                        return "Zamestnanec";
                     case Role.Guest:
-                        return "Вы вошли как Гость";
+                        return "Guest";
                     default:
-                        return "Роль не определена";
+                        return "Unknown";
                 }
             }
 
-            return "Роль не определена";
+            return "Unknown";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

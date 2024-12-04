@@ -78,11 +78,6 @@ namespace DopravniPodnikSem.Repository
             return null;
         }
 
-        public async Task<int> GetAddressIdAsync(string mesto, string ulice, string cisloBudovy, string zipCode, string cisloBytu)
-        {
-            return await _databaseService.GetAddressIdAsync(mesto, ulice, cisloBudovy, zipCode, cisloBytu);
-        }
-
         public async Task RegisterNewUserAsync(Zamestnanec zamestnanec)
         {
             using (var connection = _databaseService.GetConnection())
@@ -92,10 +87,8 @@ namespace DopravniPodnikSem.Repository
                 {
                     try
                     {
-                        // Хеширование пароля
                         zamestnanec.Heslo = _passwordService.HashPassword(zamestnanec.Heslo);
 
-                        // Добавление адреса
                         int addressId = await AddAddressAsync(
                             zamestnanec.Adresa.Mesto,
                             zamestnanec.Adresa.Ulice,
@@ -105,7 +98,6 @@ namespace DopravniPodnikSem.Repository
                         );
                         zamestnanec.AdresaId = addressId;
 
-                        // Добавление сотрудника
                         await AddEmployeeAsync(
                             zamestnanec.Jmeno,
                             zamestnanec.Prijmeni,
@@ -125,6 +117,86 @@ namespace DopravniPodnikSem.Repository
                 }
             }
         }
+
+        public async Task<Zamestnanec> GetUserDetailsAsync(int userId)
+        {
+            using (var connection = _databaseService.GetConnection())
+            {
+                var command = new OracleCommand(@"
+                    SELECT ZAMESTNANEC_ID, JMENO, PRIJMENI, EMAIL, POZICE, CISLO_TELEFONU, DATUM_NASTUPU, ADRESA_ADRESA_ID, SOUBOR_SOUBOR_ID
+                    FROM ZAMESTNANCI 
+                    WHERE ZAMESTNANEC_ID = :UserId", connection);
+
+                command.Parameters.Add(new OracleParameter(":UserId", userId));
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        return new Zamestnanec
+                        {
+                            ZamestnanecId = reader.GetInt32(reader.GetOrdinal("ZAMESTNANEC_ID")),
+                            Jmeno = reader.GetString(reader.GetOrdinal("JMENO")),
+                            Prijmeni = reader.GetString(reader.GetOrdinal("PRIJMENI")),
+                            Email = reader.GetString(reader.GetOrdinal("EMAIL")),
+                            Pozice = reader.GetString(reader.GetOrdinal("POZICE")),
+                            CisloTelefonu = reader.GetString(reader.GetOrdinal("CISLO_TELEFONU")),
+                            DatumNastupu = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("DATUM_NASTUPU"))),
+                            AdresaId = reader.GetInt32(reader.GetOrdinal("ADRESA_ADRESA_ID")),
+                            SouborId = reader.GetInt32(reader.GetOrdinal("SOUBOR_SOUBOR_ID"))   
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        public async Task<Adresa> GetAddressDetailsAsync(int adresaId)
+        {
+            using (var connection = _databaseService.GetConnection())
+            {
+                var command = new OracleCommand(@"
+                    SELECT ADRESA_ID, MESTO, ULICE, CISLO_BUDOVY, ZIP_CODE, CISLO_BYTU 
+                    FROM ADRESY 
+                    WHERE ADRESA_ID = :AdresaId", connection);
+
+                command.Parameters.Add(new OracleParameter(":AdresaId", adresaId));
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        return new Adresa
+                        {
+                            AdresaId = reader.GetInt32(reader.GetOrdinal("ADRESA_ID")),
+                            Mesto = reader.GetString(reader.GetOrdinal("MESTO")),
+                            Ulice = reader.GetString(reader.GetOrdinal("ULICE")),
+                            CisloBudovy = reader.GetString(reader.GetOrdinal("CISLO_BUDOVY")),
+                            ZipCode = reader.GetString(reader.GetOrdinal("ZIP_CODE")),
+                            CisloBytu = reader.GetString(reader.GetOrdinal("CISLO_BYTU"))
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        public async Task<byte[]> GetUserAvatarAsync(int souborId)
+        {
+            using (var connection = _databaseService.GetConnection())
+            {
+                var command = new OracleCommand(@"
+            SELECT SOUBOR 
+            FROM SOUBORY 
+            WHERE SOUBOR_ID = :SouborId", connection);
+
+                command.Parameters.Add(new OracleParameter(":SouborId", souborId));
+
+                var result = await command.ExecuteScalarAsync();
+                return result == null || result == DBNull.Value ? null : (byte[])result;
+            }
+        }
+
 
         //        private readonly string _connectionString;
 
