@@ -48,6 +48,19 @@ namespace DopravniPodnikSem
             services.AddSingleton<NavigationVM>();
             services.AddTransient<RegistrationViewModel>();
             services.AddTransient<LoginViewModel>();
+            services.AddTransient<ProfileViewModel>();
+            services.AddTransient<EditProfileViewModel>();
+            //services.AddTransient<MainWindow>();
+            //services.AddTransient<AdminWindow>();
+            //services.AddTransient<EmployeeWindow>();
+
+
+            services.AddTransient<IVozidloRepository, VozidloRepository>();
+            services.AddTransient<VozidloViewModel>();
+
+            services.AddTransient<IRidiciRepository, RidiciRepository>(); // Добавляем эту строку
+            services.AddTransient<RidiciViewModel>(); // Уже есть
+
         }
 
 

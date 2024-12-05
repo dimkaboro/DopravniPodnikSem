@@ -7,10 +7,12 @@ using DopravniPodnikSem;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 
 public class NavigationVM : INotifyPropertyChanged
 {
     private Role? _userRole;
+    private object _currentView;
 
     // Инициализируем роль как null по умолчанию
     public Role? UserRole
@@ -27,6 +29,17 @@ public class NavigationVM : INotifyPropertyChanged
         }
     }
 
+    public object CurrentView
+    {
+        get => _currentView;
+        set
+        {
+            _currentView = value;
+            OnPropertyChanged(nameof(CurrentView));
+        }
+    }
+
+
     // Свойства для управления видимостью кнопок
     public bool IsRoleInfoVisible => UserRole != null; // Видимость информации о роли, если UserRole != null
 
@@ -37,6 +50,7 @@ public class NavigationVM : INotifyPropertyChanged
     {
         _databaseService = databaseService;
         CheckDatabaseConnectionCommand = new ViewModelCommand(ExecuteCheckDatabaseConnection);
+        CurrentView = new HomeView();
     }
 
     // Метод для авторизации
@@ -46,18 +60,12 @@ public class NavigationVM : INotifyPropertyChanged
         
         if (UserRole == Role.Administrator)
         {
-            var adminWindow = new AdminWindow
-            {
-                DataContext = this // Передаем текущий NavigationVM
-            };
+            var adminWindow = new AdminWindow();
             adminWindow.Show();
         }
         else if (UserRole == Role.Zamestnanec)
         {
-            var employeeWindow = new EmployeeWindow
-            {
-                DataContext = this // Передаем текущий NavigationVM
-            };
+            var employeeWindow = new EmployeeWindow();
             employeeWindow.Show();
         }
 
@@ -77,7 +85,7 @@ public class NavigationVM : INotifyPropertyChanged
         {
             if (window is MainWindow mainWindow)
             {
-                mainWindow.MainContent.Content = new LoginView();
+                CurrentView = new LoginView();
                 break;
             }
         }

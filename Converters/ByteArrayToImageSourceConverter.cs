@@ -16,15 +16,15 @@ namespace DopravniPodnikSem.Converters
         {
             if (value is byte[] byteArray && byteArray.Length > 0)
             {
+                var bitmap = new BitmapImage();
                 using (var stream = new MemoryStream(byteArray))
                 {
-                    var image = new BitmapImage();
-                    image.BeginInit();
-                    image.StreamSource = stream;
-                    image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.EndInit();
-                    return image;
+                    bitmap.BeginInit();
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.StreamSource = stream;
+                    bitmap.EndInit();
                 }
+                return bitmap;
             }
             return null;
         }

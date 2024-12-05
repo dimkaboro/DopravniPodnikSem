@@ -1,7 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using DopravniPodnikSem;
 using DopravniPodnikSem.Models;
 using DopravniPodnikSem.Repository.Interfaces;
+using DopravniPodnikSem.ViewModels;
+using DopravniPodnikSem.Views;
 
 public class ProfileViewModel : INotifyPropertyChanged
 {
@@ -9,12 +14,12 @@ public class ProfileViewModel : INotifyPropertyChanged
 
     private Zamestnanec _currentUser;
     private Adresa _currentAdresa;
-    private byte[] _currentSoubor;
+    private Soubory _currentSoubor;
 
-    public ProfileViewModel(IUserDataRepository userDataRepository, int userId, int adresaId)
+    public ProfileViewModel(IUserDataRepository userDataRepository, int userId, int adresaId, int souborId)
     {
         _userDataRepository = userDataRepository;
-        LoadUserDetails(userId, adresaId);
+        LoadUserDetails(userId, adresaId, souborId);
     }
 
     public Zamestnanec CurrentUser
@@ -37,7 +42,7 @@ public class ProfileViewModel : INotifyPropertyChanged
         }
     }
 
-    public byte[] CurrentSoubor
+    public Soubory CurrentSoubor
     {
         get => _currentSoubor;
         set
@@ -47,13 +52,13 @@ public class ProfileViewModel : INotifyPropertyChanged
         }
     }
 
-    private async void LoadUserDetails(int userId, int adresaId)
+    private async void LoadUserDetails(int userId, int adresaId, int souborId)
     {
         try
         {
             var user = await _userDataRepository.GetUserDetailsAsync(userId);
             var adresa = await _userDataRepository.GetAddressDetailsAsync(adresaId);
-            var soubor = await _userDataRepository.GetUserAvatarAsync(user.SouborId);
+            var soubor = await _userDataRepository.GetUserAvatarAsync(souborId);
 
             CurrentUser = user;
             CurrentAdresa = adresa;
@@ -61,7 +66,7 @@ public class ProfileViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading user details: {ex.Message}");
+            MessageBox.Show($"Error loading user details: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

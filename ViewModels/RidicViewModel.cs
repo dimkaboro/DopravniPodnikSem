@@ -1,63 +1,123 @@
 ﻿using DopravniPodnikSem.Models;
+using DopravniPodnikSem.Repository.Interfaces;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace DopravniPodnikSem.ViewModels
 {
-    public class RidicViewModel : BaseViewModel
+    public class RidiciViewModel : BaseViewModel
     {
-        private Ridic _ridic;
+        private readonly IRidiciRepository _ridiciRepository;
+        private ObservableCollection<Ridic> _ridici;
+        private Ridic _selectedRidic;
+        private string _errorMessage;
+        private string _searchPrijmeni;
 
-        public RidicViewModel(Ridic ridic)
+        public string SearchPrijmeni
         {
-            _ridic = ridic;
-        }
-
-        public int RidicId
-        {
-            get => _ridic.RidicId;
+            get => _searchPrijmeni;
             set
             {
-                _ridic.RidicId = value;
+                _searchPrijmeni = value;
                 OnPropertyChanged();
             }
         }
 
-        public string Jmeno
+        public string ErrorMessage
         {
-            get => _ridic.Jmeno;
+            get => _errorMessage;
             set
             {
-                _ridic.Jmeno = value;
+                _errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
+            }
+        }
+
+        public ObservableCollection<Ridic> Ridici
+        {
+            get => _ridici;
+            set
+            {
+                _ridici = value;
                 OnPropertyChanged();
             }
         }
 
-        public string Prijmeni
+        public Ridic SelectedRidic
         {
-            get => _ridic.Prijmeni;
+            get => _selectedRidic;
             set
             {
-                _ridic.Prijmeni = value;
+                _selectedRidic = value;
                 OnPropertyChanged();
             }
         }
 
-        public string RidicPrukaz
+        public ICommand SearchCommand { get; }
+        public ICommand AddUpdateCommand { get; }
+        public ICommand DeleteCommand { get; }
+
+        public RidiciViewModel(IRidiciRepository ridiciRepository)
         {
-            get => _ridic.RidicPrukaz;
-            set
+            _ridiciRepository = ridiciRepository;
+            Ridici = new ObservableCollection<Ridic>();
+
+            // Инициализация команд
+            AddUpdateCommand = new ViewModelCommand(async _ => await AddOrUpdateRidicAsync(), _ => SelectedRidic != null);
+            DeleteCommand = new ViewModelCommand(async _ => await DeleteRidicAsync(), _ => SelectedRidic != null);
+            SearchCommand = new ViewModelCommand(async _ => await SearchRidicByLastNameAsync(), _ => !string.IsNullOrEmpty(SearchPrijmeni));
+
+            // Загрузка всех данных
+            LoadAllRidiciAsync();
+        }
+
+        private async void LoadAllRidiciAsync()
+        {
+            var ridici = await _ridiciRepository.GetAllAsync();
+            Ridici = new ObservableCollection<Ridic>(ridici);
+        }
+
+        private async Task AddOrUpdateRidicAsync()
+        {
+            if (SelectedRidic.RidicId == 0)
             {
-                _ridic.RidicPrukaz = value;
-                OnPropertyChanged();
+                await _ridiciRepository.AddAsync(SelectedRidic);
+            }
+            else
+            {
+                await _ridiciRepository.UpdateAsync(SelectedRidic);
+            }
+
+            LoadAllRidiciAsync();
+        }
+
+        private async Task SearchRidicByLastNameAsync()
+        {
+            try
+            {
+                var ridici = await _ridiciRepository.GetByLastNameAsync(SearchPrijmeni);
+                Ridici.Clear();
+
+                if (ridici != null)
+                {
+                    foreach (var ridic in ridici)
+                        Ridici.Add(ridic);
+                }
+
+                ErrorMessage = string.Empty;
+            }
+            catch
+            {
+                ErrorMessage = "Ошибка при поиске водителя по фамилии.";
             }
         }
 
-        public DateTime? DatumNarozeni
+        private async Task DeleteRidicAsync()
         {
-            get => _ridic.DatumNarozeni;
-            set
+            if (SelectedRidic != null)
             {
-                _ridic.DatumNarozeni = value;
-                OnPropertyChanged();
+                await _ridiciRepository.DeleteAsync(SelectedRidic.RidicId);
+                LoadAllRidiciAsync();
             }
         }
     }

@@ -16,18 +16,13 @@ using System.Windows.Shapes;
 namespace DopravniPodnikSem.Views
 {
     /// <summary>
-    /// Interaction logic for VozidlaView.xaml
+    /// Логика взаимодействия для HomeView.xaml
     /// </summary>
-    public partial class VozidlaView : UserControl
+    public partial class HomeView : UserControl
     {
-        public VozidlaView()
+        public HomeView()
         {
             InitializeComponent();
-        }
-
-        private void VehiclesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
         }
     }
 }

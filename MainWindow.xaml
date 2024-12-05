@@ -37,12 +37,8 @@
         <!-- Основное содержимое с ContentControl -->
         <Grid Grid.Column="1" Background="#D4DDE1">
             <!-- Контейнер для динамического контента -->
-            <ContentControl x:Name="MainContent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <!-- Главный экран (по умолчанию) -->
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
-                    <Image Source="pack://application:,,,/Resources/Image/Logo2.png" Width="100" Height="80" Margin="0,0,0,10" Opacity="0.8" />
-                    <TextBlock Text="Dopravni Podnik" FontSize="30" FontWeight="Bold" Foreground="#2d3033" TextAlignment="Center" FontFamily="Gill Sans" />
-                </StackPanel>
+            <ContentControl Content="{Binding CurrentView}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <!-- Главный экран -->
             </ContentControl>
 
             <!-- Бургер-кнопка, всегда наверху -->
