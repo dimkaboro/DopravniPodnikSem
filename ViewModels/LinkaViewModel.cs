@@ -1,55 +1,119 @@
 ﻿using DopravniPodnikSem.Models;
+using DopravniPodnikSem.Repository.Interfaces;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace DopravniPodnikSem.ViewModels
 {
     public class LinkaViewModel : BaseViewModel
     {
-        private Linka _linka;
+        private readonly ILinkyRepository _linkyRepository;
+        private ObservableCollection<Linka> _linky;
+        private Linka _selectedLinka;
+        private string _errorMessage;
 
-        public LinkaViewModel(Linka linka)
+        public string ErrorMessage
         {
-            _linka = linka;
-        }
-
-        public int LinkaId
-        {
-            get => _linka.LinkaId;
+            get => _errorMessage;
             set
             {
-                _linka.LinkaId = value;
+                _errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
+            }
+        }
+
+        public ObservableCollection<Linka> Linky
+        {
+            get => _linky;
+            set
+            {
+                _linky = value;
                 OnPropertyChanged();
             }
         }
 
-        public string Nazev
+        public Linka SelectedLinka
         {
-            get => _linka.Nazev;
+            get => _selectedLinka;
             set
             {
-                _linka.Nazev = value;
+                _selectedLinka = value;
                 OnPropertyChanged();
             }
         }
 
-        public string Typ
+        public ICommand AddUpdateCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand ClearCommand { get; }
+
+        public LinkaViewModel(ILinkyRepository linkyRepository)
         {
-            get => _linka.Typ;
-            set
+            _linkyRepository = linkyRepository;
+            Linky = new ObservableCollection<Linka>();
+
+            AddUpdateCommand = new ViewModelCommand(async _ => await AddOrUpdateLinkaAsync(), _ => SelectedLinka != null);
+            DeleteCommand = new ViewModelCommand(async _ => await DeleteLinkaAsync(), _ => SelectedLinka != null);
+            ClearCommand = new ViewModelCommand(_ => ClearSelection());
+
+            LoadAllLinkyAsync();
+        }
+
+        private async void LoadAllLinkyAsync()
+        {
+            try
             {
-                _linka.Typ = value;
-                OnPropertyChanged();
+                var linky = await _linkyRepository.GetAllAsync();
+                Linky = new ObservableCollection<Linka>(linky);
+                ErrorMessage = string.Empty;
+            }
+            catch
+            {
+                ErrorMessage = "Ошибка загрузки данных линий.";
             }
         }
 
-        // Свойство для работы с навигационным свойством Jizdy
-        public ICollection<Jizda> Jizdy
+        private async Task AddOrUpdateLinkaAsync()
         {
-            get => _linka.Jizdy;
-            set
+            try
             {
-                _linka.Jizdy = value;
-                OnPropertyChanged();
+                if (SelectedLinka.LinkaId == 0)
+                {
+                    await _linkyRepository.AddAsync(SelectedLinka);
+                }
+                else
+                {
+                    await _linkyRepository.UpdateAsync(SelectedLinka);
+                }
+
+                LoadAllLinkyAsync();
+                ErrorMessage = string.Empty;
             }
+            catch
+            {
+                ErrorMessage = "Ошибка при добавлении/обновлении линии.";
+            }
+        }
+
+        private async Task DeleteLinkaAsync()
+        {
+            try
+            {
+                if (SelectedLinka != null)
+                {
+                    await _linkyRepository.DeleteAsync(SelectedLinka.LinkaId);
+                    LoadAllLinkyAsync();
+                    ErrorMessage = string.Empty;
+                }
+            }
+            catch
+            {
+                ErrorMessage = "Ошибка при удалении линии.";
+            }
+        }
+
+        private void ClearSelection()
+        {
+            SelectedLinka = null;
         }
     }
 }

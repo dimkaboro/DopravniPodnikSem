@@ -11,6 +11,20 @@
 
     <UserControl.Resources>
         <local:WidthAdjustConverter x:Key="WidthAdjustConverter" />
+        <Style x:Key="HeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Montserrat"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border Background="#28AEED" BorderBrush="White" BorderThickness="0.2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid Background="#212529">
@@ -20,6 +34,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" />
@@ -52,69 +67,70 @@
                     <Button Content="ADD/UPDATE" Command="{Binding AddUpdateCommand}" Style="{StaticResource CustomButtonStyle}" Margin="0,10,0,10" Width="150" Height="37"/>
                     <Button Content="DELETE" Command="{Binding DeleteCommand}" Style="{StaticResource CustomButtonStyle}" Margin="0,10,0,10" Width="150" Height="37"/>
                 </StackPanel>
+
                 <!-- Data Grid -->
                 <Border Grid.Row="1" Grid.Column="0" BorderBrush="#00f0ff" BorderThickness="1" CornerRadius="10" Background="#212529" Padding="2,0,3,3" Margin="20">
-                    <ListView x:Name="RoutesListView" 
-                                     ItemsSource="{Binding Routes}" 
-                                     SelectedItem="{Binding SelectedRoute, Mode=TwoWay}"
-                                     BorderThickness="0"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                     Background="Transparent" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="RoutesListView_SelectionChanged">
-                        <ListView.Resources>
-                            <Style TargetType="GridViewColumnHeader">
-                                <Setter Property="Foreground" Value="DarkGray"/>
-                                <Setter Property="FontFamily" Value="Montserrat"/>
-                                <Setter Property="FontWeight" Value="Medium"/>
-                                <Setter Property="IsHitTestVisible" Value="False"/>
-                            </Style>
-                            <Style x:Key="HeaderStyle" TargetType="GridViewColumnHeader">
-                                <Setter Property="Foreground" Value="White"/>
-                                <Setter Property="FontFamily" Value="Montserrat"/>
-                                <Setter Property="FontWeight" Value="Medium"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="GridViewColumnHeader">
-                                            <Border Background="#28AEED" BorderBrush="White" BorderThickness="0.2">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="Background" Value="#212529"/>
-                                <Setter Property="Foreground" Value="White"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="White"/>
-                                        <Setter Property="Foreground" Value="Black"/>
-                                    </Trigger>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="#28AEED"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListView.Resources>
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Nazev" Width="{Binding ActualWidth, ElementName=RoutesListView, Converter={StaticResource WidthAdjustConverter}, ConverterParameter=0.5}" HeaderContainerStyle="{StaticResource HeaderStyle}">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Nazev}" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Typ" Width="{Binding ActualWidth, ElementName=RoutesListView, Converter={StaticResource WidthAdjustConverter}, ConverterParameter=0.5}" HeaderContainerStyle="{StaticResource HeaderStyle}">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Typ}" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListViewItem}}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <DataGrid x:Name="RoutesDataGrid" 
+                                  ItemsSource="{Binding Linky}" 
+                                  SelectedItem="{Binding SelectedLinka, Mode=TwoWay}" 
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="True"
+                                  CanUserDeleteRows="True"
+                                  CanUserSortColumns="False"
+                                  BorderThickness="0"
+                                  Background="Transparent"
+                                  HeadersVisibility="Column">
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Foreground" Value="DarkGray"/>
+                                    <Setter Property="FontFamily" Value="Montserrat"/>
+                                    <Setter Property="FontWeight" Value="Medium"/>
+                                </Style>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#28AEED"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#28AEED"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Nazev" 
+                                                    Binding="{Binding Nazev, UpdateSourceTrigger=PropertyChanged}" 
+                                                    Width="*" 
+                                                    HeaderStyle="{StaticResource HeaderStyle}" />
+                                <DataGridTextColumn Header="Typ" 
+                                                    Binding="{Binding Typ, UpdateSourceTrigger=PropertyChanged}" 
+                                                    Width="*" 
+                                                    HeaderStyle="{StaticResource HeaderStyle}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock Grid.Row="1" 
+                                   Text="{Binding ErrorMessage}" 
+                                   Foreground="Red" 
+                                   FontSize="14" 
+                                   HorizontalAlignment="Center" 
+                                   Margin="0,10,0,0" 
+                                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" />
+                    </Grid>
                 </Border>
             </Grid>
         </Border>
