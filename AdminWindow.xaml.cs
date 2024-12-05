@@ -44,7 +44,7 @@ namespace DopravniPodnikSem
             _userDataRepository = new UserDataRepository(databaseService, _passwordService);
 
             // Установка DataContext с экземпляром NavigationVM
-            _navigationVM = new NavigationVM(databaseService);
+            _navigationVM = App.ServiceProvider.GetService<NavigationVM>();
             DataContext = _navigationVM;  // Устанавливаем DataContext на NavigationVM
 
             // Сразу устанавливаем роль как null
@@ -71,72 +71,46 @@ namespace DopravniPodnikSem
 
         private void ProfileButton_Click(object sender, RoutedEventArgs e)
         {
-            var profileView = new ProfileView
+            _navigationVM.CurrentView = new ProfileView
             {
-                DataContext = new ProfileViewModel(_userDataRepository, CurrentSession.LoggedInUser.ZamestnanecId, CurrentSession.LoggedInUser.AdresaId)
+                DataContext = new ProfileViewModel(
+                    App.ServiceProvider.GetService<IUserDataRepository>(),
+                    CurrentSession.LoggedInUser.ZamestnanecId,
+                    CurrentSession.LoggedInUser.AdresaId,
+                    CurrentSession.LoggedInUser.SouborId)
             };
-            MainContent.Content = profileView;
         }
 
         private void HomeButton_Click(object sender, RoutedEventArgs e)
         {
             // Устанавливаем основное содержимое в MainContent на главный экран
-            MainContent.Content = new StackPanel
-            {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Width = 400,
-                Children =
-                {
-                    new Image
-                    {
-                        Source = new BitmapImage(new Uri("pack://application:,,,/Resources/Image/Logo2.png")),
-                        Width = 100,
-                        Height = 80,
-                        Margin = new Thickness(0, 0, 0, 10),
-                        Opacity = 0.8
-                    },
-                    new TextBlock
-                    {
-                        Text = "Dopravni Podnik",
-                        FontSize = 30,
-                        FontWeight = FontWeights.Bold,
-                        Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2d3033")),
-                        TextAlignment = TextAlignment.Center,
-                        FontFamily = new FontFamily("Gill Sans")
-                    }
-                }
-            };
+            _navigationVM.CurrentView = new HomeView();
         }
 
         private void LinkyButton_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new LinkyView();
+            _navigationVM.CurrentView = new LinkyView();
         }
 
         private void RidiciButton_Click(object sender, RoutedEventArgs e)
         {
-            var ridiciView = new RidiciView
+            _navigationVM.CurrentView = new RidiciView
             {
                 DataContext = App.ServiceProvider.GetService<RidiciViewModel>()
             };
-            MainContent.Content = ridiciView;
         }
 
         private void VozidlaButton_Click(object sender, RoutedEventArgs e)
         {
-            var vozidlaView = new VozidlaView
+            _navigationVM.CurrentView = new VozidlaView
             {
                 DataContext = App.ServiceProvider.GetService<VozidloViewModel>()
             };
-            MainContent.Content = vozidlaView;
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
-
- 
     }
 }

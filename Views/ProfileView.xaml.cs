@@ -1,4 +1,9 @@
-﻿using System;
+﻿using DopravniPodnikSem.Repository.Interfaces;
+using DopravniPodnikSem.Services;
+using DopravniPodnikSem.ViewModels;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +25,31 @@ namespace DopravniPodnikSem.Views
     /// </summary>
     public partial class ProfileView : UserControl
     {
+        private readonly NavigationVM _navigationVM;
+
         public ProfileView()
         {
             InitializeComponent();
+
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+            var databaseService = new DatabaseService(configuration);
+
+            _navigationVM = App.ServiceProvider.GetService<NavigationVM>();
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            var navigationVM = App.ServiceProvider.GetService<NavigationVM>();
+            navigationVM.CurrentView = new EditProfileView
+            {
+                DataContext = new EditProfileViewModel(
+                    App.ServiceProvider.GetService<IUserDataRepository>(),
+                    ((ProfileViewModel)DataContext).CurrentUser,
+                    ((ProfileViewModel)DataContext).CurrentAdresa,
+                    ((ProfileViewModel)DataContext).CurrentSoubor)
+            };
         }
     }
 }

@@ -143,7 +143,7 @@ namespace DopravniPodnikSem.Repository
                             CisloTelefonu = reader.GetString(reader.GetOrdinal("CISLO_TELEFONU")),
                             DatumNastupu = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("DATUM_NASTUPU"))),
                             AdresaId = reader.GetInt32(reader.GetOrdinal("ADRESA_ADRESA_ID")),
-                            SouborId = reader.GetInt32(reader.GetOrdinal("SOUBOR_SOUBOR_ID"))   
+                            SouborId = reader.GetInt32(reader.GetOrdinal("SOUBOR_SOUBOR_ID"))
                         };
                     }
                 }
@@ -181,21 +181,118 @@ namespace DopravniPodnikSem.Repository
             return null;
         }
 
-        public async Task<byte[]> GetUserAvatarAsync(int souborId)
+        public async Task<Soubory> GetUserAvatarAsync(int souborId)
         {
             using (var connection = _databaseService.GetConnection())
             {
                 var command = new OracleCommand(@"
-            SELECT SOUBOR 
-            FROM SOUBORY 
-            WHERE SOUBOR_ID = :SouborId", connection);
+                    SELECT SOUBOR_ID, NAZEV, SOUBOR 
+                    FROM SOUBORY 
+                    WHERE SOUBOR_ID = :SouborId", connection);
 
                 command.Parameters.Add(new OracleParameter(":SouborId", souborId));
 
-                var result = await command.ExecuteScalarAsync();
-                return result == null || result == DBNull.Value ? null : (byte[])result;
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        return new Soubory
+                        {
+                            SouborId = reader.GetInt32(reader.GetOrdinal("SOUBOR_ID")),
+                            Nazev = reader.GetString(reader.GetOrdinal("NAZEV")),
+                            Soubor = reader.GetValue(reader.GetOrdinal("SOUBOR")) as byte[]
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+
+
+
+
+
+        public async Task UpdateEmployeeAsync(Zamestnanec employee)
+        {
+            using (var connection = _databaseService.GetConnection())
+            {
+                var command = new OracleCommand("UpdateEmployee", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.Add(new OracleParameter("p_Jmeno", OracleDbType.Varchar2) { Value = employee.Jmeno });
+                command.Parameters.Add(new OracleParameter("p_Prijmeni", OracleDbType.Varchar2) { Value = employee.Prijmeni });
+                command.Parameters.Add(new OracleParameter("p_Email", OracleDbType.Varchar2) { Value = employee.Email });
+                command.Parameters.Add(new OracleParameter("p_CisloTelefonu", OracleDbType.Varchar2) { Value = employee.CisloTelefonu });
+                command.Parameters.Add(new OracleParameter("p_ZamestnanecId", OracleDbType.Decimal) { Value = employee.ZamestnanecId });
+
+                await command.ExecuteNonQueryAsync();
             }
         }
+
+
+        public async Task<int> UpdateAddressLogicAsync(Adresa address, int zamestnanecId, int currentAddressId)
+        {
+            using (var connection = _databaseService.GetConnection())
+            {
+                var command = new OracleCommand("UpdateAddressLogic", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.Add(new OracleParameter("p_Mesto", OracleDbType.Varchar2) { Value = address.Mesto });
+                command.Parameters.Add(new OracleParameter("p_Ulice", OracleDbType.Varchar2) { Value = address.Ulice });
+                command.Parameters.Add(new OracleParameter("p_CisloBudovy", OracleDbType.Varchar2) { Value = address.CisloBudovy });
+                command.Parameters.Add(new OracleParameter("p_ZipCode", OracleDbType.Varchar2) { Value = address.ZipCode });
+                command.Parameters.Add(new OracleParameter("p_CisloBytu", OracleDbType.Varchar2) { Value = address.CisloBytu });
+                command.Parameters.Add(new OracleParameter("p_ZamestnanecId", OracleDbType.Decimal) { Value = zamestnanecId });
+                command.Parameters.Add(new OracleParameter("p_CurrentAddressId", OracleDbType.Decimal) { Value = currentAddressId });
+
+                var outputParam = new OracleParameter("p_NewAddressId", OracleDbType.Decimal)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(outputParam);
+
+                await command.ExecuteNonQueryAsync();
+
+                // Используем явное преобразование через OracleDecimal
+                var oracleDecimalValue = (Oracle.ManagedDataAccess.Types.OracleDecimal)outputParam.Value;
+                return oracleDecimalValue.ToInt32(); // Преобразуем в Int32
+            }
+        }
+
+
+        public async Task<int> UpdateUserAvatarAsync(int userId, string avatarName, byte[] avatarData)
+        {
+            using (var connection = _databaseService.GetConnection())
+            {
+                var command = new OracleCommand("InsertAvatarAndUpdateUser", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                command.Parameters.Add(new OracleParameter("p_AvatarNazev", OracleDbType.Varchar2) { Value = avatarName });
+                command.Parameters.Add(new OracleParameter("p_AvatarData", OracleDbType.Blob) { Value = avatarData });
+                command.Parameters.Add(new OracleParameter("p_UserId", OracleDbType.Decimal) { Value = userId });
+
+                var newAvatarIdParam = new OracleParameter("p_NewAvatarId", OracleDbType.Decimal)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(newAvatarIdParam);
+
+                await command.ExecuteNonQueryAsync();
+
+                var oracleDecimalValue = (Oracle.ManagedDataAccess.Types.OracleDecimal)newAvatarIdParam.Value;
+                return oracleDecimalValue.ToInt32();
+            }
+        }
+
+
+
 
 
         //        private readonly string _connectionString;
