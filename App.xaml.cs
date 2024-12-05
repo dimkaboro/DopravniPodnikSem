@@ -52,6 +52,9 @@ namespace DopravniPodnikSem
             services.AddTransient<IVozidloRepository, VozidloRepository>();
             services.AddTransient<VozidloViewModel>();
 
+            services.AddTransient<IRidiciRepository, RidiciRepository>(); // Добавляем эту строку
+            services.AddTransient<RidiciViewModel>(); // Уже есть
+
         }
 
 

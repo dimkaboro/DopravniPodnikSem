@@ -1,8 +1,10 @@
 ﻿using DopravniPodnikSem.Repository;
 using DopravniPodnikSem.Repository.Interfaces;
 using DopravniPodnikSem.Services;
+using DopravniPodnikSem.ViewModels;
 using DopravniPodnikSem.Views;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -120,7 +122,11 @@ namespace DopravniPodnikSem
 
         private void VozidlaButton_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new VozidlaView();
+            var vozidlaView = new VozidlaView
+            {
+                DataContext = App.ServiceProvider.GetService<VozidloViewModel>()
+            };
+            MainContent.Content = vozidlaView;
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)

@@ -116,7 +116,11 @@ namespace DopravniPodnikSem
 
         private void RidiciButton_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new RidiciView();
+            var ridiciView = new RidiciView
+            {
+                DataContext = App.ServiceProvider.GetService<RidiciViewModel>()
+            };
+            MainContent.Content = ridiciView;
         }
 
         private void VozidlaButton_Click(object sender, RoutedEventArgs e)
