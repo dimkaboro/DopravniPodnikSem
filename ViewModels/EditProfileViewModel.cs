@@ -103,6 +103,9 @@ public class EditProfileViewModel : INotifyPropertyChanged
 
             await RefreshProfileAsync();
 
+            var updatedUser = await _userDataRepository.GetUserDetailsAsync(EditedUser.ZamestnanecId);
+            CurrentSession.LoggedInUser = updatedUser;
+
             MessageBox.Show("Data updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
