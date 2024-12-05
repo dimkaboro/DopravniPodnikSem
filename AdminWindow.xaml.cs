@@ -89,7 +89,10 @@ namespace DopravniPodnikSem
 
         private void LinkyButton_Click(object sender, RoutedEventArgs e)
         {
-            _navigationVM.CurrentView = new LinkyView();
+            _navigationVM.CurrentView = new LinkyView
+            {
+                DataContext = App.ServiceProvider.GetService<LinkaViewModel>()
+            };
         }
 
         private void RidiciButton_Click(object sender, RoutedEventArgs e)

@@ -61,6 +61,9 @@ namespace DopravniPodnikSem
             services.AddTransient<IRidiciRepository, RidiciRepository>(); // Добавляем эту строку
             services.AddTransient<RidiciViewModel>(); // Уже есть
 
+            services.AddTransient<ILinkyRepository, LinkyRepository>();
+            services.AddTransient<LinkaViewModel>();
+
         }
 
 
