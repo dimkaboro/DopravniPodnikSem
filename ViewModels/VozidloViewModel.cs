@@ -1,73 +1,127 @@
 ﻿using DopravniPodnikSem.Models;
+using DopravniPodnikSem.Repository.Interfaces;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace DopravniPodnikSem.ViewModels
 {
     public class VozidloViewModel : BaseViewModel
     {
+        private readonly IVozidloRepository _vozidloRepository;
+        private ObservableCollection<Vozidlo> _vozidla;
+        private Vozidlo _selectedVozidlo;
+        private string _searchQuery;
         private Vozidlo _vozidlo;
+        private string _errorMessage;
 
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
+                _errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage)); // Уведомление об изменении для обновления UI
+            }
+        }
+
+        public ObservableCollection<Vozidlo> Vozidla
+        {
+            get => _vozidla;
+            set
+            {
+                _vozidla = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Vozidlo SelectedVozidlo
+        {
+            get => _selectedVozidlo;
+            set
+            {
+                _selectedVozidlo = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SearchQuery
+        {
+            get => _searchQuery;
+            set
+            {
+                _searchQuery = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand SearchCommand { get; }
+        public ICommand ClearCommand { get; }
+        public ICommand AddUpdateCommand { get; }
+        public ICommand DeleteCommand { get; }
+
+        // Конструктор для работы с репозиторием
+        public VozidloViewModel(IVozidloRepository vozidloRepository)
+        {
+            _vozidloRepository = vozidloRepository;
+            Vozidla = new ObservableCollection<Vozidlo>();
+
+            SearchCommand = new ViewModelCommand(async _ => await SearchVozidloAsync(), _ => !string.IsNullOrEmpty(SearchQuery));
+            ClearCommand = new ViewModelCommand(_ => ClearSearch());
+            AddUpdateCommand = new ViewModelCommand(async _ => await AddOrUpdateVozidloAsync(), _ => SelectedVozidlo != null);
+            DeleteCommand = new ViewModelCommand(async _ => await DeleteVozidloAsync(), _ => SelectedVozidlo != null);
+
+            LoadAllVozidlaAsync();
+        }
+
+        // Конструктор для работы с объектом Vozidlo
         public VozidloViewModel(Vozidlo vozidlo)
         {
-            _vozidlo = vozidlo;
+            _vozidlo = vozidlo; // Присваиваем переданный объект
         }
 
-        public int VozidloId
+        private async void LoadAllVozidlaAsync()
         {
-            get => _vozidlo.VozidloId;
-            set
+            var vozidla = await _vozidloRepository.GetAllAsync();
+            Vozidla = new ObservableCollection<Vozidlo>(vozidla);
+        }
+
+        private async System.Threading.Tasks.Task SearchVozidloAsync()
+        {
+            var vozidlo = await _vozidloRepository.GetByRegistrationNumberAsync(SearchQuery);
+            Vozidla.Clear();
+
+            if (vozidlo != null)
             {
-                _vozidlo.VozidloId = value;
-                OnPropertyChanged();
+                Vozidla.Add(vozidlo);
             }
         }
 
-        public string RegistracniCislo
+        private void ClearSearch()
         {
-            get => _vozidlo.RegistracniCislo;
-            set
-            {
-                _vozidlo.RegistracniCislo = value;
-                OnPropertyChanged();
-            }
+            SearchQuery = string.Empty;
+            LoadAllVozidlaAsync();
         }
 
-        public string Typ
+        private async System.Threading.Tasks.Task AddOrUpdateVozidloAsync()
         {
-            get => _vozidlo.Typ;
-            set
+            if (SelectedVozidlo.VozidloId == 0)
             {
-                _vozidlo.Typ = value;
-                OnPropertyChanged();
+                await _vozidloRepository.AddAsync(SelectedVozidlo);
             }
+            else
+            {
+                await _vozidloRepository.UpdateAsync(SelectedVozidlo);
+            }
+
+            LoadAllVozidlaAsync();
         }
 
-        public int? Kapacita
+        private async System.Threading.Tasks.Task DeleteVozidloAsync()
         {
-            get => _vozidlo.Kapacita;
-            set
+            if (SelectedVozidlo != null)
             {
-                _vozidlo.Kapacita = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int GarazeGarazId
-        {
-            get => _vozidlo.GarazeGarazId;
-            set
-            {
-                _vozidlo.GarazeGarazId = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int UdrzbaVozidlaUdrzbaId
-        {
-            get => _vozidlo.UdrzbaVozidlaUdrzbaId;
-            set
-            {
-                _vozidlo.UdrzbaVozidlaUdrzbaId = value;
-                OnPropertyChanged();
+                await _vozidloRepository.DeleteAsync(SelectedVozidlo.VozidloId);
+                LoadAllVozidlaAsync();
             }
         }
     }

@@ -24,5 +24,10 @@ namespace DopravniPodnikSem.Views
         {
             InitializeComponent();
         }
+
+        private void VehiclesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
