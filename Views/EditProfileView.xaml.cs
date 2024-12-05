@@ -69,6 +69,10 @@ namespace DopravniPodnikSem.Views
             // Сохраняем изменения
             await viewModel.SaveChangesAsync();
 
+            var updatedUser = await App.ServiceProvider.GetService<IUserDataRepository>()
+                                   .GetUserDetailsAsync(CurrentSession.LoggedInUser.ZamestnanecId);
+            CurrentSession.LoggedInUser = updatedUser;
+
             // Возвращаемся в ProfileView
             var navigationVM = App.ServiceProvider.GetService<NavigationVM>();
             navigationVM.CurrentView = new ProfileView
