@@ -104,16 +104,29 @@ namespace DopravniPodnikSem.ViewModels
 
         private async System.Threading.Tasks.Task AddOrUpdateVozidloAsync()
         {
-            if (SelectedVozidlo.VozidloId == 0)
+            try
             {
-                await _vozidloRepository.AddAsync(SelectedVozidlo);
-            }
-            else
-            {
-                await _vozidloRepository.UpdateAsync(SelectedVozidlo);
-            }
+                if (SelectedVozidlo.VozidloId == 0)
+                {
+                    await _vozidloRepository.AddAsync(SelectedVozidlo);
+                    ErrorMessage = string.Empty;
+                }
+                else
+                {
+                    await _vozidloRepository.UpdateAsync(SelectedVozidlo);
+                    ErrorMessage = string.Empty;
+                }
 
-            LoadAllVozidlaAsync();
+                LoadAllVozidlaAsync();
+            }
+                catch (InvalidOperationException ex)
+            {
+                ErrorMessage = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error: {ex.Message}";
+            }
         }
 
         private async System.Threading.Tasks.Task DeleteVozidloAsync()

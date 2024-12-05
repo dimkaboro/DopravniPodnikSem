@@ -94,11 +94,11 @@ namespace DopravniPodnikSem.Repository
                 try
                 {
                     await command.ExecuteNonQueryAsync();
-                    ErrorMessage = string.Empty;
+                   
                 }
                 catch (OracleException ex)
                 {
-                    ErrorMessage = $"Ошибка при добавлении транспортного средства: {ex.Message}";
+                    throw new InvalidOperationException($"Ошибка при добавлении транспортного средства: {ex.Message}", ex);
                 }
             }
         }
@@ -125,11 +125,11 @@ namespace DopravniPodnikSem.Repository
                 try
                 {
                     await command.ExecuteNonQueryAsync();
-                    ErrorMessage = string.Empty;
+                    
                 }
-                catch   (OracleException ex)
+                catch (OracleException ex)
                 {
-                    ErrorMessage = $"Ошибка при обновлении транспортного средства: {ex.Message}";
+                    throw new InvalidOperationException($"Ошибка при добавлении транспортного средства: {ex.Message}", ex);
                 }
             }
         }
