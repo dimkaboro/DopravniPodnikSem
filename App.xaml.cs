@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using DopravniPodnikSem.ViewModels;
 using DopravniPodnikSem.Repository.Interfaces;
 using DopravniPodnikSem.Repository;
+using DopravniPodnikSem.Views;
 
 
 
@@ -64,6 +65,12 @@ namespace DopravniPodnikSem
             services.AddTransient<ILinkyRepository, LinkyRepository>();
             services.AddTransient<LinkaViewModel>();
 
+            services.AddTransient<IUdrzbaVozidlaRepository, UdrzbaVozidlaRepository>(); // Добавляем эту строку>
+            services.AddTransient<UdrzbaVozidlaViewModel>();
+
+            services.AddTransient<UdrzbaVozidlaViewModel>();
+            services.AddTransient<SearchVozidloViewModel>();
+            services.AddTransient<SearchVozidloWindow>();
         }
 
 

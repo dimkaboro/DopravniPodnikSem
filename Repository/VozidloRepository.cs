@@ -10,6 +10,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DopravniPodnikSem.ViewModels;
 
 namespace DopravniPodnikSem.Repository
 {
@@ -40,8 +41,8 @@ namespace DopravniPodnikSem.Repository
                         RegistracniCislo = reader.GetString(1),
                         Typ = reader.GetString(2),
                         Kapacita = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
-                        GarazeGarazId = reader.GetInt32(4),
-                        UdrzbaVozidlaUdrzbaId = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5) // Обработка NULL
+                        GarazeGarazId = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
+                        UdrzbaVozidlaUdrzbaId = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5)
                     });
                 }
             }
@@ -94,7 +95,7 @@ namespace DopravniPodnikSem.Repository
                 try
                 {
                     await command.ExecuteNonQueryAsync();
-                   
+
                 }
                 catch (OracleException ex)
                 {
@@ -125,7 +126,7 @@ namespace DopravniPodnikSem.Repository
                 try
                 {
                     await command.ExecuteNonQueryAsync();
-                    
+
                 }
                 catch (OracleException ex)
                 {
@@ -134,16 +135,22 @@ namespace DopravniPodnikSem.Repository
             }
         }
 
-        public async Task DeleteAsync(int vozidloId)
+        public async Task DeleteAsync(int udrzbaId)
         {
-            var query = "DELETE FROM VOZIDLA WHERE VOZIDLO_ID = :VozidloId";
+            var query = "BEGIN DeleteUdrzba(:UdrzbaId); END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
-                command.Parameters.Add(new OracleParameter(":VozidloId", vozidloId));
+                command.Parameters.Add(new OracleParameter(":UdrzbaId", udrzbaId));
+                await connection.OpenAsync();
                 await command.ExecuteNonQueryAsync();
             }
         }
     }
 }
+        
+    
+
+
+
