@@ -30,7 +30,7 @@
                 <Button Content="Login" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="LoginButton_Click" Visibility="{Binding IsLoginButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="Registration" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="RegistrationButton_Click" Visibility="{Binding IsRegistrationButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="Exit" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ExitButton_Click" />
-                <Button Content="Check connect to DB" Style="{StaticResource MenuButtonStyle}" Command="{Binding CheckDatabaseConnectionCommand}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" />
+                <Button Content="Stop Emulation" Style="{StaticResource MenuButtonStyle}" Command="{Binding StopEmulationCommand}" Visibility="{Binding IsEmulating, Converter={StaticResource BooleanToVisibilityConverter}}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" />
             </StackPanel>
         </Border>
 
@@ -43,6 +43,11 @@
 
             <!-- Бургер-кнопка, всегда наверху -->
             <Button x:Name="BurgerButton" Style="{StaticResource HamburgerButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="BurgerButton_Click" />
+
+            <TextBlock Text="You are in Emulation Mode"
+           Visibility="{Binding IsEmulating, Converter={StaticResource BooleanToVisibilityConverter}}" 
+           Foreground="Red" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+
         </Grid>
     </Grid>
 </Window>

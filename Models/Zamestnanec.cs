@@ -104,6 +104,8 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _souborId, value);
         }
 
+        public string FullName => $"{Jmeno} {Prijmeni}";
+
         // Навигационные свойства
         public virtual Adresa Adresa { get; set; } // Связь с таблицей адресов
         public virtual Soubory Soubor { get; set; } // Связь с таблицей файлов

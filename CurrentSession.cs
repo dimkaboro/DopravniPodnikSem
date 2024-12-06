@@ -10,5 +10,6 @@ namespace DopravniPodnikSem
     public static class CurrentSession
     {
         public static Zamestnanec LoggedInUser { get; set; }
+        public static Zamestnanec OriginalUser { get; set; }
     }
 }

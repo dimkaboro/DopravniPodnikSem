@@ -3,10 +3,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using DopravniPodnikSem.Models.Enum;
 using DopravniPodnikSem.Services;
 using DopravniPodnikSem.ViewModels;
 using DopravniPodnikSem.Views;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DopravniPodnikSem
 {
@@ -29,11 +31,8 @@ namespace DopravniPodnikSem
             var databaseService = new DatabaseService(configuration);
 
             // Установка DataContext с экземпляром NavigationVM
-            _navigationVM = new NavigationVM(databaseService);
+            _navigationVM = App.ServiceProvider.GetService<NavigationVM>();
             DataContext = _navigationVM;  // Устанавливаем DataContext на NavigationVM
-
-            // Сразу устанавливаем роль как null
-            _navigationVM.UserRole = null;
         }
 
         private void BurgerButton_Click(object sender, RoutedEventArgs e)
