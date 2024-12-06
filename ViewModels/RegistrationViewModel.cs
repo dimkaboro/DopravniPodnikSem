@@ -1,6 +1,7 @@
 ﻿using DopravniPodnikSem.Services;
 using DopravniPodnikSem.Views;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -67,7 +68,7 @@ namespace DopravniPodnikSem.ViewModels
             _databaseService = databaseService;
             NextCommand = new ViewModelCommand(NextStep);
             BackCommand = new ViewModelCommand(BackStep);
-            _navigation = navigation;
+            _navigation = App.ServiceProvider.GetService<NavigationVM>();
             UpdateStepContent();
         }
 

@@ -20,6 +20,8 @@ namespace DopravniPodnikSem.Repository.Interfaces
         Task UpdateEmployeeAsync(Zamestnanec employee);
         Task<int> UpdateAddressLogicAsync(Adresa address, int zamestnanecId, int currentAddressId);
         Task<int> UpdateUserAvatarAsync(int userId, string avatarName, byte[] avatarData);
+        Task<IEnumerable<Zamestnanec>> GetAllUsersAsync();
+
     }
 
     //Task<Zamestnanec> GetUserEmailByUserId(int id);

@@ -46,9 +46,6 @@ namespace DopravniPodnikSem
             // Установка DataContext с экземпляром NavigationVM
             _navigationVM = App.ServiceProvider.GetService<NavigationVM>();
             DataContext = _navigationVM;  // Устанавливаем DataContext на NavigationVM
-
-            // Сразу устанавливаем роль как null
-            _navigationVM.UserRole = null;
         }
 
         private void BurgerButton_Click(object sender, RoutedEventArgs e)

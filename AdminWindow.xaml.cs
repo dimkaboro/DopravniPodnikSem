@@ -46,9 +46,6 @@ namespace DopravniPodnikSem
             // Установка DataContext с экземпляром NavigationVM
             _navigationVM = App.ServiceProvider.GetService<NavigationVM>();
             DataContext = _navigationVM;  // Устанавливаем DataContext на NavigationVM
-
-            // Сразу устанавливаем роль как null
-            _navigationVM.UserRole = null;
         }
 
         private void BurgerButton_Click(object sender, RoutedEventArgs e)
@@ -85,6 +82,14 @@ namespace DopravniPodnikSem
         {
             // Устанавливаем основное содержимое в MainContent на главный экран
             _navigationVM.CurrentView = new HomeView();
+        }
+
+        private void EmulationButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new UserEmulationView
+            {
+                DataContext = App.ServiceProvider.GetService<UserEmulationViewModel>()
+            };
         }
 
         private void LinkyButton_Click(object sender, RoutedEventArgs e)

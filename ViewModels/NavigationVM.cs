@@ -11,10 +11,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 public class NavigationVM : INotifyPropertyChanged
 {
-    private Role? _userRole;
+    private readonly DatabaseService _databaseService;
     private object _currentView;
+    private Role? _userRole;
+    public Zamestnanec EmulatedUser { get; private set; }
 
-    // Инициализируем роль как null по умолчанию
+
+    public bool IsRoleInfoVisible => UserRole != null; // Видимость информации о роли, если UserRole != null
+    public bool IsEmulating => EmulatedUser != null;
+    public bool NotEmulating => !IsEmulating;
+
+
+    public ICommand StopEmulationCommand { get; }
+
+
     public Role? UserRole
     {
         get => _userRole;
@@ -39,18 +49,23 @@ public class NavigationVM : INotifyPropertyChanged
         }
     }
 
-
-    // Свойства для управления видимостью кнопок
-    public bool IsRoleInfoVisible => UserRole != null; // Видимость информации о роли, если UserRole != null
-
-    public ICommand CheckDatabaseConnectionCommand { get; }
-    private readonly DatabaseService _databaseService;
-
     public NavigationVM(DatabaseService databaseService)
     {
         _databaseService = databaseService;
-        CheckDatabaseConnectionCommand = new ViewModelCommand(ExecuteCheckDatabaseConnection);
         CurrentView = new HomeView();
+        StopEmulationCommand = new ViewModelCommand(ExecuteStopEmulation);
+    }
+
+    public void Registered()
+    {
+        foreach (Window window in Application.Current.Windows)
+        {
+            if (window is MainWindow mainWindow)
+            {
+                CurrentView = new LoginView();
+                break;
+            }
+        }
     }
 
     // Метод для авторизации
@@ -69,6 +84,8 @@ public class NavigationVM : INotifyPropertyChanged
             employeeWindow.Show();
         }
 
+        CurrentView = new HomeView();
+
         foreach (Window window in Application.Current.Windows)
         {
             if (window is MainWindow)
@@ -79,22 +96,57 @@ public class NavigationVM : INotifyPropertyChanged
         }
     }
 
-    public void Registered()
+    public void EmulateUser(Zamestnanec userToEmulate)
+    {
+        EmulatedUser = userToEmulate;
+        CurrentSession.OriginalUser = CurrentSession.LoggedInUser;
+        CurrentSession.LoggedInUser = EmulatedUser;
+        UserRole = EmulatedUser.Role;
+
+        if (UserRole == Role.Administrator)
+        {
+            var adminWindow = new AdminWindow();
+            adminWindow.Show();
+        }
+        else if (UserRole == Role.Zamestnanec)
+        {
+            var employeeWindow = new EmployeeWindow();
+            employeeWindow.Show();
+        }
+        else if (UserRole == Role.Guest)
+        {
+            var guestWindow = new MainWindow();
+            guestWindow.Show();
+        }
+
+        CurrentView = new HomeView();
+        CloseWindow();
+    }
+
+    private void ExecuteStopEmulation(object parameter)
+    {
+        EmulatedUser = null;
+        CurrentSession.LoggedInUser = CurrentSession.OriginalUser;
+        CurrentSession.OriginalUser = null;
+        UserRole = CurrentSession.LoggedInUser.Role;
+
+        var adminWindow = new AdminWindow();
+        adminWindow.Show();
+
+        CurrentView = new HomeView();
+        CloseWindow();
+    }
+
+    private void CloseWindow()
     {
         foreach (Window window in Application.Current.Windows)
         {
-            if (window is MainWindow mainWindow)
+            if (window is MainWindow || window is EmployeeWindow || window is AdminWindow)
             {
-                CurrentView = new LoginView();
+                window.Close();
                 break;
             }
         }
-    }
-
-    private async void ExecuteCheckDatabaseConnection(object parameter)
-    {
-        bool isConnected = await _databaseService.TestConnectionAsync();
-        MessageBox.Show(isConnected ? "Success!" : "Failed!");
     }
 
     // Обработчик изменений для INotifyPropertyChanged
