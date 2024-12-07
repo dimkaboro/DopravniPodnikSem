@@ -51,6 +51,7 @@ namespace DopravniPodnikSem
             services.AddTransient<LoginViewModel>();
             services.AddTransient<ProfileViewModel>();
             services.AddTransient<EditProfileViewModel>();
+            services.AddTransient<UserEmulationViewModel>();
             //services.AddTransient<MainWindow>();
             //services.AddTransient<AdminWindow>();
             //services.AddTransient<EmployeeWindow>();

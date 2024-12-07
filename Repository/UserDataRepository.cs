@@ -123,7 +123,7 @@ namespace DopravniPodnikSem.Repository
             using (var connection = _databaseService.GetConnection())
             {
                 var command = new OracleCommand(@"
-                    SELECT ZAMESTNANEC_ID, JMENO, PRIJMENI, EMAIL, POZICE, CISLO_TELEFONU, DATUM_NASTUPU, ADRESA_ADRESA_ID, SOUBOR_SOUBOR_ID
+                    SELECT ZAMESTNANEC_ID, JMENO, PRIJMENI, EMAIL, POZICE, CISLO_TELEFONU, DATUM_NASTUPU, ADRESA_ADRESA_ID, ROLE_ROLE_ID, SOUBOR_SOUBOR_ID
                     FROM ZAMESTNANCI 
                     WHERE ZAMESTNANEC_ID = :UserId", connection);
 
@@ -143,6 +143,7 @@ namespace DopravniPodnikSem.Repository
                             CisloTelefonu = reader.GetString(reader.GetOrdinal("CISLO_TELEFONU")),
                             DatumNastupu = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("DATUM_NASTUPU"))),
                             AdresaId = reader.GetInt32(reader.GetOrdinal("ADRESA_ADRESA_ID")),
+                            Role = (Role)reader.GetInt32(reader.GetOrdinal("ROLE_ROLE_ID")),
                             SouborId = reader.GetInt32(reader.GetOrdinal("SOUBOR_SOUBOR_ID"))
                         };
                     }
@@ -292,6 +293,35 @@ namespace DopravniPodnikSem.Repository
         }
 
 
+        public async Task<IEnumerable<Zamestnanec>> GetAllUsersAsync()
+        {
+            using (var connection = _databaseService.GetConnection())
+            {
+                var command = new OracleCommand("SELECT * FROM ZAMESTNANCI", connection);
+
+                var result = new List<Zamestnanec>();
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        result.Add(new Zamestnanec
+                        {
+                            ZamestnanecId = reader.GetInt32("ZAMESTNANEC_ID"),
+                            Jmeno = reader.GetString("JMENO"),
+                            Prijmeni = reader.GetString("PRIJMENI"),
+                            Email = reader.GetString("EMAIL"),
+                            Pozice = reader.GetString("POZICE"),
+                            DatumNastupu = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("DATUM_NASTUPU"))),
+                            CisloTelefonu = reader.GetString("CISLO_TELEFONU"),
+                            AdresaId = reader.GetInt32("ADRESA_ADRESA_ID"),
+                            Role = (Role)reader.GetInt32("ROLE_ROLE_ID"),
+                            SouborId = reader.GetInt32("SOUBOR_SOUBOR_ID")
+                        });
+                    }
+                }
+                return result;
+            }
+        }
 
 
 

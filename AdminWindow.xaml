@@ -31,13 +31,14 @@
                 <!-- Кнопки меню -->
                 <Button Content="Profile" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ProfileButton_Click"/>
                 <Button Content="Home" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="HomeButton_Click" />
+                <Button Content="Emulation" Visibility="{Binding NotEmulating, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="EmulationButton_Click" />
                 <Button Content="Linky" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="LinkyButton_Click" />
                 <Button Content="Ridici" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="RidiciButton_Click" />
                 <Button Content="Vozidla" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="VozidlaButton_Click" />
                 <Button Content="Udrzba Vozidla" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="UdrzbaVozidlaButton_Click" />
                 <Button Content="Zastavky" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ZastavkyButton_Click" />
                 <Button Content="Exit" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ExitButton_Click" />
-                <Button Content="Check connect to DB" Style="{StaticResource MenuButtonStyle}" Command="{Binding CheckDatabaseConnectionCommand}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" />
+                <Button Content="Stop Emulation" Style="{StaticResource MenuButtonStyle}" Command="{Binding StopEmulationCommand}" Visibility="{Binding IsEmulating, Converter={StaticResource BooleanToVisibilityConverter}}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" />
             </StackPanel>
         </Border>
 
@@ -56,6 +57,11 @@
                    HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
                    FontSize="14" FontWeight="Bold" Foreground="Black"
                    Visibility="{Binding IsRoleInfoVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+            <TextBlock Text="You are in Emulation Mode"
+           Visibility="{Binding IsEmulating, Converter={StaticResource BooleanToVisibilityConverter}}" 
+           Foreground="Red" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+
         </Grid>
     </Grid>
 </Window>

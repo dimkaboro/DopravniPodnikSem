@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using DopravniPodnikSem.Models;
 using DopravniPodnikSem.Repository.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DopravniPodnikSem.ViewModels
 {
@@ -51,7 +52,7 @@ namespace DopravniPodnikSem.ViewModels
         public LoginViewModel(IUserDataRepository userDataRepository, NavigationVM navigation)
         {
             _userDataRepository = userDataRepository;
-            _navigation = navigation;
+            _navigation = App.ServiceProvider.GetService<NavigationVM>();
             LoginCommand = new ViewModelCommand(ExecuteLoginCommand, CanExecuteLoginCommand);
         }
 

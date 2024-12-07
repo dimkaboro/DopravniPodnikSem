@@ -117,6 +117,7 @@
             <Setter Property="FontFamily" Value="Segoe UI" />
         </Style>
 
+
         <Style x:Key="EnhancedComboBoxStyle" TargetType="ComboBox">
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Background" Value="#212529" />
@@ -164,6 +165,27 @@
         </Trigger>
     </Style.Triggers>
 </Style>
+        <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#F5F5F5" />
+            <Setter Property="Foreground" Value="#333348" />
+            <Setter Property="BorderBrush" Value="#CCCCCC" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#6C63FF" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <DropShadowEffect x:Key="ShadowEffect"
+                      Color="Black"
+                      BlurRadius="10"
+                      ShadowDepth="5"
+                      Opacity="0.5" />
+
 
     </Application.Resources>
 </Application>
