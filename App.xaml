@@ -117,6 +117,54 @@
             <Setter Property="FontFamily" Value="Segoe UI" />
         </Style>
 
+
+        <Style x:Key="EnhancedComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#212529" />
+            <Setter Property="BorderBrush" Value="#28AEED" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontFamily" Value="Montserrat" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Name="ToggleButton"
+                                  Background="{TemplateBinding Background}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  Foreground="{TemplateBinding Foreground}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  
+                                  HorizontalContentAlignment="Left"
+                                  VerticalContentAlignment="Center"
+                                  Padding="{TemplateBinding Padding}" />
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" Focusable="False">
+                                <Border Background="#212529" BorderBrush="#28AEED" BorderThickness="1">
+                                    <ScrollViewer>
+                                        <ItemsPresenter />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="CustomDataGridCellStyle" TargetType="DataGridCell">
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="FontFamily" Value="Montserrat"/>
+    <Setter Property="FontSize" Value="14"/>
+    <Style.Triggers>
+        <Trigger Property="IsSelected" Value="True">
+            <Setter Property="Background" Value="#28AEED"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Trigger>
+    </Style.Triggers>
+</Style>
         <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
             <Setter Property="Background" Value="#F5F5F5" />
             <Setter Property="Foreground" Value="#333348" />
@@ -137,6 +185,7 @@
                       BlurRadius="10"
                       ShadowDepth="5"
                       Opacity="0.5" />
+
 
     </Application.Resources>
 </Application>

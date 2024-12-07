@@ -119,7 +119,7 @@ namespace DopravniPodnikSem.ViewModels
 
                 LoadAllVozidlaAsync();
             }
-                catch (InvalidOperationException ex)
+            catch (InvalidOperationException ex)
             {
                 ErrorMessage = ex.Message;
             }
