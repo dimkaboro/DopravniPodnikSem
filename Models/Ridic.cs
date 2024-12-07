@@ -12,7 +12,14 @@ namespace DopravniPodnikSem.Models
         private string _jmeno;
         private string _prijmeni;
         private string _ridicPrukaz;
-        private DateTime? _datumNarozeni; // Сделано nullable, так как поле необязательное
+        private DateOnly? _datumNarozeni; // Сделано nullable, так как поле необязательное
+
+        public string RidicName => $"{_jmeno} {_prijmeni}";
+
+        public override string ToString()
+        {
+            return RidicName;
+        }
 
         public int RidicId
         {
@@ -38,7 +45,7 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _ridicPrukaz, value);
         }
 
-        public DateTime? DatumNarozeni
+        public DateOnly? DatumNarozeni
         {
             get => _datumNarozeni;
             set => SetField(ref _datumNarozeni, value);

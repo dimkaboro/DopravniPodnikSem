@@ -12,8 +12,9 @@ namespace DopravniPodnikSem.Models
         private string _registracniCislo;
         private string _typ;
         private int? _kapacita;
-        private int _garazeGarazId;
+        private int? _garazeGarazId;
         private int? _udrzbaVozidlaUdrzbaId;
+        public string VehicleInfo => $"{RegistracniCislo} - {Typ}";
 
         public int VozidloId
         {
@@ -39,7 +40,7 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _kapacita, value);
         }
 
-        public int GarazeGarazId
+        public int? GarazeGarazId
         {
             get => _garazeGarazId;
             set => SetField(ref _garazeGarazId, value);

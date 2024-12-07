@@ -38,7 +38,7 @@ namespace DopravniPodnikSem.Models
         }
 
         // Навигационные свойства
-        public virtual Jizda Jizda { get; set; }
-        public virtual Zastavka Zastavka { get; set; }
+        public virtual Jizda Jizda { get; set; } // Связь с Jizda
+        public virtual Zastavka Zastavka { get; set; } // Связь с Zastavka
     }
 }

@@ -131,5 +131,29 @@ namespace DopravniPodnikSem
         {
             Application.Current.Shutdown();
         }
+
+        private void UdrzbaVozidlaButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new UdrzbaVozidlaView
+            {
+                DataContext = App.ServiceProvider.GetService<UdrzbaVozidlaViewModel>()
+            };
+        }
+
+        private void ZastavkyButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new ZastavkyView
+            {
+                DataContext = App.ServiceProvider.GetService<ZastavkaViewModel>()
+            };
+        }
+
+        private void JizdyButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new JizdyView
+            {
+                DataContext = App.ServiceProvider.GetService<JizdaViewModel>()
+            };
+        }
     }
 }

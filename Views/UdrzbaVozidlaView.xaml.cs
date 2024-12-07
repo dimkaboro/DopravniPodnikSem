@@ -16,18 +16,13 @@ using System.Windows.Shapes;
 namespace DopravniPodnikSem.Views
 {
     /// <summary>
-    /// Interaction logic for LinkyView.xaml
+    /// Interaction logic for UdrzbaVozidlaView.xaml
     /// </summary>
-    public partial class LinkyView : UserControl
+    public partial class UdrzbaVozidlaView : UserControl
     {
-        public LinkyView()
+        public UdrzbaVozidlaView()
         {
             InitializeComponent();
-        }
-
-        private void RoutesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
         }
     }
 }

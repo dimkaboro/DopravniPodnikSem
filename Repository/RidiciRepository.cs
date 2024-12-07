@@ -38,7 +38,7 @@ namespace DopravniPodnikSem.Repository
                         Jmeno = reader.GetString(1),
                         Prijmeni = reader.GetString(2),
                         RidicPrukaz = reader.GetString(3),
-                        DatumNarozeni = reader.IsDBNull(4) ? (DateTime?)null : reader.GetDateTime(4)
+                        DatumNarozeni = reader.IsDBNull(4) ? (DateOnly?)null : DateOnly.FromDateTime(reader.GetDateTime(4))
                     });
                 }
             }
@@ -66,7 +66,7 @@ namespace DopravniPodnikSem.Repository
                             Jmeno = reader.GetString(1),
                             Prijmeni = reader.GetString(2),
                             RidicPrukaz = reader.GetString(3),
-                            DatumNarozeni = reader.IsDBNull(4) ? (DateTime?)null : reader.GetDateTime(4)
+                            DatumNarozeni = reader.IsDBNull(4) ? (DateOnly?)null : DateOnly.FromDateTime(reader.GetDateTime(4))
                         });
                     }
                 }
@@ -78,8 +78,8 @@ namespace DopravniPodnikSem.Repository
         public async Task AddAsync(Ridic ridic)
         {
             var query = @"
-INSERT INTO RIDICI (RIDIC_ID, JMENO, PRIJMENI, RIDIC_PRUKAZ, DATUM_NAROZENI)
-VALUES ((SELECT NVL(MAX(RIDIC_ID), 0) + 1 FROM RIDICI), :Jmeno, :Prijmeni, :RidicPrukaz, :DatumNarozeni)";
+    INSERT INTO RIDICI (RIDIC_ID, JMENO, PRIJMENI, RIDIC_PRUKAZ, DATUM_NAROZENI)
+    VALUES ((SELECT NVL(MAX(RIDIC_ID), 0) + 1 FROM RIDICI), :Jmeno, :Prijmeni, :RidicPrukaz, :DatumNarozeni)";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
@@ -87,7 +87,7 @@ VALUES ((SELECT NVL(MAX(RIDIC_ID), 0) + 1 FROM RIDICI), :Jmeno, :Prijmeni, :Ridi
                 command.Parameters.Add(new OracleParameter(":Jmeno", ridic.Jmeno));
                 command.Parameters.Add(new OracleParameter(":Prijmeni", ridic.Prijmeni));
                 command.Parameters.Add(new OracleParameter(":RidicPrukaz", ridic.RidicPrukaz));
-                command.Parameters.Add(new OracleParameter(":DatumNarozeni", ridic.DatumNarozeni ?? (object)DBNull.Value));
+                command.Parameters.Add(new OracleParameter(":DatumNarozeni", ridic.DatumNarozeni.HasValue ? ridic.DatumNarozeni.Value.ToDateTime(TimeOnly.MinValue) : (object)DBNull.Value));
 
                 try
                 {
@@ -104,9 +104,9 @@ VALUES ((SELECT NVL(MAX(RIDIC_ID), 0) + 1 FROM RIDICI), :Jmeno, :Prijmeni, :Ridi
         public async Task UpdateAsync(Ridic ridic)
         {
             var query = @"
- UPDATE RIDICI
-SET JMENO = :Jmeno, PRIJMENI = :Prijmeni, RIDIC_PRUKAZ = :RidicPrukaz, DATUM_NAROZENI = :DatumNarozeni
-WHERE RIDIC_ID = :RidicId";
+     UPDATE RIDICI
+    SET JMENO = :Jmeno, PRIJMENI = :Prijmeni, RIDIC_PRUKAZ = :RidicPrukaz, DATUM_NAROZENI = :DatumNarozeni
+    WHERE RIDIC_ID = :RidicId";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
@@ -114,7 +114,7 @@ WHERE RIDIC_ID = :RidicId";
                 command.Parameters.Add(new OracleParameter(":Jmeno", ridic.Jmeno));
                 command.Parameters.Add(new OracleParameter(":Prijmeni", ridic.Prijmeni));
                 command.Parameters.Add(new OracleParameter(":RidicPrukaz", ridic.RidicPrukaz));
-                command.Parameters.Add(new OracleParameter(":DatumNarozeni", ridic.DatumNarozeni ?? (object)DBNull.Value));
+                command.Parameters.Add(new OracleParameter(":DatumNarozeni", ridic.DatumNarozeni.HasValue ? ridic.DatumNarozeni.Value.ToDateTime(TimeOnly.MinValue) : (object)DBNull.Value));
                 command.Parameters.Add(new OracleParameter(":RidicId", ridic.RidicId));
 
                 try

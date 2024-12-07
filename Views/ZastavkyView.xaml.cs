@@ -16,18 +16,18 @@ using System.Windows.Shapes;
 namespace DopravniPodnikSem.Views
 {
     /// <summary>
-    /// Interaction logic for LinkyView.xaml
+    /// Interaction logic for ZastavkyView.xaml
     /// </summary>
-    public partial class LinkyView : UserControl
+    public partial class ZastavkyView : UserControl
     {
-        public LinkyView()
+        public ZastavkyView()
         {
             InitializeComponent();
         }
 
-        private void RoutesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void StopsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+        
         }
     }
 }

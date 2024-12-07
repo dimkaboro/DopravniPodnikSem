@@ -98,7 +98,10 @@ namespace DopravniPodnikSem
 
         private void LinkyButton_Click(object sender, RoutedEventArgs e)
         {
-            _navigationVM.CurrentView = new LinkyView();
+            _navigationVM.CurrentView = new LinkyView()
+            {
+                DataContext = App.ServiceProvider.GetService<LinkaViewModel>()
+            };
         }
 
         private void RidiciButton_Click(object sender, RoutedEventArgs e)
@@ -120,6 +123,22 @@ namespace DopravniPodnikSem
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void UdrzbaVozidlaButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new UdrzbaVozidlaView
+            {
+                DataContext = App.ServiceProvider.GetService<UdrzbaVozidlaViewModel>()
+            };
+        }
+
+        private void ZastavkyButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new ZastavkyView
+            {
+                DataContext = App.ServiceProvider.GetService<ZastavkaViewModel>()
+            };
         }
     }
 }

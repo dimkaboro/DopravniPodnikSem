@@ -11,6 +11,7 @@ namespace DopravniPodnikSem.ViewModels
         private ObservableCollection<Linka> _linky;
         private Linka _selectedLinka;
         private string _errorMessage;
+        private string _searchNazev;
 
         public string ErrorMessage
         {
@@ -19,6 +20,16 @@ namespace DopravniPodnikSem.ViewModels
             {
                 _errorMessage = value;
                 OnPropertyChanged(nameof(ErrorMessage));
+            }
+        }
+
+        public string SearchNazev
+        {
+            get => _searchNazev;
+            set
+            {
+                _searchNazev = value;
+                OnPropertyChanged();
             }
         }
 
@@ -45,6 +56,7 @@ namespace DopravniPodnikSem.ViewModels
         public ICommand AddUpdateCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand ClearCommand { get; }
+        public ICommand SearchCommand { get; }
 
         public LinkaViewModel(ILinkyRepository linkyRepository)
         {
@@ -54,6 +66,7 @@ namespace DopravniPodnikSem.ViewModels
             AddUpdateCommand = new ViewModelCommand(async _ => await AddOrUpdateLinkaAsync(), _ => SelectedLinka != null);
             DeleteCommand = new ViewModelCommand(async _ => await DeleteLinkaAsync(), _ => SelectedLinka != null);
             ClearCommand = new ViewModelCommand(_ => ClearSelection());
+            SearchCommand = new ViewModelCommand(async _ => await SearchLinkyAsync());
 
             LoadAllLinkyAsync();
         }
@@ -91,6 +104,35 @@ namespace DopravniPodnikSem.ViewModels
             catch
             {
                 ErrorMessage = "Ошибка при добавлении/обновлении линии.";
+            }
+        }
+
+        private async Task SearchLinkyAsync()
+        {
+            if (string.IsNullOrWhiteSpace(SearchNazev))
+            {
+                LoadAllLinkyAsync(); // Если строка поиска пустая, загрузить все маршруты
+                return;
+            }
+
+            try
+            {
+                var linky = await _linkyRepository.GetAllAsync();
+                var filteredLinky = linky.Where(l => l.Nazev.Contains(SearchNazev, System.StringComparison.OrdinalIgnoreCase)).ToList();
+                Linky = new ObservableCollection<Linka>(filteredLinky);
+
+                if (!Linky.Any())
+                {
+                    ErrorMessage = "Маршруты не найдены.";
+                }
+                else
+                {
+                    ErrorMessage = string.Empty;
+                }
+            }
+            catch
+            {
+                ErrorMessage = "Ошибка поиска.";
             }
         }
 

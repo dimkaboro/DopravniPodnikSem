@@ -118,6 +118,85 @@
             <Setter Property="FontFamily" Value="Segoe UI" />
         </Style>
 
+
+        <Style x:Key="EnhancedComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#212529" />
+            <Setter Property="BorderBrush" Value="#28AEED" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontFamily" Value="Montserrat" />
+            <Setter Property="Padding" Value="5" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <!-- Кнопка для отображения выбранного элемента -->
+                            <ToggleButton 
+                        Name="ToggleButton"
+                        Focusable="False"
+                        Background="{TemplateBinding Background}"
+                        Foreground="{TemplateBinding Foreground}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Content="{TemplateBinding SelectionBoxItem}"
+                        ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                        IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                        Padding="{TemplateBinding Padding}"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                            <!-- Выпадающий список -->
+                            <Popup 
+                        Name="Popup" 
+                        Placement="Bottom"
+                        IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                        AllowsTransparency="True"
+                        Focusable="False"
+                        PopupAnimation="Slide">
+                                <Border 
+                            Background="#333348" 
+                            BorderBrush="#28AEED" 
+                            BorderThickness="1"
+                            CornerRadius="5">
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <!-- Эффекты при наведении -->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#5A63FF" />
+                    <Setter Property="Background" Value="#292E35" />
+                </Trigger>
+                <!-- Эффекты при раскрытии выпадающего списка -->
+                <Trigger Property="IsDropDownOpen" Value="True">
+                    <Setter Property="BorderBrush" Value="#6C63FF" />
+                    <Setter Property="Background" Value="#292E35" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+
+        <Style x:Key="CustomDataGridCellStyle" TargetType="DataGridCell">
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="FontFamily" Value="Montserrat"/>
+    <Setter Property="FontSize" Value="14"/>
+    <Style.Triggers>
+        <Trigger Property="IsSelected" Value="True">
+            <Setter Property="Background" Value="#28AEED"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Trigger>
+    </Style.Triggers>
+</Style>
         <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
             <Setter Property="Background" Value="#F5F5F5" />
             <Setter Property="Foreground" Value="#333348" />
@@ -138,6 +217,7 @@
                       BlurRadius="10"
                       ShadowDepth="5"
                       Opacity="0.5" />
+
 
 
         <Style x:Key="CustomCheckBoxStyle" TargetType="CheckBox">
@@ -196,6 +276,5 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
     </Application.Resources>
 </Application>

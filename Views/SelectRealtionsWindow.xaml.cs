@@ -16,18 +16,18 @@ using System.Windows.Shapes;
 namespace DopravniPodnikSem.Views
 {
     /// <summary>
-    /// Interaction logic for LinkyView.xaml
+    /// Interaction logic for SelectRealtionsWindow.xaml
     /// </summary>
-    public partial class LinkyView : UserControl
+    public partial class SelectRealtionsWindow : Window
     {
-        public LinkyView()
+        public SelectRealtionsWindow()
         {
             InitializeComponent();
         }
 
-        private void RoutesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-
+            this.Close(); // Закрыть только текущее окно
         }
     }
 }

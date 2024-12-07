@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DopravniPodnikSem.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,24 +11,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace DopravniPodnikSem.Views
 {
     /// <summary>
-    /// Interaction logic for LinkyView.xaml
+    /// Interaction logic for SearchVozidloWindow.xaml
     /// </summary>
-    public partial class LinkyView : UserControl
+    public partial class SearchVozidloWindow : Window
     {
-        public LinkyView()
+        public SearchVozidloWindow()
         {
             InitializeComponent();
-        }
-
-        private void RoutesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            
         }
     }
 }
