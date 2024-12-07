@@ -41,30 +41,29 @@ namespace DopravniPodnikSem
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseOracle(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<IUserDataRepository, UserDataRepository>();
+            services.AddSingleton<NavigationVM>();
             services.AddTransient<DatabaseService>();
             services.AddTransient<PasswordService>();
 
-            services.AddSingleton<NavigationVM>();
+            services.AddTransient<IUserDataRepository, UserDataRepository>();
+            services.AddTransient<IAdresyRepository, AdresyRepository>();
+            services.AddTransient<ISouboryRepository, SouboryRepository>();
+            
             services.AddTransient<RegistrationViewModel>();
             services.AddTransient<LoginViewModel>();
             services.AddTransient<ProfileViewModel>();
             services.AddTransient<EditProfileViewModel>();
             services.AddTransient<UserEmulationViewModel>();
-            //services.AddTransient<MainWindow>();
-            //services.AddTransient<AdminWindow>();
-            //services.AddTransient<EmployeeWindow>();
-
+            services.AddTransient<ShowUsersViewModel>();
 
             services.AddTransient<IVozidloRepository, VozidloRepository>();
             services.AddTransient<VozidloViewModel>();
 
-            services.AddTransient<IRidiciRepository, RidiciRepository>(); // Добавляем эту строку
-            services.AddTransient<RidiciViewModel>(); // Уже есть
+            services.AddTransient<IRidiciRepository, RidiciRepository>();
+            services.AddTransient<RidiciViewModel>();
 
             services.AddTransient<ILinkyRepository, LinkyRepository>();
             services.AddTransient<LinkaViewModel>();
-
         }
 
 

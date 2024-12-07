@@ -79,6 +79,8 @@ namespace DopravniPodnikSem.Views
             {
                 DataContext = new ProfileViewModel(
                     App.ServiceProvider.GetService<IUserDataRepository>(),
+                    App.ServiceProvider.GetService<IAdresyRepository>(),
+                    App.ServiceProvider.GetService<ISouboryRepository>(),
                     CurrentSession.LoggedInUser.ZamestnanecId,
                     CurrentSession.LoggedInUser.AdresaId,
                     CurrentSession.LoggedInUser.SouborId)
@@ -95,6 +97,8 @@ namespace DopravniPodnikSem.Views
             {
                 DataContext = new ProfileViewModel(
                     App.ServiceProvider.GetService<IUserDataRepository>(),
+                    App.ServiceProvider.GetService<IAdresyRepository>(),
+                    App.ServiceProvider.GetService<ISouboryRepository>(),
                     CurrentSession.LoggedInUser.ZamestnanecId,
                     CurrentSession.LoggedInUser.AdresaId,
                     CurrentSession.LoggedInUser.SouborId)

@@ -19,6 +19,7 @@ namespace DopravniPodnikSem.Models
         private int _adresaId; // Внешний ключ на таблицу адресов
         private int _roleId; // Внешний ключ на роль сотрудника
         private int _souborId; // Внешний ключ на таблицу файлов
+        private int _jePrivate;
 
         public int ZamestnanecId
         {
@@ -104,7 +105,14 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _souborId, value);
         }
 
+        public int JePrivate
+        {
+            get => _jePrivate;
+            set => SetField(ref _jePrivate, value);
+        }
+
         public string FullName => $"{Jmeno} {Prijmeni}";
+        public string FullNameAndPozice => $"{Jmeno} {Prijmeni} ({Pozice})";
 
         // Навигационные свойства
         public virtual Adresa Adresa { get; set; } // Связь с таблицей адресов

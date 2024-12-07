@@ -8,7 +8,8 @@
 
         <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <local:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
-        
+        <local:IntToBoolConverter x:Key="IntToBoolConverter" />
+
         <!-- Стиль для кнопок бокового меню -->
         <Style x:Key="MenuButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#3A3F44"/>
@@ -137,6 +138,64 @@
                       BlurRadius="10"
                       ShadowDepth="5"
                       Opacity="0.5" />
+
+
+        <Style x:Key="CustomCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal">
+                            <!-- Кастомная галочка -->
+                            <Border x:Name="CheckBoxBorder"
+                            Width="20"
+                            Height="20"
+                            CornerRadius="4"
+                            BorderBrush="#6C63FF"
+                            BorderThickness="2"
+                            Background="White"
+                            VerticalAlignment="Center">
+                                <Path x:Name="CheckMark"
+                              Data="M 4 10 L 8 14 L 16 6"
+                              Stroke="#6C63FF"
+                              StrokeThickness="3"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              Visibility="Collapsed" />
+                            </Border>
+                            <!-- Текстовое содержимое -->
+                            <TextBlock Text="{TemplateBinding Content}"
+                               Margin="10,0,0,0"
+                               VerticalAlignment="Center"
+                               Foreground="#333"
+                               FontSize="14" />
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <!-- Отображение галочки, если IsChecked = true -->
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="CheckBoxBorder" Property="Background" Value="#6C63FF" />
+                                <Setter TargetName="CheckMark" Property="Stroke" Value="White" />
+                            </Trigger>
+                            <!-- Состояние при наведении -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CheckBoxBorder" Property="Background" Value="#E8E8E8" />
+                            </Trigger>
+                            <!-- Состояние при нажатии -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="CheckBoxBorder" Property="Background" Value="#D4DDE1" />
+                                <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#5A5FEE" />
+                            </Trigger>
+                            <!-- Отключенный CheckBox -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="CheckBoxBorder" Property="Background" Value="#CCCCCC" />
+                                <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#AAAAAA" />
+                                <Setter Property="Foreground" Value="#AAAAAA" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
     </Application.Resources>
 </Application>
