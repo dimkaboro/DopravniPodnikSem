@@ -71,6 +71,9 @@ namespace DopravniPodnikSem
             services.AddTransient<UdrzbaVozidlaViewModel>();
             services.AddTransient<SearchVozidloViewModel>();
             services.AddTransient<SearchVozidloWindow>();
+
+            services.AddTransient<IZastavkaRepository, ZastavkaRepository>();
+            services.AddTransient<ZastavkaViewModel>(); // Добавляем эту строку>
         }
 
 

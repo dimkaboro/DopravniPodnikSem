@@ -123,5 +123,13 @@ namespace DopravniPodnikSem
                 DataContext = App.ServiceProvider.GetService<UdrzbaVozidlaViewModel>()
             };
         }
+
+        private void ZastavkyButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new ZastavkyView
+            {
+                DataContext = App.ServiceProvider.GetService<ZastavkaViewModel>()
+            };
+        }
     }
 }

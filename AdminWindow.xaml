@@ -35,6 +35,7 @@
                 <Button Content="Ridici" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="RidiciButton_Click" />
                 <Button Content="Vozidla" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="VozidlaButton_Click" />
                 <Button Content="Udrzba Vozidla" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="UdrzbaVozidlaButton_Click" />
+                <Button Content="Zastavky" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ZastavkyButton_Click" />
                 <Button Content="Exit" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ExitButton_Click" />
                 <Button Content="Check connect to DB" Style="{StaticResource MenuButtonStyle}" Command="{Binding CheckDatabaseConnectionCommand}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" />
             </StackPanel>
