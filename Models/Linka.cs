@@ -12,6 +12,11 @@ namespace DopravniPodnikSem.Models
         private string _nazev;
         private string _typ;
 
+        public override string ToString()
+        {
+            return Nazev;
+        }
+
         public int LinkaId
         {
             get => _linkaId;

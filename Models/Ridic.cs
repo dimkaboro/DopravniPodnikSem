@@ -14,6 +14,13 @@ namespace DopravniPodnikSem.Models
         private string _ridicPrukaz;
         private DateOnly? _datumNarozeni; // Сделано nullable, так как поле необязательное
 
+        public string RidicName => $"{_jmeno} {_prijmeni}";
+
+        public override string ToString()
+        {
+            return RidicName;
+        }
+
         public int RidicId
         {
             get => _ridicId;

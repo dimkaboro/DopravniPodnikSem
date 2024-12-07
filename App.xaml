@@ -127,23 +127,41 @@
             <Setter Property="Padding" Value="5" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="FontSize" Value="14" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
-                            <ToggleButton Name="ToggleButton"
-                                  Background="{TemplateBinding Background}"
-                                  BorderBrush="{TemplateBinding BorderBrush}"
-                                  Foreground="{TemplateBinding Foreground}"
-                                  BorderThickness="{TemplateBinding BorderThickness}"
-                                  
-                                  HorizontalContentAlignment="Left"
-                                  VerticalContentAlignment="Center"
-                                  Padding="{TemplateBinding Padding}" />
-                            <Popup Name="Popup" Placement="Bottom" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" Focusable="False">
-                                <Border Background="#212529" BorderBrush="#28AEED" BorderThickness="1">
+                            <!-- Кнопка для отображения выбранного элемента -->
+                            <ToggleButton 
+                        Name="ToggleButton"
+                        Focusable="False"
+                        Background="{TemplateBinding Background}"
+                        Foreground="{TemplateBinding Foreground}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Content="{TemplateBinding SelectionBoxItem}"
+                        ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                        IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                        Padding="{TemplateBinding Padding}"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                            <!-- Выпадающий список -->
+                            <Popup 
+                        Name="Popup" 
+                        Placement="Bottom"
+                        IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                        AllowsTransparency="True"
+                        Focusable="False"
+                        PopupAnimation="Slide">
+                                <Border 
+                            Background="#333348" 
+                            BorderBrush="#28AEED" 
+                            BorderThickness="1"
+                            CornerRadius="5">
                                     <ScrollViewer>
-                                        <ItemsPresenter />
+                                        <StackPanel IsItemsHost="True" />
                                     </ScrollViewer>
                                 </Border>
                             </Popup>
@@ -151,8 +169,21 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <!-- Эффекты при наведении -->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#5A63FF" />
+                    <Setter Property="Background" Value="#292E35" />
+                </Trigger>
+                <!-- Эффекты при раскрытии выпадающего списка -->
+                <Trigger Property="IsDropDownOpen" Value="True">
+                    <Setter Property="BorderBrush" Value="#6C63FF" />
+                    <Setter Property="Background" Value="#292E35" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
-        
+
+
         <Style x:Key="CustomDataGridCellStyle" TargetType="DataGridCell">
     <Setter Property="Foreground" Value="White"/>
     <Setter Property="Background" Value="Transparent"/>

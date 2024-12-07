@@ -75,6 +75,10 @@ namespace DopravniPodnikSem
 
             services.AddTransient<IZastavkaRepository, ZastavkaRepository>();
             services.AddTransient<ZastavkaViewModel>(); // Добавляем эту строку>
+
+            services.AddTransient<IJizdaRepository, JizdaRepository>();
+            services.AddTransient<JizdaViewModel>(); // Добавляем эту строку>
+            services.AddTransient<SelectRealtionsWindow>();
         }
 
 

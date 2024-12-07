@@ -14,6 +14,7 @@ namespace DopravniPodnikSem.Models
         private int? _kapacita;
         private int? _garazeGarazId;
         private int? _udrzbaVozidlaUdrzbaId;
+        public string VehicleInfo => $"{RegistracniCislo} - {Typ}";
 
         public int VozidloId
         {
