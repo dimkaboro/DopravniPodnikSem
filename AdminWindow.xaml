@@ -29,8 +29,9 @@
                 </StackPanel>
 
                 <!-- Кнопки меню -->
-                <Button Content="Profile" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ProfileButton_Click"/>
                 <Button Content="Home" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="HomeButton_Click" />
+                <Button Content="Profile" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ProfileButton_Click"/>
+                <Button Content="All users" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ShowUsersButton_Click"/>
                 <Button Content="Emulation" Visibility="{Binding NotEmulating, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="EmulationButton_Click" />
                 <Button Content="Linky" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="LinkyButton_Click" />
                 <Button Content="Ridici" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="RidiciButton_Click" />

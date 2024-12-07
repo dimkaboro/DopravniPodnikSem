@@ -41,11 +41,12 @@ namespace DopravniPodnikSem.Views
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            var navigationVM = App.ServiceProvider.GetService<NavigationVM>();
-            navigationVM.CurrentView = new EditProfileView
+            _navigationVM.CurrentView = new EditProfileView
             {
                 DataContext = new EditProfileViewModel(
                     App.ServiceProvider.GetService<IUserDataRepository>(),
+                    App.ServiceProvider.GetService<IAdresyRepository>(),
+                    App.ServiceProvider.GetService<ISouboryRepository>(),
                     ((ProfileViewModel)DataContext).CurrentUser,
                     ((ProfileViewModel)DataContext).CurrentAdresa,
                     ((ProfileViewModel)DataContext).CurrentSoubor)

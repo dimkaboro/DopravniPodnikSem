@@ -132,6 +132,16 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
+        public int JePrivate
+        {
+            get => _zamestnanec.JePrivate;
+            set
+            {
+                _zamestnanec.JePrivate = value;
+                OnPropertyChanged();
+            }
+        }
+
         // Навигационные свойства
         public AdresaViewModel AdresaViewModel => new AdresaViewModel(_zamestnanec.Adresa);
         public SouboryViewModel SouborViewModel => new SouboryViewModel(_zamestnanec.Soubor);

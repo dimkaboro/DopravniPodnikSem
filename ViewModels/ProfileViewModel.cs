@@ -11,14 +11,18 @@ using DopravniPodnikSem.Views;
 public class ProfileViewModel : INotifyPropertyChanged
 {
     private readonly IUserDataRepository _userDataRepository;
+    private readonly IAdresyRepository _adresyRepository;
+    private readonly ISouboryRepository _souboryRepository;
 
     private Zamestnanec _currentUser;
     private Adresa _currentAdresa;
     private Soubory _currentSoubor;
 
-    public ProfileViewModel(IUserDataRepository userDataRepository, int userId, int adresaId, int souborId)
+    public ProfileViewModel(IUserDataRepository userDataRepository, IAdresyRepository adresyRepository, ISouboryRepository souboryRepository, int userId, int adresaId, int souborId)
     {
         _userDataRepository = userDataRepository;
+        _adresyRepository = adresyRepository;
+        _souboryRepository = souboryRepository;
         LoadUserDetails(userId, adresaId, souborId);
     }
 
@@ -57,8 +61,8 @@ public class ProfileViewModel : INotifyPropertyChanged
         try
         {
             var user = await _userDataRepository.GetUserDetailsAsync(userId);
-            var adresa = await _userDataRepository.GetAddressDetailsAsync(adresaId);
-            var soubor = await _userDataRepository.GetUserAvatarAsync(souborId);
+            var adresa = await _adresyRepository.GetAddressDetailsAsync(adresaId);
+            var soubor = await _souboryRepository.GetUserAvatarAsync(souborId);
 
             CurrentUser = user;
             CurrentAdresa = adresa;

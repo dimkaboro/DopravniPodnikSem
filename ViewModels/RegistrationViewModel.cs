@@ -1,4 +1,5 @@
-﻿using DopravniPodnikSem.Services;
+﻿using DopravniPodnikSem.Repository.Interfaces;
+using DopravniPodnikSem.Services;
 using DopravniPodnikSem.Views;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +14,8 @@ namespace DopravniPodnikSem.ViewModels
 {
     public class RegistrationViewModel : INotifyPropertyChanged
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IUserDataRepository _userDataRepository;
+        private readonly IAdresyRepository _adresyRepository;
         private readonly NavigationVM _navigation;
 
         private readonly Brush _highlightColor = (Brush)new BrushConverter().ConvertFrom("#6C63FF");
@@ -63,12 +65,13 @@ namespace DopravniPodnikSem.ViewModels
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public RegistrationViewModel(DatabaseService databaseService, NavigationVM navigation)
+        public RegistrationViewModel(NavigationVM navigation)
         {
-            _databaseService = databaseService;
             NextCommand = new ViewModelCommand(NextStep);
             BackCommand = new ViewModelCommand(BackStep);
             _navigation = App.ServiceProvider.GetService<NavigationVM>();
+            _userDataRepository = App.ServiceProvider.GetService<IUserDataRepository>();
+            _adresyRepository = App.ServiceProvider.GetService<IAdresyRepository>();
             UpdateStepContent();
         }
 
@@ -210,16 +213,16 @@ namespace DopravniPodnikSem.ViewModels
                 var passwordService = new PasswordService();
                 string hashedPassword = passwordService.HashPassword(Password);
 
-                int addressID = await _databaseService.GetAddressIdAsync(City, Street, HouseNumber, PostCode, ApartmentNumber);
+                int addressID = await _adresyRepository.GetAddressIdAsync(City, Street, HouseNumber, PostCode, ApartmentNumber);
 
                 if (addressID == 0)
                 {
-                    addressID = await _databaseService.AddAddressAsync(City, Street, HouseNumber, PostCode, ApartmentNumber);
-                    await _databaseService.AddEmployeeAsync(Name, Surname, Email, hashedPassword, PhoneNumber, addressID);
+                    addressID = await _adresyRepository.AddAddressAsync(City, Street, HouseNumber, PostCode, ApartmentNumber);
+                    await _userDataRepository.AddEmployeeAsync(Name, Surname, Email, hashedPassword, PhoneNumber, addressID);
                 }
                 else
                 {
-                    await _databaseService.AddEmployeeAsync(Name, Surname, Email, hashedPassword, PhoneNumber, addressID);
+                    await _userDataRepository.AddEmployeeAsync(Name, Surname, Email, hashedPassword, PhoneNumber, addressID);
                 }
 
                 MessageBox.Show("Registration completed successfully!");

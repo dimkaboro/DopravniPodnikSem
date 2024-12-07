@@ -39,7 +39,12 @@
                     Background="#EEE"
                     Foreground="#6C63FF"
                     Click="ChangeButton_Click" />
-            
+
+            <CheckBox Content="Private mode" FontWeight="Bold" 
+                      IsChecked="{Binding EditedUser.JePrivate, Converter={StaticResource IntToBoolConverter}, Mode=TwoWay}"
+                      Margin="20,0,0,30" 
+                      Style="{StaticResource CustomCheckBoxStyle}" />
+
             <!-- Кнопка Save -->
             <Button Content="Save"
                     Width="120"

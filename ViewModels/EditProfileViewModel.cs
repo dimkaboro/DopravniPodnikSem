@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using DopravniPodnikSem;
 using DopravniPodnikSem.Models;
+using DopravniPodnikSem.Repository;
 using DopravniPodnikSem.Repository.Interfaces;
 using DopravniPodnikSem.ViewModels;
 using DopravniPodnikSem.Views;
@@ -11,15 +12,20 @@ using DopravniPodnikSem.Views;
 public class EditProfileViewModel : INotifyPropertyChanged
 {
     private readonly IUserDataRepository _userDataRepository;
+    private readonly IAdresyRepository _adresyRepository;
+    private readonly ISouboryRepository _souboryRepository;
 
     private Zamestnanec _editedUser;
     private Adresa _editedAddress;
     private Soubory _currentSoubor;
     private byte[] _newAvatar;
 
-    public EditProfileViewModel(IUserDataRepository userDataRepository, Zamestnanec currentUser, Adresa currentAddress, Soubory currentSoubor)
+
+    public EditProfileViewModel(IUserDataRepository userDataRepository, IAdresyRepository adresyRepository, ISouboryRepository souboryRepository, Zamestnanec currentUser, Adresa currentAddress, Soubory currentSoubor)
     {
         _userDataRepository = userDataRepository;
+        _adresyRepository = adresyRepository;
+        _souboryRepository = souboryRepository;
 
         EditedUser = new Zamestnanec
         {
@@ -28,7 +34,8 @@ public class EditProfileViewModel : INotifyPropertyChanged
             Prijmeni = currentUser.Prijmeni,
             Email = currentUser.Email,
             CisloTelefonu = currentUser.CisloTelefonu,
-            AdresaId = currentUser.AdresaId
+            AdresaId = currentUser.AdresaId,
+            JePrivate = currentUser.JePrivate
         };
 
         EditedAddress = new Adresa
@@ -94,12 +101,12 @@ public class EditProfileViewModel : INotifyPropertyChanged
             // Сохраняем изменения в репозитории
             if (NewAvatar != null)
             {
-                var newAvatarId = await _userDataRepository.UpdateUserAvatarAsync(EditedUser.ZamestnanecId, "User avatar", NewAvatar);
+                var newAvatarId = await _souboryRepository.UpdateUserAvatarAsync(EditedUser.ZamestnanecId, "User avatar", NewAvatar);
                 EditedUser.SouborId = newAvatarId; 
             }
 
             await _userDataRepository.UpdateEmployeeAsync(EditedUser);
-            await _userDataRepository.UpdateAddressLogicAsync(EditedAddress, EditedUser.ZamestnanecId, EditedUser.AdresaId);
+            await _adresyRepository.UpdateAddressLogicAsync(EditedAddress, EditedUser.ZamestnanecId, EditedUser.AdresaId);
 
             await RefreshProfileAsync();
 
@@ -120,7 +127,7 @@ public class EditProfileViewModel : INotifyPropertyChanged
         {
             // Получаем обновлённые данные из базы
             var updatedUser = await _userDataRepository.GetUserDetailsAsync(EditedUser.ZamestnanecId);
-            var updatedSoubor = await _userDataRepository.GetUserAvatarAsync(updatedUser.SouborId);
+            var updatedSoubor = await _souboryRepository.GetUserAvatarAsync(updatedUser.SouborId);
 
             // Обновляем ViewModel
             EditedUser = updatedUser;

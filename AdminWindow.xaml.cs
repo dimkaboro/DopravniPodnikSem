@@ -29,23 +29,24 @@ namespace DopravniPodnikSem
         private bool _isMenuOpen = false;
         private readonly NavigationVM _navigationVM;
         private readonly IUserDataRepository _userDataRepository;
-        private readonly PasswordService _passwordService;
+        private readonly IAdresyRepository _adresyRepository;
+        private readonly ISouboryRepository _souboryRepository;
 
         public AdminWindow()
         {
             InitializeComponent();
 
-            // Настройка конфигурации для DatabaseService
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
             var databaseService = new DatabaseService(configuration);
 
-            _userDataRepository = new UserDataRepository(databaseService, _passwordService);
+            _userDataRepository = App.ServiceProvider.GetService<IUserDataRepository>();
+            _adresyRepository = App.ServiceProvider.GetService<IAdresyRepository>();
+            _souboryRepository = App.ServiceProvider.GetService<ISouboryRepository>();
 
-            // Установка DataContext с экземпляром NavigationVM
             _navigationVM = App.ServiceProvider.GetService<NavigationVM>();
-            DataContext = _navigationVM;  // Устанавливаем DataContext на NavigationVM
+            DataContext = _navigationVM;  
         }
 
         private void BurgerButton_Click(object sender, RoutedEventArgs e)
@@ -66,22 +67,32 @@ namespace DopravniPodnikSem
             }
         }
 
+
+        private void HomeButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new HomeView();
+        }
+
         private void ProfileButton_Click(object sender, RoutedEventArgs e)
         {
             _navigationVM.CurrentView = new ProfileView
             {
                 DataContext = new ProfileViewModel(
-                    App.ServiceProvider.GetService<IUserDataRepository>(),
+                    _userDataRepository,
+                    _adresyRepository,
+                    _souboryRepository,
                     CurrentSession.LoggedInUser.ZamestnanecId,
                     CurrentSession.LoggedInUser.AdresaId,
                     CurrentSession.LoggedInUser.SouborId)
             };
         }
 
-        private void HomeButton_Click(object sender, RoutedEventArgs e)
+        private void ShowUsersButton_Click(object sender, RoutedEventArgs e)
         {
-            // Устанавливаем основное содержимое в MainContent на главный экран
-            _navigationVM.CurrentView = new HomeView();
+            _navigationVM.CurrentView = new ShowUsersView
+            {
+                DataContext = App.ServiceProvider.GetService<ShowUsersViewModel>()
+            };
         }
 
         private void EmulationButton_Click(object sender, RoutedEventArgs e)
