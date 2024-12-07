@@ -17,6 +17,8 @@ namespace DopravniPodnikSem.ViewModels
             _zastavkaTrasa = zastavkaTrasa ?? throw new ArgumentNullException(nameof(zastavkaTrasa));
         }
 
+
+
         public int ZastavkaTrasaId
         {
             get => _zastavkaTrasa.ZastavkaTrasaId;

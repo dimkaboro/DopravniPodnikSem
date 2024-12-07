@@ -87,18 +87,42 @@ namespace DopravniPodnikSem.ViewModels
 
         private async System.Threading.Tasks.Task SearchVozidloAsync()
         {
-            var vozidlo = await _vozidloRepository.GetByRegistrationNumberAsync(SearchQuery);
-            Vozidla.Clear();
-
-            if (vozidlo != null)
+            try
             {
-                Vozidla.Add(vozidlo);
+                if (string.IsNullOrWhiteSpace(SearchQuery))
+                {
+                    // Если поле поиска пустое, загружаем весь список
+                    LoadAllVozidlaAsync();
+                    return;
+                }
+
+                // Получаем все данные и фильтруем локально
+                var allVozidla = await _vozidloRepository.GetAllAsync();
+                var filteredVozidla = allVozidla
+                    .Where(v => v.RegistracniCislo.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                if (filteredVozidla.Count == 0)
+                {
+                    ErrorMessage = "Žádné záznamy nenalezeny.";
+                }
+                else
+                {
+                    ErrorMessage = string.Empty;
+                }
+
+                Vozidla = new ObservableCollection<Vozidlo>(filteredVozidla);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Chyba při vyhledávání: {ex.Message}";
             }
         }
 
         private void ClearSearch()
         {
             SearchQuery = string.Empty;
+            ErrorMessage = string.Empty;
             LoadAllVozidlaAsync();
         }
 

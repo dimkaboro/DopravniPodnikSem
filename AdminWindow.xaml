@@ -37,6 +37,7 @@
                 <Button Content="Vozidla" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="VozidlaButton_Click" />
                 <Button Content="Udrzba Vozidla" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="UdrzbaVozidlaButton_Click" />
                 <Button Content="Zastavky" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ZastavkyButton_Click" />
+                <Button Content="Jizdy" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="JizdyButton_Click"/>
                 <Button Content="Exit" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="ExitButton_Click" />
                 <Button Content="Stop Emulation" Style="{StaticResource MenuButtonStyle}" Command="{Binding StopEmulationCommand}" Visibility="{Binding IsEmulating, Converter={StaticResource BooleanToVisibilityConverter}}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" />
             </StackPanel>

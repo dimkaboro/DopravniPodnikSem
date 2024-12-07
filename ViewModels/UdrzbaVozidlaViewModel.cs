@@ -94,7 +94,8 @@ namespace DopravniPodnikSem.ViewModels
 
             try
             {
-                var filtered = await _udrzbaVozidlaRepository.GetAllByDateAsync(SearchDate.Value);
+                // Убедимся, что используется только дата
+                var filtered = await _udrzbaVozidlaRepository.GetAllByDateAsync(SearchDate.Value.Date);
                 UdrzbyVozidla = new ObservableCollection<UdrzbaVozidla>(filtered);
                 ErrorMessage = string.Empty;
             }
@@ -126,7 +127,13 @@ namespace DopravniPodnikSem.ViewModels
                 DataContext = searchViewModel
             };
 
-            searchWindow.ShowDialog();
+            var result = searchWindow.ShowDialog();
+
+            // Закрытие окна после успешного добавления
+            if (result == true)
+            {
+                searchWindow.Close();
+            }
         }
 
         private async Task OpenUpdateSearchWindowAsync()

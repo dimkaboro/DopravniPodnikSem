@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace DopravniPodnikSem.ViewModels
@@ -61,7 +62,7 @@ namespace DopravniPodnikSem.ViewModels
             _onVozidloSelected = onVozidloSelected;
 
             SearchCommand = new ViewModelCommand(_ => SearchVozidla());
-            AddCommand = new ViewModelCommand(_ => AddSelectedVozidlo(), _ => SelectedVozidlo != null);
+            AddCommand = new ViewModelCommand(param => AddSelectedVozidlo(param), _ => SelectedVozidlo != null);
             CancelCommand = new ViewModelCommand(_ => CancelSelection());
 
             LoadVozidlaAsync();
@@ -86,9 +87,17 @@ namespace DopravniPodnikSem.ViewModels
                 _vozidla.Where(v => v.RegistracniCislo.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase)));
         }
 
-        private void AddSelectedVozidlo()
+        private void AddSelectedVozidlo(object parameter)
         {
-            _onVozidloSelected?.Invoke(SelectedVozidlo);
+            if (parameter is Window currentWindow) // Проверяем, передано ли окно
+            {
+                _onVozidloSelected?.Invoke(SelectedVozidlo); // Выполняем действие с выбранным транспортом
+                currentWindow.Close(); // Закрываем окно
+            }
+            else
+            {
+                throw new InvalidOperationException("Expected a Window parameter.");
+            }
         }
 
         private void CancelSelection()

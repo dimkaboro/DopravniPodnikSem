@@ -171,6 +171,7 @@
                 <!-- Buttons Section -->
                 <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,20,0,0">
                     <Button Content="ADD" Command="{Binding AddCommand}" 
+                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                             Style="{StaticResource CustomButtonStyle}" 
                             Margin="10,0,10,0" Width="150" Height="40" />
                     <Button Content="CANCEL" Command="{Binding CancelCommand}" 
