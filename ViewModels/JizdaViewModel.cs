@@ -91,6 +91,7 @@ namespace DopravniPodnikSem.ViewModels
         public ICommand ClearCommand { get; }
         public ICommand UpdateStatusesCommand { get; }
         public ICommand CalculateDurationCommand { get; }
+        public ICommand GetLongestJizdaCommand { get; }
 
         public JizdaViewModel(IJizdaRepository jizdaRepository, IConfiguration configuration)
         {
@@ -104,8 +105,35 @@ namespace DopravniPodnikSem.ViewModels
             ClearCommand = new ViewModelCommand(_ => ClearFields());
             UpdateStatusesCommand = new ViewModelCommand(async _ => await UpdateStatusesAsync());
             CalculateDurationCommand = new ViewModelCommand(async _ => await CalculateDurationAsync(), _ => SelectedJizda != null && SelectedJizda.JizdaId > 0);
+            GetLongestJizdaCommand = new ViewModelCommand(async _ => await ShowLongestJizdaAsync()); // Новая команда
 
             LoadDataAsync();
+        }
+
+        private async Task ShowLongestJizdaAsync()
+        {
+            try
+            {
+                // Вызов метода GetLongestJizdaAsync из репозитория
+                var (linkaNazev, casOd, casDo, duration) = await _jizdaRepository.GetLongestJizdaAsync();
+
+                // Формирование и отображение сообщения с результатом
+                MessageBox.Show(
+                    $"Самая долгая поездка:\n" +
+                    $"Маршрут: {linkaNazev}\n" +
+                    $"Начало: {casOd:dd.MM.yyyy HH:mm:ss}\n" +
+                    $"Окончание: {casDo:dd.MM.yyyy HH:mm:ss}\n" +
+                    $"Длительность: {duration.TotalHours:F2} часов",
+                    "Самая долгая поездка",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок и уведомление
+                MessageBox.Show($"Ошибка при получении самой долгой поездки: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public JizdaViewModel(Jizda jizda)

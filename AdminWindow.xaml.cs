@@ -163,5 +163,13 @@ namespace DopravniPodnikSem
                 DataContext = App.ServiceProvider.GetService<JizdaViewModel>()
             };
         }
+
+        private void DopravniPlatbyButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new DopravniPlatbyView
+            {
+                DataContext = App.ServiceProvider.GetService<DopravniPlatbyViewModel>()
+            };
+        }
     }
 }

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace DopravniPodnikSem.ViewModels
 {
-    public class HotovostViewModel : DopravniPlatbaViewModel
+    public class HotovostViewModel : BaseViewModel
     {
-        private readonly Hotovost _hotovost;
+        private Hotovost _hotovost;
 
-        public HotovostViewModel(Hotovost hotovost) : base(hotovost)
+        public HotovostViewModel(Hotovost hotovost)
         {
             _hotovost = hotovost;
         }
