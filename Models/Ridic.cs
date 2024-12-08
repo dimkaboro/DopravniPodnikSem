@@ -12,7 +12,7 @@ namespace DopravniPodnikSem.Models
         private string _jmeno;
         private string _prijmeni;
         private string _ridicPrukaz;
-        private DateOnly? _datumNarozeni; // Сделано nullable, так как поле необязательное
+        private DateOnly? _datumNarozeni; 
 
         public string RidicName => $"{_jmeno} {_prijmeni}";
 
@@ -51,7 +51,6 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _datumNarozeni, value);
         }
 
-        // Навигационные свойства для Jizdy
         public virtual ICollection<Jizda> Jizdy { get; set; } = new List<Jizda>();
     }
 }

@@ -59,6 +59,12 @@ namespace DopravniPodnikSem
             services.AddTransient<ShowUsersViewModel>();
             services.AddTransient<LogViewModel>();
 
+            services.AddTransient<ZamestnanecViewModel>();
+            services.AddTransient<AdresaViewModel>();
+            services.AddTransient<SouboryViewModel>();
+            services.AddTransient<AdresaWindow>();
+            services.AddTransient<SouborWindow>();
+
             services.AddTransient<IVozidloRepository, VozidloRepository>();
             services.AddTransient<VozidloViewModel>();
 
@@ -68,7 +74,7 @@ namespace DopravniPodnikSem
             services.AddTransient<ILinkyRepository, LinkyRepository>();
             services.AddTransient<LinkaViewModel>();
             
-            services.AddTransient<IUdrzbaVozidlaRepository, UdrzbaVozidlaRepository>(); // Добавляем эту строку>
+            services.AddTransient<IUdrzbaVozidlaRepository, UdrzbaVozidlaRepository>(); 
             services.AddTransient<UdrzbaVozidlaViewModel>();
 
             services.AddTransient<UdrzbaVozidlaViewModel>();
@@ -76,10 +82,10 @@ namespace DopravniPodnikSem
             services.AddTransient<SearchVozidloWindow>();
 
             services.AddTransient<IZastavkaRepository, ZastavkaRepository>();
-            services.AddTransient<ZastavkaViewModel>(); // Добавляем эту строку>
+            services.AddTransient<ZastavkaViewModel>(); 
 
             services.AddTransient<IJizdaRepository, JizdaRepository>();
-            services.AddTransient<JizdaViewModel>(); // Добавляем эту строку>
+            services.AddTransient<JizdaViewModel>(); 
             services.AddTransient<SelectRealtionsWindow>();
         }
 

@@ -62,12 +62,10 @@ namespace DopravniPodnikSem.ViewModels
             _ridiciRepository = ridiciRepository;
             Ridici = new ObservableCollection<Ridic>();
 
-            // Инициализация команд
             AddUpdateCommand = new ViewModelCommand(async _ => await AddOrUpdateRidicAsync(), _ => SelectedRidic != null);
             DeleteCommand = new ViewModelCommand(async _ => await DeleteRidicAsync(), _ => SelectedRidic != null);
             SearchCommand = new ViewModelCommand(async _ => await SearchRidicByLastNameAsync(), _ => !string.IsNullOrEmpty(SearchPrijmeni));
 
-            // Загрузка всех данных
             LoadAllRidiciAsync();
         }
 
@@ -108,7 +106,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch
             {
-                ErrorMessage = "Ошибка при поиске водителя по фамилии.";
+                ErrorMessage = "Error";
             }
         }
 

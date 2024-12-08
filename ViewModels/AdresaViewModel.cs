@@ -1,79 +1,73 @@
 ﻿using DopravniPodnikSem.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DopravniPodnikSem.Repository;
+using DopravniPodnikSem.Repository.Interfaces;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
 
 namespace DopravniPodnikSem.ViewModels
 {
-    public class AdresaViewModel : BaseViewModel
+    public class AdresaViewModel : BaseViewModel, INotifyPropertyChanged
     {
-        private Adresa _adresa;
+        private readonly IAdresyRepository _adresyRepository;
 
-        public AdresaViewModel(Adresa adresa)
+        private Zamestnanec _originalZamestnanec;
+        private Adresa _editedAddress;
+
+        public AdresaViewModel(IAdresyRepository adresyRepository, Zamestnanec selectedZamestnanec, Adresa selectedAddress)
         {
-            _adresa = adresa;
+            _adresyRepository = adresyRepository;
+
+            _originalZamestnanec = selectedZamestnanec;
+
+            EditedAddress = new Adresa
+            {
+                AdresaId = selectedAddress.AdresaId,
+                Mesto = selectedAddress.Mesto,
+                Ulice = selectedAddress.Ulice,
+                CisloBudovy = selectedAddress.CisloBudovy,
+                ZipCode = selectedAddress.ZipCode,
+                CisloBytu = selectedAddress.CisloBytu
+            };
         }
 
-        public int AdresaId
+        public Zamestnanec OriginalZamestnanec
         {
-            get => _adresa.AdresaId;
+            get => _originalZamestnanec;
             set
             {
-                _adresa.AdresaId = value;
-                OnPropertyChanged();
+                _originalZamestnanec = value;
+                OnPropertyChanged(nameof(OriginalZamestnanec));
             }
         }
 
-        public string Mesto
+        public Adresa EditedAddress
         {
-            get => _adresa.Mesto;
+            get => _editedAddress;
             set
             {
-                _adresa.Mesto = value;
-                OnPropertyChanged();
+                _editedAddress = value;
+                OnPropertyChanged(nameof(EditedAddress));
             }
         }
 
-        public string Ulice
+        public async Task SaveChangesAsync()
         {
-            get => _adresa.Ulice;
-            set
+            try
             {
-                _adresa.Ulice = value;
-                OnPropertyChanged();
+                await _adresyRepository.UpdateAddressLogicAsync(EditedAddress, OriginalZamestnanec.ZamestnanecId, OriginalZamestnanec.AdresaId);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
-        public string CisloBudovy
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName = "")
         {
-            get => _adresa.CisloBudovy;
-            set
-            {
-                _adresa.CisloBudovy = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string ZipCode
-        {
-            get => _adresa.ZipCode;
-            set
-            {
-                _adresa.ZipCode = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string CisloBytu
-        {
-            get => _adresa.CisloBytu;
-            set
-            {
-                _adresa.CisloBytu = value;
-                OnPropertyChanged();
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

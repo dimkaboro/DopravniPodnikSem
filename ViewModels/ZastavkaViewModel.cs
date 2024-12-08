@@ -82,7 +82,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Ошибка загрузки данных: {ex.Message}";
+                ErrorMessage = $"Error: {ex.Message}";
             }
         }
 
@@ -92,30 +92,28 @@ namespace DopravniPodnikSem.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(SelectedZastavka?.Nazev) || string.IsNullOrWhiteSpace(SelectedZastavka?.GpsSouradnice))
                 {
-                    ErrorMessage = "Пожалуйста, заполните все поля.";
+                    ErrorMessage = "Fill all the fields";
                     return;
                 }
 
-                if (SelectedZastavka.ZastavkaId == 0) // Если ID отсутствует, добавляем новую запись
+                if (SelectedZastavka.ZastavkaId == 0) 
                 {
                     await _zastavkaRepository.AddAsync(SelectedZastavka);
-                    ErrorMessage = "Запись успешно добавлена.";
+                    ErrorMessage = "Added";
                 }
-                else // Если ID существует, обновляем запись
+                else 
                 {
                     await _zastavkaRepository.UpdateAsync(SelectedZastavka);
-                    ErrorMessage = "Запись успешно обновлена.";
+                    ErrorMessage = "Added";
                 }
 
-                // Обновляем данные
                 LoadDataAsync();
 
-                // Сбрасываем выбранную запись
                 SelectedZastavka = null;
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Ошибка: {ex.Message}";
+                ErrorMessage = $"Error: {ex.Message}";
             }
         }
 
@@ -125,15 +123,12 @@ namespace DopravniPodnikSem.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(SearchNazev))
                 {
-                    // Если поле поиска пустое, загружаем весь список
                     LoadDataAsync();
                     return;
                 }
 
-                // Получаем все данные из базы
                 var allZastavky = await _zastavkaRepository.GetAllAsync();
 
-                // Фильтруем данные по совпадению с поисковым запросом
                 var filteredZastavky = allZastavky
                     .Where(z => z.Nazev.Contains(SearchNazev, StringComparison.OrdinalIgnoreCase))
                     .ToList();
@@ -147,7 +142,6 @@ namespace DopravniPodnikSem.ViewModels
                     ErrorMessage = string.Empty;
                 }
 
-                // Обновляем коллекцию для отображения
                 Zastavky = new ObservableCollection<Zastavka>(filteredZastavky);
             }
             catch (Exception ex)
@@ -160,7 +154,7 @@ namespace DopravniPodnikSem.ViewModels
         {
             if (SelectedZastavka == null)
             {
-                ErrorMessage = "Пожалуйста, выберите запись для удаления.";
+                ErrorMessage = "Select to delete";
                 return;
             }
 
@@ -169,11 +163,11 @@ namespace DopravniPodnikSem.ViewModels
                 await _zastavkaRepository.DeleteAsync(SelectedZastavka.ZastavkaId);
                 LoadDataAsync();
                 ClearSelection();
-                ErrorMessage = "Запись успешно удалена.";
+                ErrorMessage = "Deleted";
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Ошибка удаления записи: {ex.Message}";
+                ErrorMessage = $"Error: {ex.Message}";
             }
         }
 

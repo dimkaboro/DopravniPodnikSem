@@ -55,8 +55,8 @@ namespace DopravniPodnikSem.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка выполнения GetAllAsync: {ex.Message}");
-                throw; // Перебрасываем исключение для обработки выше
+                Console.WriteLine($"Error GetAllAsync: {ex.Message}");
+                throw; 
             }
 
             return zastavky;
@@ -88,7 +88,7 @@ namespace DopravniPodnikSem.Repository
                 }
             }
 
-            return null; // Если запись не найдена
+            return null; 
         }
 
         public async Task AddAsync(Zastavka zastavka)
@@ -101,7 +101,7 @@ namespace DopravniPodnikSem.Repository
                 command.Parameters.Add(new OracleParameter(":ZastavkaId", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.InputOutput,
-                    Value = DBNull.Value // Новый ID будет возвращен процедурой
+                    Value = DBNull.Value 
                 });
                 command.Parameters.Add(new OracleParameter(":Nazev", OracleDbType.Varchar2)
                 {
@@ -114,7 +114,6 @@ namespace DopravniPodnikSem.Repository
 
                 await command.ExecuteNonQueryAsync();
 
-                // Преобразуем возвращенный ID
                 zastavka.ZastavkaId = ((OracleDecimal)command.Parameters[":ZastavkaId"].Value).ToInt32();
             }
         }

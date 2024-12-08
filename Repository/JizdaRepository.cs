@@ -102,7 +102,7 @@ namespace DopravniPodnikSem.Repository
                 command.Parameters.Add(new OracleParameter(":JizdaId", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.InputOutput,
-                    Value = DBNull.Value // ID будет создан процедурой
+                    Value = DBNull.Value 
                 });
                 command.Parameters.Add(new OracleParameter(":CasOd", jizda.CasOd));
                 command.Parameters.Add(new OracleParameter(":CasDo", jizda.CasDo));
@@ -113,7 +113,6 @@ namespace DopravniPodnikSem.Repository
 
                 await command.ExecuteNonQueryAsync();
 
-                // Обновление ID записи
                 jizda.JizdaId = Convert.ToInt32(((OracleDecimal)command.Parameters[":JizdaId"].Value).Value);
             }
         }

@@ -6,7 +6,6 @@
         Title="Dopravni Podnik" Height="650" Width="900">
 
     <Window.Resources>
-        <!-- Регистрация конвертеров -->
         <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
     </Window.Resources>
@@ -17,7 +16,6 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Боковое меню -->
         <Border x:Name="SideMenu" Background="#272B2F" Width="228" HorizontalAlignment="Left">
             <StackPanel Margin="10">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0,10">
@@ -25,7 +23,6 @@
                     <TextBlock Text="Dopravni Podnik" FontSize="16" FontWeight="Bold" Foreground="White" TextAlignment="Center" Margin="0,5,0,10"/>
                 </StackPanel>
 
-                <!-- Кнопки меню -->
                 <Button Content="Home" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="HomeButton_Click" />
                 <Button Content="Login" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="LoginButton_Click" Visibility="{Binding IsLoginButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="Registration" Style="{StaticResource MenuButtonStyle}" Width="Auto" HorizontalAlignment="Stretch" Margin="0,5,0,5" Click="RegistrationButton_Click" Visibility="{Binding IsRegistrationButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -34,14 +31,10 @@
             </StackPanel>
         </Border>
 
-        <!-- Основное содержимое с ContentControl -->
         <Grid Grid.Column="1" Background="#D4DDE1">
-            <!-- Контейнер для динамического контента -->
             <ContentControl Content="{Binding CurrentView}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <!-- Главный экран -->
             </ContentControl>
 
-            <!-- Бургер-кнопка, всегда наверху -->
             <Button x:Name="BurgerButton" Style="{StaticResource HamburgerButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10" Click="BurgerButton_Click" />
 
             <TextBlock Text="You are in Emulation Mode"

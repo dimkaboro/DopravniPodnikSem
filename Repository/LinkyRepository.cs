@@ -56,14 +56,13 @@ namespace DopravniPodnikSem.Repository
                 command.Parameters.Add(new OracleParameter(":LinkaId", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.InputOutput,
-                    Value = DBNull.Value // ID будет создан процедурой
+                    Value = DBNull.Value 
                 });
                 command.Parameters.Add(new OracleParameter(":Nazev", linka.Nazev));
                 command.Parameters.Add(new OracleParameter(":Typ", linka.Typ));
 
                 await command.ExecuteNonQueryAsync();
 
-                // Обновляем ID записи
                 linka.LinkaId = Convert.ToInt32(((OracleDecimal)command.Parameters[":LinkaId"].Value).Value);
             }
         }
@@ -99,7 +98,7 @@ namespace DopravniPodnikSem.Repository
                 }
                 catch (OracleException ex)
                 {
-                    ErrorMessage = $"Ошибка удаления линии: {ex.Message}";
+                    ErrorMessage = $"Error: {ex.Message}";
                 }
             }
         }

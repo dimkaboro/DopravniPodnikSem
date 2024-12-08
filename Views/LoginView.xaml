@@ -3,24 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent">
     <Grid>
-        <!-- Фоновое изображение для всего окна -->
         <Grid.Background>
             <ImageBrush ImageSource="pack://application:,,,/Resources/Image/loginbackground.jpg"
                         Stretch="Fill"
                         Opacity="0.5" />
         </Grid.Background>
 
-        <!-- Основной контейнер -->
         <Border Background="#212529" Opacity="0.95" CornerRadius="10" Padding="15" Width="280" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel>
-                <!-- Заголовок логина -->
                 <TextBlock Text="LOGIN" FontSize="18" FontWeight="Bold" Foreground="DarkGray" TextAlignment="Center" Margin="0,0,0,10"/>
 
-                <!-- Иконка пользователя -->
                 <Image Source="pack://application:,,,/Resources/Image/user_icon.png"
                        Width="70" Height="70" Margin="0,0,0,10" HorizontalAlignment="Center"/>
 
-                <!-- Поле Email с заголовком -->
                 <StackPanel Orientation="Vertical" Margin="0,10,0,0">
                     <TextBlock Text="Email" Foreground="Gray" FontSize="12" Margin="0,0,0,5" />
                     <Border Background="#333348" CornerRadius="8" Padding="8">
@@ -31,7 +26,6 @@
                     </Border>
                 </StackPanel>
 
-                <!-- Поле Password с заголовком -->
                 <StackPanel Orientation="Vertical" Margin="0,15,0,0">
                     <TextBlock Text="Password" Foreground="Gray" FontSize="12" Margin="0,0,0,5" />
                     <Border Background="#333348" CornerRadius="8" Padding="8">
@@ -47,7 +41,6 @@
                            Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" 
                            Margin="0,10,0,0"/>
                 
-                <!-- Кнопка логина -->
                 <Button Content="LOGIN" Width="200" Height="40" Margin="0,20,0,0"
                         Command="{Binding LoginCommand}"
                         Foreground="#D4DDE1" BorderThickness="0" Cursor="Hand"

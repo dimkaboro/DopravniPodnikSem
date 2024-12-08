@@ -36,7 +36,6 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        // Дополнительные свойства от наследуемой модели DopravniPlatba
         public int BiletId
         {
             get => _faktura.BiletId;

@@ -108,9 +108,8 @@ namespace DopravniPodnikSem.Repository
 
                 await command.ExecuteNonQueryAsync();
 
-                // Используем явное преобразование через OracleDecimal
                 var oracleDecimalValue = (Oracle.ManagedDataAccess.Types.OracleDecimal)outputParam.Value;
-                return oracleDecimalValue.ToInt32(); // Преобразуем в Int32
+                return oracleDecimalValue.ToInt32(); 
             }
         }
 

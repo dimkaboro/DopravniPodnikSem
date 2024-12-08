@@ -21,9 +21,6 @@ using System.Windows.Shapes;
 
 namespace DopravniPodnikSem
 {
-    /// <summary>
-    /// Логика взаимодействия для AdminWindow.xaml
-    /// </summary>
     public partial class AdminWindow : Window
     {
         private bool _isMenuOpen = false;
@@ -53,14 +50,12 @@ namespace DopravniPodnikSem
         {
             if (_isMenuOpen)
             {
-                // Закрываем меню
                 MenuColumn.Width = new GridLength(0);
                 SideMenu.Visibility = Visibility.Collapsed;
                 _isMenuOpen = false;
             }
             else
             {
-                // Открываем меню
                 SideMenu.Visibility = Visibility.Visible;
                 MenuColumn.Width = new GridLength(228);
                 _isMenuOpen = true;
@@ -108,6 +103,14 @@ namespace DopravniPodnikSem
             _navigationVM.CurrentView = new LogView
             {
                 DataContext = App.ServiceProvider.GetService<LogViewModel>()
+            };
+        }
+
+        private void ZamestnanciButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new ZamestnanciView
+            {
+                DataContext = App.ServiceProvider.GetService<ZamestnanecViewModel>()
             };
         }
 

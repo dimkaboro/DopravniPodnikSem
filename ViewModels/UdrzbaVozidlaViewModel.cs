@@ -88,20 +88,19 @@ namespace DopravniPodnikSem.ViewModels
         {
             if (!SearchDate.HasValue)
             {
-                ErrorMessage = "Пожалуйста, выберите дату.";
+                ErrorMessage = "Enter the date";
                 return;
             }
 
             try
             {
-                // Убедимся, что используется только дата
                 var filtered = await _udrzbaVozidlaRepository.GetAllByDateAsync(SearchDate.Value.Date);
                 UdrzbyVozidla = new ObservableCollection<UdrzbaVozidla>(filtered);
                 ErrorMessage = string.Empty;
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Ошибка при поиске: {ex.Message}";
+                ErrorMessage = $"Error: {ex.Message}";
             }
         }
 
@@ -109,7 +108,7 @@ namespace DopravniPodnikSem.ViewModels
         {
             if (string.IsNullOrEmpty(SelectedUdrzbaVozidla?.Popis) || SelectedUdrzbaVozidla.DatumUdrzby == default)
             {
-                ErrorMessage = "Пожалуйста, заполните все поля.";
+                ErrorMessage = "Fill all the fields";
                 return;
             }
 
@@ -129,7 +128,6 @@ namespace DopravniPodnikSem.ViewModels
 
             var result = searchWindow.ShowDialog();
 
-            // Закрытие окна после успешного добавления
             if (result == true)
             {
                 searchWindow.Close();
@@ -140,7 +138,7 @@ namespace DopravniPodnikSem.ViewModels
         {
             if (SelectedUdrzbaVozidla == null)
             {
-                ErrorMessage = "Выберите запись для обновления.";
+                ErrorMessage = "Select to update";
                 return;
             }
 
@@ -173,7 +171,7 @@ namespace DopravniPodnikSem.ViewModels
         {
             if (SelectedUdrzbaVozidla == null)
             {
-                ErrorMessage = "Выберите запись для удаления.";
+                ErrorMessage = "Select to delete";
                 return;
             }
 
@@ -190,12 +188,12 @@ namespace DopravniPodnikSem.ViewModels
                 }
                 else
                 {
-                    ErrorMessage = "Не удалось найти связанное транспортное средство.";
+                    ErrorMessage = "Error";
                 }
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Ошибка при удалении: {ex.Message}";
+                ErrorMessage = $"Error: {ex.Message}";
             }
         }
 

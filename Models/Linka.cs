@@ -35,7 +35,6 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _typ, value);
         }
 
-        // Навигационное свойство для связи с Jizda
         public virtual ICollection<Jizda> Jizdy { get; set; } = new List<Jizda>();
     }
 }

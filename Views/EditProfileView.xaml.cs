@@ -20,9 +20,6 @@ using System.Windows.Shapes;
 
 namespace DopravniPodnikSem.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для EditProfileView.xaml
-    /// </summary>
     public partial class EditProfileView : UserControl
     {
         private readonly NavigationVM _navigationVM;
@@ -41,7 +38,6 @@ namespace DopravniPodnikSem.Views
 
         private async void ChangeButton_Click(object sender, RoutedEventArgs e)
         {
-            // Открытие диалога выбора файла
             var openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
                 Filter = "Image files (*.jpg, *.jpeg, *.png, *.bmp)|*.jpg;*.jpeg;*.png;*.bmp",
@@ -50,13 +46,10 @@ namespace DopravniPodnikSem.Views
 
             if (openFileDialog.ShowDialog() == true)
             {
-                // Загружаем выбранное изображение
                 string filePath = openFileDialog.FileName;
 
-                // Читаем содержимое файла как массив байтов
                 var imageBytes = await File.ReadAllBytesAsync(filePath);
 
-                // Устанавливаем новое изображение во ViewModel
                 var viewModel = (EditProfileViewModel)DataContext;
                 viewModel.NewAvatar = imageBytes;
             }
@@ -66,14 +59,12 @@ namespace DopravniPodnikSem.Views
         {
             var viewModel = (EditProfileViewModel)DataContext;
 
-            // Сохраняем изменения
             await viewModel.SaveChangesAsync();
 
             var updatedUser = await App.ServiceProvider.GetService<IUserDataRepository>()
                                    .GetUserDetailsAsync(CurrentSession.LoggedInUser.ZamestnanecId);
             CurrentSession.LoggedInUser = updatedUser;
 
-            // Возвращаемся в ProfileView
             var navigationVM = App.ServiceProvider.GetService<NavigationVM>();
             navigationVM.CurrentView = new ProfileView
             {

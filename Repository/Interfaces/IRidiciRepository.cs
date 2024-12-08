@@ -10,7 +10,7 @@ namespace DopravniPodnikSem.Repository.Interfaces
     public interface IRidiciRepository
     {
         Task<IEnumerable<Ridic>> GetAllAsync();
-        Task<IEnumerable<Ridic>> GetByLastNameAsync(string prijmeni); // Поиск по фамилии
+        Task<IEnumerable<Ridic>> GetByLastNameAsync(string prijmeni); 
         Task AddAsync(Ridic ridic);
         Task UpdateAsync(Ridic ridic);
         Task DeleteAsync(int ridicId);

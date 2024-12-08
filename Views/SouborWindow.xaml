@@ -1,0 +1,45 @@
+﻿<Window x:Class="DopravniPodnikSem.Views.SouborWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DopravniPodnikSem.Converters"
+        mc:Ignorable="d" Background="#D4DDE1"
+        Height="370" Width="300">
+
+    <Window.Resources>
+        <local:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
+    </Window.Resources>
+
+    <Grid Margin="0">
+        <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20">
+            <Border Width="160" Height="160" CornerRadius="100" BorderBrush="#B4BDC1" BorderThickness="1" Background="Transparent" HorizontalAlignment="Center">
+                <Border Width="140" Height="140" CornerRadius="100" BorderBrush="#B4BDC1" BorderThickness="1" Background="Transparent">
+                    <Border Width="120" Height="120" CornerRadius="60" Background="#EEE" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image Source="{Binding CurrentAvatar, Converter={StaticResource ByteArrayToImageSourceConverter}}" Stretch="UniformToFill">
+                            <Image.Clip>
+                                <EllipseGeometry Center="60,60" RadiusX="60" RadiusY="60"/>
+                            </Image.Clip>
+                        </Image>
+                    </Border>
+                </Border>
+            </Border>
+
+            <Button Content="Change avatar"
+                    Width="120"
+                    Height="40"
+                    Margin="0,20,0,20"
+                    Style="{StaticResource CustomButtonStyle}"
+                    Background="#EEE"
+                    Foreground="#6C63FF"
+                    Click="ChangeAvatar_Click" />
+
+            <Button Content="Cancel"
+                    Width="120"
+                    Height="40"
+                    Margin="0,0,0,20"
+                    Style="{StaticResource CustomButtonStyle}"
+                    Click="Cancel_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

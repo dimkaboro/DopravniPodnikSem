@@ -70,10 +70,9 @@ namespace DopravniPodnikSem.ViewModels
             LoadAllLogyAsync();
         }
 
-        // Конструктор для работы с объектом Vozidlo
         public LogViewModel(Log log)
         {
-            _log = log; // Присваиваем переданный объект
+            _log = log; 
         }
 
         private async void LoadAllLogyAsync()
@@ -88,12 +87,10 @@ namespace DopravniPodnikSem.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(SearchQuery))
                 {
-                    // Если поле поиска пустое, загружаем весь список
                     LoadAllLogyAsync();
                     return;
                 }
 
-                // Получаем все данные и фильтруем локально
                 var allLogy = await _logRepository.GetAllAsync();
                 var filteredLogy = allLogy
                     .Where(v => v.JakaTabulka.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))

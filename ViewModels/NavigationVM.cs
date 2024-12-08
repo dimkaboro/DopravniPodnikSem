@@ -17,7 +17,7 @@ public class NavigationVM : INotifyPropertyChanged
     public Zamestnanec EmulatedUser { get; private set; }
 
 
-    public bool IsRoleInfoVisible => UserRole != null; // Видимость информации о роли, если UserRole != null
+    public bool IsRoleInfoVisible => UserRole != null; 
     public bool IsEmulating => EmulatedUser != null;
     public bool NotEmulating => !IsEmulating;
 
@@ -68,10 +68,9 @@ public class NavigationVM : INotifyPropertyChanged
         }
     }
 
-    // Метод для авторизации
     public void Authorized(Zamestnanec zamestnanec)
     {
-        UserRole = zamestnanec.Role; // Устанавливаем роль пользователя
+        UserRole = zamestnanec.Role; 
         
         if (UserRole == Role.Administrator)
         {
@@ -175,7 +174,6 @@ public class NavigationVM : INotifyPropertyChanged
         }
     }
 
-    // Обработчик изменений для INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName = "")
     {

@@ -60,7 +60,7 @@ namespace DopravniPodnikSem.Repository
                                 Prijmeni = reader.GetString(reader.GetOrdinal("prijmeni")),
                                 Email = reader.GetString(reader.GetOrdinal("email")),
                                 Pozice = reader.GetString(reader.GetOrdinal("pozice")),
-                                Role = (Role)reader.GetInt32(reader.GetOrdinal("role_id")) // Преобразование ID роли в enum Role
+                                Role = (Role)reader.GetInt32(reader.GetOrdinal("role_id")) 
                             };
                         }
                     }
@@ -235,6 +235,95 @@ namespace DopravniPodnikSem.Repository
 
                 // Возвращаем только верхний уровень
                 return employees.Where(e => e.ZamestnanecZamestnanecId == null || e.ZamestnanecZamestnanecId == e.ZamestnanecId).ToList();
+            }
+        }
+
+
+
+
+
+
+        public async Task<IEnumerable<Zamestnanec>> GetAllAsync()
+        {
+            var zamestnanci = new List<Zamestnanec>();
+            var query = "SELECT * FROM ZAMESTNANCI";
+
+            using (var connection = _databaseService.GetConnection())
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                }
+
+                using (var command = new OracleCommand(query, connection))
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        zamestnanci.Add(new Zamestnanec
+                        {
+                            ZamestnanecId = reader.GetInt32(0),
+                            Jmeno = reader.GetString(1),
+                            Prijmeni = reader.GetString(2),
+                            Email = reader.GetString(3),
+                            Heslo = reader.GetString(4),
+                            Pozice = reader.GetString(5),
+                            Plat = reader.GetInt32(6),
+                            DatumNastupu = DateOnly.FromDateTime(reader.GetDateTime(7)),
+                            CisloTelefonu = reader.GetString(8),
+                            AdresaId = reader.GetInt32(10),
+                            Role = (Role)reader.GetInt32(11),
+                            SouborId = reader.GetInt32(12),
+                            JePrivate = reader.GetInt32(13)
+                        });
+                    }
+                }
+            }
+
+            return zamestnanci;
+        }
+
+        public async Task UpdateAsync(Zamestnanec zamestnanec)
+        {
+            var query = "BEGIN manage_zamestnanec('UPDATE', :ZamestnanecId, :Jmeno, :Prijmeni, :Email, :Heslo, :Pozice, :Plat :DatumNastupu :CisloTelefonu :ZamestnanecZamestnanecId :AdresaId :RoleId :SouborId :JePrivate); END;";
+
+            using (var connection = _databaseService.GetConnection())
+            using (var command = new OracleCommand(query, connection))
+            {
+                command.Parameters.Add(new OracleParameter(":ZamestnanecId", zamestnanec.ZamestnanecId));
+                command.Parameters.Add(new OracleParameter(":Jmeno", zamestnanec.Jmeno));
+                command.Parameters.Add(new OracleParameter(":Prijmeni", zamestnanec.Prijmeni));
+                command.Parameters.Add(new OracleParameter(":Email", zamestnanec.Email));
+                command.Parameters.Add(new OracleParameter(":Heslo", zamestnanec.Heslo));
+                command.Parameters.Add(new OracleParameter(":Pozice", zamestnanec.Pozice));
+                command.Parameters.Add(new OracleParameter(":Plat", zamestnanec.Plat));
+                command.Parameters.Add(new OracleParameter(":DatumNastupu", zamestnanec.DatumNastupu));
+                command.Parameters.Add(new OracleParameter(":CisloTelefonu", zamestnanec.CisloTelefonu));
+                command.Parameters.Add(new OracleParameter(":ZamestnanecZamestnanecId", zamestnanec.ZamestnanecZamestnanecId));
+                command.Parameters.Add(new OracleParameter(":AdresaId", zamestnanec.AdresaId));
+                command.Parameters.Add(new OracleParameter(":RoleId", zamestnanec.RoleId));
+                command.Parameters.Add(new OracleParameter(":SouborId", zamestnanec.SouborId));
+                command.Parameters.Add(new OracleParameter(":JePrivate", zamestnanec.JePrivate));
+
+                await command.ExecuteNonQueryAsync();
+            }
+        }
+
+        public async Task DeleteAsync(int zamestnanecId)
+        {
+            var query = "DELETE FROM ZAMESTNANCI WHERE ZAMESTNANEC_ID = :ZamestnanecId";
+
+            using (var connection = _databaseService.GetConnection())
+            using (var command = new OracleCommand(query, connection))
+            {
+                command.Parameters.Add(new OracleParameter(":ZamestnanecId", zamestnanecId));
+
+                if (connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                }
+
+                await command.ExecuteNonQueryAsync();
             }
         }
     }

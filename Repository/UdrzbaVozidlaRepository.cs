@@ -80,7 +80,7 @@ namespace DopravniPodnikSem.Repository
                 command.Parameters.Add(new OracleParameter(":UdrzbaId", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.InputOutput,
-                    Value = DBNull.Value // ID будет создан процедурой
+                    Value = DBNull.Value 
                 });
                 command.Parameters.Add(new OracleParameter(":CasUdrzby", udrzba.DatumUdrzby));
                 command.Parameters.Add(new OracleParameter(":Popis", udrzba.Popis));
@@ -88,7 +88,6 @@ namespace DopravniPodnikSem.Repository
 
                 await command.ExecuteNonQueryAsync();
 
-                // Обновление ID записи
                 udrzba.UdrzbaId = Convert.ToInt32(((OracleDecimal)command.Parameters[":UdrzbaId"].Value).Value);
             }
         }

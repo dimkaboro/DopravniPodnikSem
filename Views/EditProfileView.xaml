@@ -14,16 +14,12 @@
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
 
-        <!-- Аватар и кнопка редактирования -->
         <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20">
-            <!-- Внешние круги -->
             <Border Width="160" Height="160" CornerRadius="100" BorderBrush="#B4BDC1" BorderThickness="1" Background="Transparent" HorizontalAlignment="Center">
                 <Border Width="140" Height="140" CornerRadius="100" BorderBrush="#B4BDC1" BorderThickness="1" Background="Transparent">
-                    <!-- Внутренний круг с изображением -->
                     <Border Width="120" Height="120" CornerRadius="60" Background="#EEE" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Image Source="{Binding CurrentAvatar, Converter={StaticResource ByteArrayToImageSourceConverter}}" Stretch="UniformToFill">
                             <Image.Clip>
-                                <!-- Круговая обрезка -->
                                 <EllipseGeometry Center="60,60" RadiusX="60" RadiusY="60"/>
                             </Image.Clip>
                         </Image>
@@ -45,7 +41,6 @@
                       Margin="20,0,0,30" 
                       Style="{StaticResource CustomCheckBoxStyle}" />
 
-            <!-- Кнопка Save -->
             <Button Content="Save"
                     Width="120"
                     Height="40"
@@ -53,7 +48,6 @@
                     Style="{StaticResource CustomButtonStyle}"
                     Click="SaveButton_Click" />
 
-            <!-- Кнопка Cancel -->
             <Button Content="Cancel"
                     Width="120"
                     Height="40"
@@ -62,14 +56,11 @@
                     Click="CancelButton_Click" />
         </StackPanel>
 
-        <!-- Основная информация -->
         <StackPanel Grid.Column="1" Margin="20">
             <StackPanel Margin="0,10">
-                <!-- Поля: -->
 
                 <TextBlock Text="BASIC INFORMATION" FontSize="16" FontWeight="Bold" Foreground="#555" Margin="0,0,0,10"/>
 
-                <!-- Имя -->
                 <Grid Margin="0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150" />
@@ -79,7 +70,6 @@
                     <TextBox Grid.Column="1" Text="{Binding EditedUser.Jmeno}" Margin="5,0" VerticalAlignment="Center" FontSize="14" />
                 </Grid>
 
-                <!-- Фамилия -->
                 <Grid Margin="0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150" />
@@ -98,7 +88,6 @@
                     <TextBox Grid.Column="1" Text="{Binding EditedUser.Email}" Margin="5,0" VerticalAlignment="Center" FontSize="14" />
                 </Grid>
 
-                <!-- Номер телефона -->
                 <Grid Margin="0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150" />
@@ -109,11 +98,9 @@
                 </Grid>
             </StackPanel>
 
-            <!-- Адрес -->
             <StackPanel Margin="0,10">
                 <TextBlock Text="ADDRESS INFORMATION" FontSize="16" FontWeight="Bold" Foreground="#555" Margin="0,0,0,10"/>
 
-                <!-- Город -->
                 <Grid Margin="0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150" />
@@ -123,7 +110,6 @@
                     <TextBox Grid.Column="1" Text="{Binding EditedAddress.Mesto}" Margin="5,0" VerticalAlignment="Center" FontSize="14" />
                 </Grid>
 
-                <!-- Улица -->
                 <Grid Margin="0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150" />
@@ -133,7 +119,6 @@
                     <TextBox Grid.Column="1" Text="{Binding EditedAddress.Ulice}" Margin="5,0" VerticalAlignment="Center" FontSize="14" />
                 </Grid>
 
-                <!-- Номер дома -->
                 <Grid Margin="0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150" />
@@ -143,7 +128,6 @@
                     <TextBox Grid.Column="1" Text="{Binding EditedAddress.CisloBudovy}" Margin="5,0" VerticalAlignment="Center" FontSize="14" />
                 </Grid>
 
-                <!-- Почтовый индекс -->
                 <Grid Margin="0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="150" />

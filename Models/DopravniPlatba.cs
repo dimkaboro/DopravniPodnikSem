@@ -45,7 +45,6 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _jizdaJizdaId, value);
         }
 
-        // Навигационное свойство
-        public virtual Jizda Jizda { get; set; } // Связь с Jizda
+        public virtual Jizda Jizda { get; set; } 
     }
 }

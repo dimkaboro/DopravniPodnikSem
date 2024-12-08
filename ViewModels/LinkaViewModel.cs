@@ -81,7 +81,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch
             {
-                ErrorMessage = "Ошибка загрузки данных линий.";
+                ErrorMessage = "Error";
             }
         }
 
@@ -103,7 +103,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch
             {
-                ErrorMessage = "Ошибка при добавлении/обновлении линии.";
+                ErrorMessage = "Error";
             }
         }
 
@@ -111,7 +111,7 @@ namespace DopravniPodnikSem.ViewModels
         {
             if (string.IsNullOrWhiteSpace(SearchNazev))
             {
-                LoadAllLinkyAsync(); // Если строка поиска пустая, загрузить все маршруты
+                LoadAllLinkyAsync(); 
                 return;
             }
 
@@ -123,7 +123,7 @@ namespace DopravniPodnikSem.ViewModels
 
                 if (!Linky.Any())
                 {
-                    ErrorMessage = "Маршруты не найдены.";
+                    ErrorMessage = "Error";
                 }
                 else
                 {
@@ -132,7 +132,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch
             {
-                ErrorMessage = "Ошибка поиска.";
+                ErrorMessage = "Error";
             }
         }
 
@@ -149,7 +149,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch
             {
-                ErrorMessage = "Ошибка при удалении линии.";
+                ErrorMessage = "Error";
             }
         }
 

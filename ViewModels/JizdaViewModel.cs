@@ -123,14 +123,12 @@ namespace DopravniPodnikSem.ViewModels
         {
             try
             {
-                // Проверяем, заданы ли значения CasOd и CasDo
                 if (SelectedJizda?.CasOd == default || SelectedJizda?.CasDo == default)
                 {
                     ErrorMessage = "Zadejte čas od a čas do před přidáním!";
                     return;
                 }
 
-                // Создаем ViewModel для выбора связей
                 var selectRelationsViewModel = new SelectRealtionsViewModel(
                     new LinkyRepository(new DatabaseService(_configuration)),
                     new RidiciRepository(new DatabaseService(_configuration)),
@@ -138,18 +136,15 @@ namespace DopravniPodnikSem.ViewModels
                     _configuration
                 );
 
-                // Создаем окно выбора связей
                 var selectRelationsWindow = new SelectRealtionsWindow
                 {
                     DataContext = selectRelationsViewModel
                 };
 
-                // Показываем окно модально
                 var result = selectRelationsWindow.ShowDialog();
 
                 if (result == true)
                 {
-                    // Проверяем, выбраны ли все связи
                     if (selectRelationsViewModel.SelectedLinka == null ||
                         selectRelationsViewModel.SelectedRidic == null ||
                         selectRelationsViewModel.SelectedVozidlo == null)
@@ -158,7 +153,6 @@ namespace DopravniPodnikSem.ViewModels
                         return;
                     }
 
-                    // Создаем новую запись Jizda
                     var newJizda = new Jizda
                     {
                         CasOd = SelectedJizda.CasOd,
@@ -168,13 +162,10 @@ namespace DopravniPodnikSem.ViewModels
                         VozidloId = selectRelationsViewModel.SelectedVozidlo.VozidloId
                     };
 
-                    // Добавляем запись через репозиторий
                     await _jizdaRepository.AddAsync(newJizda);
 
-                    // Обновляем данные
                     LoadDataAsync();
 
-                    // Уведомление об успешном добавлении
                     ErrorMessage = string.Empty;
                     MessageBox.Show("Nový záznam byl úspěšně přidán do databáze.", "Úspěch", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -195,7 +186,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch (System.Exception ex)
             {
-                ErrorMessage = $"Ошибка: {ex.Message}";
+                ErrorMessage = $"Error: {ex.Message}";
             }
         }
 
@@ -209,7 +200,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch (System.Exception ex)
             {
-                ErrorMessage = $"Ошибка: {ex.Message}";
+                ErrorMessage = $"Error: {ex.Message}";
             }
         }
 
@@ -217,34 +208,30 @@ namespace DopravniPodnikSem.ViewModels
         {
             try
             {
-                // Проверяем корректность формата даты
                 if (DateTime.TryParseExact(SearchQuery, "M/d/yyyy",
                     System.Globalization.CultureInfo.InvariantCulture,
                     System.Globalization.DateTimeStyles.None, out var searchDate))
                 {
-                    // Выполняем поиск по дате
                     var filteredJizdy = await _jizdaRepository.GetByDateAsync(searchDate.Date);
 
                     if (filteredJizdy.Any())
                     {
                         Jizdy = new ObservableCollection<Jizda>(filteredJizdy);
-                        ErrorMessage = string.Empty; // Очищаем ошибку, если записи найдены
+                        ErrorMessage = string.Empty; 
                     }
                     else
                     {
                         Jizdy = new ObservableCollection<Jizda>();
-                        ErrorMessage = "Žádné záznamy nenalezeny."; // Если ничего не найдено
+                        ErrorMessage = "Žádné záznamy nenalezeny."; 
                     }
                 }
                 else
                 {
-                    // Если формат даты некорректен
                     ErrorMessage = "Zadejte platné datum ve formátu MM/DD/YYYY.";
                 }
             }
             catch (Exception ex)
             {
-                // Логируем ошибку и отображаем сообщение
                 ErrorMessage = $"Chyba při vyhledávání: {ex.Message}";
             }
         }
@@ -259,7 +246,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch (System.Exception ex)
             {
-                ErrorMessage = $"Ошибка: {ex.Message}";
+                ErrorMessage = $"Error: {ex.Message}";
             }
         }
 
@@ -275,11 +262,11 @@ namespace DopravniPodnikSem.ViewModels
 
         private void ClearFields()
         {
-            SearchQuery = string.Empty; // Очистка текстового поля поиска
-            SelectedJizda = null; // Снятие выделения в таблице
+            SearchQuery = string.Empty; 
+            SelectedJizda = null; 
             LoadDataAsync();
-            ErrorMessage = string.Empty; // Сброс сообщения об ошибке
-            DurationResult = string.Empty; // Очистка результатов расчёта
+            ErrorMessage = string.Empty; 
+            DurationResult = string.Empty; 
         }
     }
 }

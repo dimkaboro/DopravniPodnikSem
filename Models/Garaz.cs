@@ -37,7 +37,6 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _zamestnanecId, value);
         }
 
-        // Навигационные свойства
         public virtual Zamestnanec Zamestnanec { get; set; }
         public virtual ICollection<Vozidlo> Vozidla { get; set; }
     }

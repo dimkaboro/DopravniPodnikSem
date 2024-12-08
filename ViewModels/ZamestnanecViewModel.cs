@@ -1,164 +1,237 @@
 ﻿using DopravniPodnikSem.Models;
 using DopravniPodnikSem.Models.Enum;
+using DopravniPodnikSem.Repository;
+using DopravniPodnikSem.Repository.Interfaces;
+using DopravniPodnikSem.Services;
+using DopravniPodnikSem.Views;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Reflection.Metadata;
+using System.Windows;
+using System.Windows.Input;
 
 namespace DopravniPodnikSem.ViewModels
 {
-    public class ZamestnanecViewModel : BaseViewModel
+    public class ZamestnanecViewModel : BaseViewModel, INotifyPropertyChanged
     {
-        private readonly Zamestnanec _zamestnanec;
+        private readonly IUserDataRepository _userDataRepository;
+        private readonly IAdresyRepository _adresyRepository;
+        private readonly ISouboryRepository _souboryRepository;
+        private readonly IConfiguration _configuration;
+
+        private ObservableCollection<Zamestnanec> _zamestnanci;
+
+        private Zamestnanec _selectedZamestnanec;
+        private Adresa _selectedAdresa;
+        private Soubory _selectedSoubor;
+
+        private string _errorMessage;
+        private Zamestnanec zamestnanec;
+        private string _searchQuery;
+
+        public string SearchQuery
+        {
+            get => _searchQuery;
+            set
+            {
+                _searchQuery = value;
+                OnPropertyChanged();
+            }
+        }
+        public ObservableCollection<Zamestnanec> Zamestnanci
+        {
+            get => _zamestnanci;
+            set
+            {
+                _zamestnanci = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Zamestnanec SelectedZamestnanec
+        {
+            get => _selectedZamestnanec;
+            set
+            {
+                _selectedZamestnanec = value;
+                OnPropertyChanged(nameof(SelectedZamestnanec));
+            }
+        }
+
+        public Adresa SelectedAdresa
+        {
+            get => _selectedAdresa;
+            set
+            {
+                _selectedAdresa = value;
+                OnPropertyChanged(nameof(SelectedAdresa));
+            }
+        }
+
+        public Soubory SelectedSoubor
+        {
+            get => _selectedSoubor;
+            set
+            {
+                _selectedSoubor = value;
+                OnPropertyChanged(nameof(SelectedSoubor));
+            }
+        }
+
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
+                _errorMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand AddCommand { get; }
+        public ICommand UpdateCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand SearchCommand { get; }
+        public ICommand ClearCommand { get; }
+        public ICommand ShowAddressCommand { get; }
+        public ICommand ShowSouborCommand { get; }
+
+        public ZamestnanecViewModel(IConfiguration configuration)
+        {
+            _userDataRepository = App.ServiceProvider.GetService<IUserDataRepository>();
+            _adresyRepository = App.ServiceProvider.GetService<IAdresyRepository>();
+            _souboryRepository = App.ServiceProvider.GetService<ISouboryRepository>();
+            _configuration = configuration;
+
+            UpdateCommand = new ViewModelCommand(async _ => await UpdateZamestnanecAsync(), _ => SelectedZamestnanec != null);
+            ClearCommand = new ViewModelCommand(_ => ClearFields());
+            ShowAddressCommand = new ViewModelCommand(ShowAddress);
+            ShowSouborCommand = new ViewModelCommand(ShowSoubor);
+
+            LoadDataAsync();
+        }
 
         public ZamestnanecViewModel(Zamestnanec zamestnanec)
         {
-            _zamestnanec = zamestnanec;
+            this.zamestnanec = zamestnanec;
         }
 
-        public int ZamestnanecId
+
+        private async void LoadDataAsync()
         {
-            get => _zamestnanec.ZamestnanecId;
-            set
+            var zamestnanci = await _userDataRepository.GetAllAsync();
+            Zamestnanci = new ObservableCollection<Zamestnanec>(zamestnanci);
+        }
+
+        private async Task UpdateZamestnanecAsync()
+        {
+            try
             {
-                _zamestnanec.ZamestnanecId = value;
-                OnPropertyChanged();
+                await _userDataRepository.UpdateAsync(SelectedZamestnanec);
+                LoadDataAsync();
+                ErrorMessage = string.Empty;
+            }
+            catch (System.Exception ex)
+            {
+                ErrorMessage = $"Error: {ex.Message}";
             }
         }
 
-        public string Jmeno
+        private async Task DeleteZamestnanecAsync()
         {
-            get => _zamestnanec.Jmeno;
-            set
+            try
             {
-                _zamestnanec.Jmeno = value;
-                OnPropertyChanged();
+                await _userDataRepository.DeleteAsync(SelectedZamestnanec.ZamestnanecId);
+                LoadDataAsync();
+                ErrorMessage = string.Empty;
+            }
+            catch (System.Exception ex)
+            {
+                ErrorMessage = $"Error: {ex.Message}";
             }
         }
 
-        public string Prijmeni
+        private async void ShowAddress(object parameter)
         {
-            get => _zamestnanec.Prijmeni;
-            set
+            await LoadAddressDetails();
+            if (parameter is Zamestnanec zamestnanec && zamestnanec.AdresaId != null)
             {
-                _zamestnanec.Prijmeni = value;
-                OnPropertyChanged();
+                var adresaWindow = new AdresaWindow
+                {
+                    DataContext = new AdresaViewModel(App.ServiceProvider.GetService<IAdresyRepository>(), SelectedZamestnanec, SelectedAdresa)
+                };
+
+                adresaWindow.Show();
+            }
+            else
+            {
+                MessageBox.Show("Address not found for the selected employee.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
-        public string Pozice
+        private async Task LoadAddressDetails()
         {
-            get => _zamestnanec.Pozice;
-            set
+            try
             {
-                _zamestnanec.Pozice = value;
-                OnPropertyChanged();
+                var adresa = await _adresyRepository.GetAddressDetailsAsync(SelectedZamestnanec.AdresaId);
+                SelectedAdresa = adresa;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading user details: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        public int Plat
+
+
+        private async void ShowSoubor(object parameter)
         {
-            get => _zamestnanec.Plat;
-            set
+            await LoadAvatarDetails();
+            if (parameter is Zamestnanec zamestnanec && zamestnanec.SouborId != null)
             {
-                _zamestnanec.Plat = value;
-                OnPropertyChanged();
+                var souborWindow = new SouborWindow
+                {
+                    DataContext = new SouboryViewModel(App.ServiceProvider.GetService<ISouboryRepository>(), SelectedZamestnanec, SelectedSoubor)
+                };
+
+                souborWindow.Show();
+            }
+            else
+            {
+                MessageBox.Show("Avatar not found for the selected employee.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
-        public DateOnly DatumNastupu
+        private async Task LoadAvatarDetails()
         {
-            get => _zamestnanec.DatumNastupu;
-            set
+            try
             {
-                _zamestnanec.DatumNastupu = value;
-                OnPropertyChanged();
+                var soubor = await _souboryRepository.GetUserAvatarAsync(SelectedZamestnanec.SouborId);
+                SelectedSoubor = soubor;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading user details: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        public string Email
+
+        private void ClearFields()
         {
-            get => _zamestnanec.Email;
-            set
-            {
-                _zamestnanec.Email = value;
-                OnPropertyChanged();
-            }
+            SearchQuery = string.Empty; 
+            SelectedZamestnanec = null; 
+            LoadDataAsync();
+            ErrorMessage = string.Empty; 
         }
 
-        public string Heslo
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName = "")
         {
-            get => _zamestnanec.Heslo;
-            set
-            {
-                _zamestnanec.Heslo = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string CisloTelefonu
-        {
-            get => _zamestnanec.CisloTelefonu;
-            set
-            {
-                _zamestnanec.CisloTelefonu = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int AdresaId
-        {
-            get => _zamestnanec.AdresaId;
-            set
-            {
-                _zamestnanec.AdresaId = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int RoleId
-        {
-            get => _zamestnanec.RoleId;
-            set
-            {
-                _zamestnanec.RoleId = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int SouborId
-        {
-            get => _zamestnanec.SouborId;
-            set
-            {
-                _zamestnanec.SouborId = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int JePrivate
-        {
-            get => _zamestnanec.JePrivate;
-            set
-            {
-                _zamestnanec.JePrivate = value;
-                OnPropertyChanged();
-            }
-        }
-
-        // Навигационные свойства
-        public AdresaViewModel AdresaViewModel => new AdresaViewModel(_zamestnanec.Adresa);
-        public SouboryViewModel SouborViewModel => new SouboryViewModel(_zamestnanec.Soubor);
-
-        public ZamestnanecViewModel VedouciViewModel => _zamestnanec.Vedouci != null ? new ZamestnanecViewModel(_zamestnanec.Vedouci) : null;
-
-        public IEnumerable<ZamestnanecViewModel> PodrizeniViewModel => _zamestnanec.Podrizeni?.Select(z => new ZamestnanecViewModel(z));
-
-        // Свойство для Role (из Enum)
-        public Role Role
-        {
-            get => (Role)_zamestnanec.RoleId;
-            set
-            {
-                _zamestnanec.RoleId = (int)value;
-                OnPropertyChanged();
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
