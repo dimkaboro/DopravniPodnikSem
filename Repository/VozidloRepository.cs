@@ -24,6 +24,7 @@ namespace DopravniPodnikSem.Repository
             _databaseService = databaseService;
         }
 
+
         public async Task<IEnumerable<Vozidlo>> GetAllAsync()
         {
             var vozidla = new List<Vozidlo>();
@@ -69,8 +70,8 @@ namespace DopravniPodnikSem.Repository
                             RegistracniCislo = reader.GetString(1),
                             Typ = reader.GetString(2),
                             Kapacita = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
-                            GarazeGarazId = reader.GetInt32(4),
-                            UdrzbaVozidlaUdrzbaId = reader.GetInt32(5)
+                            GarazeGarazId = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
+                            UdrzbaVozidlaUdrzbaId = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5) // Проверка на NULL
                         };
                     }
                 }
@@ -81,76 +82,61 @@ namespace DopravniPodnikSem.Repository
 
         public async Task AddAsync(Vozidlo vozidlo)
         {
-            var query = "BEGIN AddVozidlo(:RegistracniCislo, :Typ, :Kapacita, :GarazId); END;";
+            var query = "BEGIN manage_vozidlo('INSERT', :VozidloId, :RegistracniCislo, :Typ, :Kapacita, :GarazId); END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
-                // Проверяем параметры
+                command.Parameters.Add(new OracleParameter(":VozidloId", OracleDbType.Int32)
+                {
+                    Direction = System.Data.ParameterDirection.InputOutput,
+                    Value = DBNull.Value
+                });
                 command.Parameters.Add(new OracleParameter(":RegistracniCislo", vozidlo.RegistracniCislo));
                 command.Parameters.Add(new OracleParameter(":Typ", vozidlo.Typ));
                 command.Parameters.Add(new OracleParameter(":Kapacita", vozidlo.Kapacita ?? (object)DBNull.Value));
-                command.Parameters.Add(new OracleParameter(":GarazId", vozidlo.GarazeGarazId));
+                command.Parameters.Add(new OracleParameter(":GarazId", vozidlo.GarazeGarazId ?? (object)DBNull.Value));
 
-                try
-                {
-                    await command.ExecuteNonQueryAsync();
+                await command.ExecuteNonQueryAsync();
 
-                }
-                catch (OracleException ex)
-                {
-                    throw new InvalidOperationException($"Ошибка при добавлении транспортного средства: {ex.Message}", ex);
-                }
+                vozidlo.VozidloId = Convert.ToInt32(command.Parameters[":VozidloId"].Value.ToString());
             }
         }
-
 
         public async Task UpdateAsync(Vozidlo vozidlo)
         {
-            var query = @"
-                UPDATE VOZIDLA
-                SET REGISTRACNI_CISLO = :RegistracniCislo, TYP = :Typ, KAPACITA = :Kapacita,
-                    GARAZ_GARAZ_ID = :GarazeGarazId, UDRZBA_VOZIDLA_UDRZBA_ID = :UdrzbaVozidlaUdrzbaId
-                WHERE VOZIDLO_ID = :VozidloId";
+            var query = "BEGIN manage_vozidlo('UPDATE', :VozidloId, :RegistracniCislo, :Typ, :Kapacita, :GarazId); END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
+                command.Parameters.Add(new OracleParameter(":VozidloId", vozidlo.VozidloId));
                 command.Parameters.Add(new OracleParameter(":RegistracniCislo", vozidlo.RegistracniCislo));
                 command.Parameters.Add(new OracleParameter(":Typ", vozidlo.Typ));
                 command.Parameters.Add(new OracleParameter(":Kapacita", vozidlo.Kapacita ?? (object)DBNull.Value));
-                command.Parameters.Add(new OracleParameter(":GarazeGarazId", vozidlo.GarazeGarazId));
-                command.Parameters.Add(new OracleParameter(":UdrzbaVozidlaUdrzbaId", vozidlo.UdrzbaVozidlaUdrzbaId));
-                command.Parameters.Add(new OracleParameter(":VozidloId", vozidlo.VozidloId));
+                command.Parameters.Add(new OracleParameter(":GarazId", vozidlo.GarazeGarazId ?? (object)DBNull.Value));
 
-                try
-                {
-                    await command.ExecuteNonQueryAsync();
-
-                }
-                catch (OracleException ex)
-                {
-                    throw new InvalidOperationException($"Ошибка при добавлении транспортного средства: {ex.Message}", ex);
-                }
+                await command.ExecuteNonQueryAsync();
             }
         }
 
-        public async Task DeleteAsync(int udrzbaId)
+        public async Task DeleteAsync(int vozidloId)
         {
-            var query = "BEGIN DeleteUdrzba(:UdrzbaId); END;";
+            var query = "DELETE FROM VOZIDLA WHERE VOZIDLO_ID = :VozidloId";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
-                command.Parameters.Add(new OracleParameter(":UdrzbaId", udrzbaId));
-                await connection.OpenAsync();
+                command.Parameters.Add(new OracleParameter(":VozidloId", vozidloId));
                 await command.ExecuteNonQueryAsync();
             }
         }
     }
 }
-        
-    
+
+
+
+
 
 
 

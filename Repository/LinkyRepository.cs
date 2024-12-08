@@ -2,8 +2,10 @@
 using DopravniPodnikSem.Repository.Interfaces;
 using DopravniPodnikSem.Services;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,51 +48,38 @@ namespace DopravniPodnikSem.Repository
 
         public async Task AddAsync(Linka linka)
         {
-            var query = @"
-INSERT INTO LINKY (LINKA_ID, NAZEV, TYP)
-VALUES ((SELECT NVL(MAX(LINKA_ID), 0) + 1 FROM LINKY), :Nazev, :Typ)";
+            var query = "BEGIN manage_linka('INSERT', :LinkaId, :Nazev, :Typ); END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
+                command.Parameters.Add(new OracleParameter(":LinkaId", OracleDbType.Int32)
+                {
+                    Direction = ParameterDirection.InputOutput,
+                    Value = DBNull.Value // ID будет создан процедурой
+                });
                 command.Parameters.Add(new OracleParameter(":Nazev", linka.Nazev));
                 command.Parameters.Add(new OracleParameter(":Typ", linka.Typ));
 
-                try
-                {
-                    await command.ExecuteNonQueryAsync();
-                    ErrorMessage = string.Empty;
-                }
-                catch (OracleException ex)
-                {
-                    ErrorMessage = $"Ошибка добавления линии: {ex.Message}";
-                }
+                await command.ExecuteNonQueryAsync();
+
+                // Обновляем ID записи
+                linka.LinkaId = Convert.ToInt32(((OracleDecimal)command.Parameters[":LinkaId"].Value).Value);
             }
         }
 
         public async Task UpdateAsync(Linka linka)
         {
-            var query = @"
-UPDATE LINKY
-SET NAZEV = :Nazev, TYP = :Typ
-WHERE LINKA_ID = :LinkaId";
+            var query = "BEGIN manage_linka('UPDATE', :LinkaId, :Nazev, :Typ); END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
+                command.Parameters.Add(new OracleParameter(":LinkaId", linka.LinkaId));
                 command.Parameters.Add(new OracleParameter(":Nazev", linka.Nazev));
                 command.Parameters.Add(new OracleParameter(":Typ", linka.Typ));
-                command.Parameters.Add(new OracleParameter(":LinkaId", linka.LinkaId));
 
-                try
-                {
-                    await command.ExecuteNonQueryAsync();
-                    ErrorMessage = string.Empty;
-                }
-                catch (OracleException ex)
-                {
-                    ErrorMessage = $"Ошибка обновления линии: {ex.Message}";
-                }
+                await command.ExecuteNonQueryAsync();
             }
         }
 

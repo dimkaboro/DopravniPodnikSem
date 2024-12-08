@@ -50,7 +50,7 @@
                     <Border Style="{StaticResource RoundedInputBorderStyle}" Height="40" Width="260">
                         <TextBox Width="250" 
                                  Height="30" 
-                                 Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                                 Text="{Binding SearchNazev, UpdateSourceTrigger=PropertyChanged}"
                                  Style="{StaticResource EnhancedTextBoxStyle}" 
                                  Margin="5,0,5,0"
                                  VerticalContentAlignment="Center" 

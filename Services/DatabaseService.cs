@@ -23,18 +23,22 @@ namespace DopravniPodnikSem.Services
 
         public OracleConnection GetConnection()
         {
-            if (_connection == null || _connection.State == ConnectionState.Closed || _connection.State == ConnectionState.Broken)
-            {
-                _connection?.Dispose();
-                _connection = new OracleConnection(_configuration.GetConnectionString("DefaultConnection"));
-                _connection.Open();
-            }
-            return _connection;
+            var connection = new OracleConnection(_configuration.GetConnectionString("DefaultConnection"));
+            connection.Open();
+            return connection;
         }
 
         public void Dispose()
         {
-            _connection?.Dispose();
+            if (_connection != null)
+            {
+                if (_connection.State != ConnectionState.Closed)
+                {
+                    _connection.Close();
+                }
+                _connection.Dispose();
+                _connection = null;
+            }
         }
     }
 }
