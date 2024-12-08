@@ -103,6 +103,14 @@ namespace DopravniPodnikSem
             };
         }
 
+        private void LogsButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new LogView
+            {
+                DataContext = App.ServiceProvider.GetService<LogViewModel>()
+            };
+        }
+
         private void LinkyButton_Click(object sender, RoutedEventArgs e)
         {
             _navigationVM.CurrentView = new LinkyView
