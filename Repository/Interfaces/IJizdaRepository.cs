@@ -14,7 +14,10 @@ namespace DopravniPodnikSem.Repository.Interfaces
         Task AddAsync(Jizda jizda);
         Task UpdateAsync(Jizda jizda);
         Task DeleteAsync(int jizdaId);
+
         Task UpdateStatusesAsync(); 
+        Task<(string LinkaNazev, DateTime CasOd, DateTime CasDo, TimeSpan Duration)> GetLongestJizdaAsync();
         Task<string> CalculateDurationAsync(int jizdaId); 
+
     }
 }

@@ -87,6 +87,10 @@ namespace DopravniPodnikSem
             services.AddTransient<IJizdaRepository, JizdaRepository>();
             services.AddTransient<JizdaViewModel>(); 
             services.AddTransient<SelectRealtionsWindow>();
+
+            services.AddTransient<IDopravniPlatbyRepository, DopravniPlatbyRepository>();
+            services.AddTransient<DopravniPlatbyViewModel>();
+            services.AddTransient<TypePlatbaView>();// Добавляем эту строку>
         }
 
 

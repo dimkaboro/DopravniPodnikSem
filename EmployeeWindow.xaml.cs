@@ -43,7 +43,7 @@ namespace DopravniPodnikSem
             _souboryRepository = App.ServiceProvider.GetService<ISouboryRepository>();
 
             _navigationVM = App.ServiceProvider.GetService<NavigationVM>();
-            DataContext = _navigationVM;  
+            DataContext = _navigationVM;
         }
 
         private void BurgerButton_Click(object sender, RoutedEventArgs e)
@@ -132,6 +132,14 @@ namespace DopravniPodnikSem
             _navigationVM.CurrentView = new ZastavkyView
             {
                 DataContext = App.ServiceProvider.GetService<ZastavkaViewModel>()
+            };
+        }
+
+        private void JizdyButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new JizdyView
+            {
+                DataContext = App.ServiceProvider.GetService<JizdaViewModel>()
             };
         }
     }
