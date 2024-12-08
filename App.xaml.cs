@@ -49,6 +49,7 @@ namespace DopravniPodnikSem
             services.AddTransient<IUserDataRepository, UserDataRepository>();
             services.AddTransient<IAdresyRepository, AdresyRepository>();
             services.AddTransient<ISouboryRepository, SouboryRepository>();
+            services.AddTransient<ILogRepository, LogRepository>();
             
             services.AddTransient<RegistrationViewModel>();
             services.AddTransient<LoginViewModel>();
@@ -56,6 +57,7 @@ namespace DopravniPodnikSem
             services.AddTransient<EditProfileViewModel>();
             services.AddTransient<UserEmulationViewModel>();
             services.AddTransient<ShowUsersViewModel>();
+            services.AddTransient<LogViewModel>();
 
             services.AddTransient<IVozidloRepository, VozidloRepository>();
             services.AddTransient<VozidloViewModel>();

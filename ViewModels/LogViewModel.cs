@@ -1,78 +1,134 @@
 ﻿using DopravniPodnikSem.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DopravniPodnikSem.Repository.Interfaces;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace DopravniPodnikSem.ViewModels
 {
     public class LogViewModel : BaseViewModel
     {
+        private readonly ILogRepository _logRepository;
+        private ObservableCollection<Log> _logy;
+        private Log _selectedLog;
+        private string _searchQuery;
         private Log _log;
+        private string _errorMessage;
 
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
+                _errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage)); 
+            }
+        }
+
+        public ObservableCollection<Log> Logy
+        {
+            get => _logy;
+            set
+            {
+                _logy = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Log SelectedLog
+        {
+            get => _selectedLog;
+            set
+            {
+                _selectedLog = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SearchQuery
+        {
+            get => _searchQuery;
+            set
+            {
+                _searchQuery = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand SearchCommand { get; }
+        public ICommand ClearCommand { get; }
+        public ICommand DeleteCommand { get; }
+
+        public LogViewModel(ILogRepository logRepository)
+        {
+            _logRepository = logRepository;
+            Logy = new ObservableCollection<Log>();
+
+            SearchCommand = new ViewModelCommand(async _ => await SearchLogAsync(), _ => !string.IsNullOrEmpty(SearchQuery));
+            ClearCommand = new ViewModelCommand(_ => ClearSearch());
+            DeleteCommand = new ViewModelCommand(async _ => await DeleteLogAsync(), _ => SelectedLog != null);
+
+            LoadAllLogyAsync();
+        }
+
+        // Конструктор для работы с объектом Vozidlo
         public LogViewModel(Log log)
         {
-            _log = log;
+            _log = log; // Присваиваем переданный объект
         }
 
-        public int LogId
+        private async void LoadAllLogyAsync()
         {
-            get => _log.LogId;
-            set
+            var logy = await _logRepository.GetAllAsync();
+            Logy = new ObservableCollection<Log>(logy);
+        }
+
+        private async System.Threading.Tasks.Task SearchLogAsync()
+        {
+            try
             {
-                _log.LogId = value;
-                OnPropertyChanged();
+                if (string.IsNullOrWhiteSpace(SearchQuery))
+                {
+                    // Если поле поиска пустое, загружаем весь список
+                    LoadAllLogyAsync();
+                    return;
+                }
+
+                // Получаем все данные и фильтруем локально
+                var allLogy = await _logRepository.GetAllAsync();
+                var filteredLogy = allLogy
+                    .Where(v => v.JakaTabulka.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                if (filteredLogy.Count == 0)
+                {
+                    ErrorMessage = "Žádné záznamy nenalezeny.";
+                }
+                else
+                {
+                    ErrorMessage = string.Empty;
+                }
+
+                Logy = new ObservableCollection<Log>(filteredLogy);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Chyba při vyhledávání: {ex.Message}";
             }
         }
 
-        public string JakaTabulka
+        private void ClearSearch()
         {
-            get => _log.JakaTabulka;
-            set
-            {
-                _log.JakaTabulka = value;
-                OnPropertyChanged();
-            }
+            SearchQuery = string.Empty;
+            ErrorMessage = string.Empty;
+            LoadAllLogyAsync();
         }
 
-        public string Operace
+        private async System.Threading.Tasks.Task DeleteLogAsync()
         {
-            get => _log.Operace;
-            set
+            if (SelectedLog != null)
             {
-                _log.Operace = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public DateTime CasOperace
-        {
-            get => _log.CasOperace;
-            set
-            {
-                _log.CasOperace = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string Uzivatel
-        {
-            get => _log.Uzivatel;
-            set
-            {
-                _log.Uzivatel = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string Popis
-        {
-            get => _log.Popis;
-            set
-            {
-                _log.Popis = value;
-                OnPropertyChanged();
+                await _logRepository.DeleteAsync(SelectedLog.LogId);
+                LoadAllLogyAsync();
             }
         }
     }
