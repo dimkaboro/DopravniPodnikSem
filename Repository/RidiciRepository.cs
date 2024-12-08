@@ -87,7 +87,7 @@ namespace DopravniPodnikSem.Repository
                 command.Parameters.Add(new OracleParameter(":RidicId", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.InputOutput,
-                    Value = DBNull.Value // ID будет создан процедурой
+                    Value = DBNull.Value 
                 });
                 command.Parameters.Add(new OracleParameter(":Jmeno", ridic.Jmeno));
                 command.Parameters.Add(new OracleParameter(":Prijmeni", ridic.Prijmeni));
@@ -96,7 +96,6 @@ namespace DopravniPodnikSem.Repository
 
                 await command.ExecuteNonQueryAsync();
 
-                // Обновляем ID водителя
                 ridic.RidicId = Convert.ToInt32(((OracleDecimal)command.Parameters[":RidicId"].Value).Value);
             }
         }
@@ -134,7 +133,7 @@ namespace DopravniPodnikSem.Repository
                 }
                 catch (OracleException ex)
                 {
-                    ErrorMessage = $"Ошибка удаления водителя: {ex.Message}";
+                    ErrorMessage = $"Error: {ex.Message}";
                 }
             }
         }

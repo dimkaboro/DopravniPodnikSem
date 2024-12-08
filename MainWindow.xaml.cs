@@ -24,29 +24,25 @@ namespace DopravniPodnikSem
         {
             InitializeComponent();
 
-            // Настройка конфигурации для DatabaseService
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
             var databaseService = new DatabaseService(configuration);
 
-            // Установка DataContext с экземпляром NavigationVM
             _navigationVM = App.ServiceProvider.GetService<NavigationVM>();
-            DataContext = _navigationVM;  // Устанавливаем DataContext на NavigationVM
+            DataContext = _navigationVM;  
         }
 
         private void BurgerButton_Click(object sender, RoutedEventArgs e)
         {
             if (_isMenuOpen)
             {
-                // Закрываем меню
                 MenuColumn.Width = new GridLength(0);
                 SideMenu.Visibility = Visibility.Collapsed;
                 _isMenuOpen = false;
             }
             else
             {
-                // Открываем меню
                 SideMenu.Visibility = Visibility.Visible;
                 MenuColumn.Width = new GridLength(228);
                 _isMenuOpen = true;
@@ -55,13 +51,11 @@ namespace DopravniPodnikSem
 
         private void HomeButton_Click(object sender, RoutedEventArgs e)
         {
-            // Устанавливаем основное содержимое в MainContent на главный экран
             _navigationVM.CurrentView = new HomeView();
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            // Устанавливаем содержимое на LoginView
             _navigationVM.CurrentView = new LoginView();
         }
 

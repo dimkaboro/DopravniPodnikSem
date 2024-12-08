@@ -16,9 +16,11 @@ namespace DopravniPodnikSem.Repository.Interfaces
         Task UpdateEmployeeAsync(Zamestnanec employee);
         Task<IEnumerable<Zamestnanec>> GetAllUsersAsync();
         Task<List<Zamestnanec>> GetEmployeeHierarchyAsync();
-    }
 
-    //Task<Zamestnanec> GetUserEmailByUserId(int id);
-    //Task<Zamestnanec> GetUserByUserId(int id);
+
+        Task<IEnumerable<Zamestnanec>> GetAllAsync();
+        Task UpdateAsync(Zamestnanec zamestnanec);
+        Task DeleteAsync(int zamestnanecId);
+    }
 }
 

@@ -17,8 +17,8 @@ namespace DopravniPodnikSem.ViewModels
         private readonly IVozidloRepository _vozidloRepository;
         private readonly Action<Vozidlo> _onVozidloSelected;
 
-        private ObservableCollection<Vozidlo> _vozidla; // Полный список
-        private ObservableCollection<Vozidlo> _filteredVozidla; // Отфильтрованный список
+        private ObservableCollection<Vozidlo> _vozidla;
+        private ObservableCollection<Vozidlo> _filteredVozidla; 
         private Vozidlo _selectedVozidlo;
         private string _searchQuery;
 
@@ -89,10 +89,10 @@ namespace DopravniPodnikSem.ViewModels
 
         private void AddSelectedVozidlo(object parameter)
         {
-            if (parameter is Window currentWindow) // Проверяем, передано ли окно
+            if (parameter is Window currentWindow) 
             {
-                _onVozidloSelected?.Invoke(SelectedVozidlo); // Выполняем действие с выбранным транспортом
-                currentWindow.Close(); // Закрываем окно
+                _onVozidloSelected?.Invoke(SelectedVozidlo); 
+                currentWindow.Close(); 
             }
             else
             {

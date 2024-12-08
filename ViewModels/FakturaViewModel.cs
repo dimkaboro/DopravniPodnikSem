@@ -35,5 +35,26 @@ namespace DopravniPodnikSem.ViewModels
                 OnPropertyChanged();
             }
         }
+
+
+        public int BiletId
+        {
+            get => _faktura.BiletId;
+            set
+            {
+                _faktura.BiletId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public decimal Cena
+        {
+            get => _faktura.Cena;
+            set
+            {
+                _faktura.Cena = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

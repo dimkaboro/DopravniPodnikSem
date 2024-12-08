@@ -71,7 +71,7 @@ namespace DopravniPodnikSem.Repository
                             Typ = reader.GetString(2),
                             Kapacita = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
                             GarazeGarazId = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
-                            UdrzbaVozidlaUdrzbaId = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5) // Проверка на NULL
+                            UdrzbaVozidlaUdrzbaId = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5) 
                         };
                     }
                 }

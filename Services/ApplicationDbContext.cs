@@ -15,7 +15,6 @@ namespace DopravniPodnikSem.Services
         {
         }
 
-        // При необходимости, настройте модели
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -9,7 +9,6 @@
         Background="#212529" 
         ResizeMode="NoResize">
     <Grid Background="#212529">
-        <!-- Main Content Border -->
         <Border Background="#212529" Opacity="0.95" CornerRadius="10" Padding="20" Margin="20">
             <Grid>
                 <Grid.RowDefinitions>
@@ -22,7 +21,6 @@
                     <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Header -->
                 <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Search Vehicle" 
                            FontSize="24" 
                            FontWeight="Bold" 
@@ -30,7 +28,6 @@
                            HorizontalAlignment="Center" 
                            Margin="0,0,0,20" />
 
-                <!-- Search Section -->
                 <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20">
                     <TextBlock Text="Enter Registration Number" 
                                Foreground="Gray" 
@@ -54,7 +51,6 @@
                             Margin="0,10,0,10" Width="150" />
                 </StackPanel>
 
-                <!-- Data Grid -->
                 <Border Grid.Row="1" Grid.Column="1" BorderBrush="#00f0ff" BorderThickness="1" CornerRadius="10" Background="#212529" Padding="2,0,3,3" Margin="20">
                     <DataGrid x:Name="VozidlaDataGrid" 
               ItemsSource="{Binding FilteredVozidla}" 
@@ -67,7 +63,6 @@
               Background="Transparent"
               HeadersVisibility="Column">
                         <DataGrid.Resources>
-                            <!-- Стиль строк -->
                             <Style TargetType="DataGridRow">
                                 <Setter Property="Background" Value="Transparent"/>
                                 <Setter Property="Foreground" Value="White"/>
@@ -78,7 +73,6 @@
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
-                            <!-- Стиль ячеек -->
                             <Style TargetType="DataGridCell">
                                 <Setter Property="Background" Value="Transparent"/>
                                 <Setter Property="Foreground" Value="White"/>
@@ -91,7 +85,6 @@
                             </Style>
                         </DataGrid.Resources>
 
-                        <!-- Колонки -->
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" 
                                 Binding="{Binding VozidloId}" 
@@ -168,7 +161,6 @@
                     </DataGrid>
                 </Border>
 
-                <!-- Buttons Section -->
                 <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,20,0,0">
                     <Button Content="ADD" Command="{Binding AddCommand}" 
                             CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"

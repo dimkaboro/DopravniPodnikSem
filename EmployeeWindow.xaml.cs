@@ -21,9 +21,6 @@ using System.Windows.Shapes;
 
 namespace DopravniPodnikSem
 {
-    /// <summary>
-    /// Логика взаимодействия для EmployeeWindow.xaml
-    /// </summary>
     public partial class EmployeeWindow : Window
     {
         private bool _isMenuOpen = false;
@@ -53,14 +50,12 @@ namespace DopravniPodnikSem
         {
             if (_isMenuOpen)
             {
-                // Закрываем меню
                 MenuColumn.Width = new GridLength(0);
                 SideMenu.Visibility = Visibility.Collapsed;
                 _isMenuOpen = false;
             }
             else
             {
-                // Открываем меню
                 SideMenu.Visibility = Visibility.Visible;
                 MenuColumn.Width = new GridLength(228);
                 _isMenuOpen = true;
@@ -70,7 +65,6 @@ namespace DopravniPodnikSem
 
         private void HomeButton_Click(object sender, RoutedEventArgs e)
         {
-            // Устанавливаем основное содержимое в MainContent на главный экран
             _navigationVM.CurrentView = new HomeView();
         }
 

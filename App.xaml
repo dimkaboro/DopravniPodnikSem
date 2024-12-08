@@ -10,7 +10,6 @@
         <local:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
         <local:IntToBoolConverter x:Key="IntToBoolConverter" />
 
-        <!-- Стиль для кнопок бокового меню -->
         <Style x:Key="MenuButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#3A3F44"/>
             <Setter Property="Foreground" Value="White"/>
@@ -39,7 +38,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Стиль для гамбургер-кнопки -->
         <Style x:Key="HamburgerButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
@@ -56,7 +54,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Определение стиля CustomButtonStyle -->
         <Style x:Key="CustomButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#6C63FF"/>
             <Setter Property="Foreground" Value="#D4DDE1"/>
@@ -115,7 +112,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Определение стиля RoundedInputBorderStyle -->
         <Style x:Key="RoundedInputBorderStyle" TargetType="Border">
             <Setter Property="Background" Value="#333348"/>
             <Setter Property="CornerRadius" Value="8"/>
@@ -123,7 +119,6 @@
             <Setter Property="Margin" Value="0,0,0,5"/>
         </Style>
         
-        <!-- Enhanced TextBox Style -->
         <Style x:Key="EnhancedTextBoxStyle" TargetType="TextBox">
             <Setter Property="Background" Value="#333348" />
             <Setter Property="Foreground" Value="White" />
@@ -135,7 +130,6 @@
             <Setter Property="FontFamily" Value="Segoe UI" />
         </Style>
 
-        <!-- Enhanced PasswordBox Style -->
         <Style x:Key="EnhancedPasswordBoxStyle" TargetType="PasswordBox">
             <Setter Property="Background" Value="#333348" />
             <Setter Property="Foreground" Value="White" />
@@ -162,7 +156,6 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
-                            <!-- Кнопка для отображения выбранного элемента -->
                             <ToggleButton 
                         Name="ToggleButton"
                         Focusable="False"
@@ -177,7 +170,6 @@
                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
 
-                            <!-- Выпадающий список -->
                             <Popup 
                         Name="Popup" 
                         Placement="Bottom"
@@ -200,12 +192,10 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <!-- Эффекты при наведении -->
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="BorderBrush" Value="#5A63FF" />
                     <Setter Property="Background" Value="#292E35" />
                 </Trigger>
-                <!-- Эффекты при раскрытии выпадающего списка -->
                 <Trigger Property="IsDropDownOpen" Value="True">
                     <Setter Property="BorderBrush" Value="#6C63FF" />
                     <Setter Property="Background" Value="#292E35" />
@@ -254,7 +244,6 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="CheckBox">
                         <StackPanel Orientation="Horizontal">
-                            <!-- Кастомная галочка -->
                             <Border x:Name="CheckBoxBorder"
                             Width="20"
                             Height="20"
@@ -271,7 +260,6 @@
                               StrokeEndLineCap="Round"
                               Visibility="Collapsed" />
                             </Border>
-                            <!-- Текстовое содержимое -->
                             <TextBlock Text="{TemplateBinding Content}"
                                Margin="10,0,0,0"
                                VerticalAlignment="Center"
@@ -279,22 +267,18 @@
                                FontSize="14" />
                         </StackPanel>
                         <ControlTemplate.Triggers>
-                            <!-- Отображение галочки, если IsChecked = true -->
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
                                 <Setter TargetName="CheckBoxBorder" Property="Background" Value="#6C63FF" />
                                 <Setter TargetName="CheckMark" Property="Stroke" Value="White" />
                             </Trigger>
-                            <!-- Состояние при наведении -->
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="CheckBoxBorder" Property="Background" Value="#E8E8E8" />
                             </Trigger>
-                            <!-- Состояние при нажатии -->
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="CheckBoxBorder" Property="Background" Value="#D4DDE1" />
                                 <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#5A5FEE" />
                             </Trigger>
-                            <!-- Отключенный CheckBox -->
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="CheckBoxBorder" Property="Background" Value="#CCCCCC" />
                                 <Setter TargetName="CheckBoxBorder" Property="BorderBrush" Value="#AAAAAA" />

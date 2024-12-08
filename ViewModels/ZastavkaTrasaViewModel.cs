@@ -59,11 +59,10 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        // Навигационные свойства
         public JizdaViewModel JizdaViewModel =>
             _zastavkaTrasa.Jizda != null ? new JizdaViewModel(_zastavkaTrasa.Jizda) : null;
 
         public ZastavkaViewModel ZastavkaViewModel =>
-          _zastavkaTrasa.Zastavka != null ? new ZastavkaViewModel(new ZastavkaRepository(_zastavkaTrasa.Zastavka)) : null; // Исправлено здесь
+          _zastavkaTrasa.Zastavka != null ? new ZastavkaViewModel(new ZastavkaRepository(_zastavkaTrasa.Zastavka)) : null; 
     }
 }

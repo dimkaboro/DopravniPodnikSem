@@ -11,13 +11,13 @@ namespace DopravniPodnikSem.ViewModels
     {
         private readonly IVozidloRepository _vozidloRepository;
         private ObservableCollection<Vozidlo> _vozidla;
-        private Vozidlo _vozidlo; // Поле для одного объекта Vozidlo
+        private Vozidlo _vozidlo; 
         private Vozidlo _selectedVozidlo;
         private string _searchQuery;
 
         public VozidloViewModel(Vozidlo vozidlo)
         {
-            _vozidlo = vozidlo; // Инициализируем объект Vozidlo
+            _vozidlo = vozidlo; 
         }
 
         public VozidloViewModel(IVozidloRepository vozidloRepository)

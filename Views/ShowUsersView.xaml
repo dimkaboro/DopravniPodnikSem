@@ -20,7 +20,6 @@
                     </TreeView.ItemTemplate>
                 </TreeView>
 
-                <!-- Кнопка для эмуляции -->
                 <Button Content="Show profile"
                         Command="{Binding ShowProfileCommand}"
                         IsEnabled="{Binding SelectedUser}"

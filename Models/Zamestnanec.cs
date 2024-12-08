@@ -12,13 +12,13 @@ namespace DopravniPodnikSem.Models
         private string _pozice;
         private int _plat;
         private DateOnly _datumNastupu;
-        private int? _zamestnanecZamestnanecId; // связь с руководителем
+        private int? _zamestnanecZamestnanecId;
         private string _email;
         private string _heslo;
         private string _cisloTelefonu;
-        private int _adresaId; // Внешний ключ на таблицу адресов
-        private int _roleId; // Внешний ключ на роль сотрудника
-        private int _souborId; // Внешний ключ на таблицу файлов
+        private int _adresaId; 
+        private int _roleId; 
+        private int _souborId; 
         private int _jePrivate;
 
         public int ZamestnanecId
@@ -95,8 +95,8 @@ namespace DopravniPodnikSem.Models
 
         public Role Role
         {
-            get => (Role)RoleId; // Преобразуем RoleId в enum
-            set => RoleId = (int)value; // Преобразуем enum в RoleId
+            get => (Role)RoleId; 
+            set => RoleId = (int)value; 
         }
 
         public int SouborId
@@ -114,10 +114,9 @@ namespace DopravniPodnikSem.Models
         public string FullName => $"{Jmeno} {Prijmeni}";
         public string FullNameAndPozice => $"{Jmeno} {Prijmeni} ({Pozice})";
 
-        // Навигационные свойства
-        public virtual Adresa Adresa { get; set; } // Связь с таблицей адресов
-        public virtual Soubory Soubor { get; set; } // Связь с таблицей файлов
-        public virtual Zamestnanec Vedouci { get; set; } // Связь с руководителем
-        public virtual ICollection<Zamestnanec> Podrizeni { get; set; } = new List<Zamestnanec>(); // Связь с подчинёнными
+        public virtual Adresa Adresa { get; set; } 
+        public virtual Soubory Soubor { get; set; } 
+        public virtual Zamestnanec Vedouci { get; set; } 
+        public virtual ICollection<Zamestnanec> Podrizeni { get; set; } = new List<Zamestnanec>(); 
     }
 }

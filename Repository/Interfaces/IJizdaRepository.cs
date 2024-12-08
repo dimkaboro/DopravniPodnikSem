@@ -10,12 +10,14 @@ namespace DopravniPodnikSem.Repository.Interfaces
     public interface IJizdaRepository
     {
         Task<IEnumerable<Jizda>> GetAllAsync();
-        Task<IEnumerable<Jizda>> GetByDateAsync(DateTime casOd); // Новый метод для поиска по дате
+        Task<IEnumerable<Jizda>> GetByDateAsync(DateTime casOd); 
         Task AddAsync(Jizda jizda);
         Task UpdateAsync(Jizda jizda);
         Task DeleteAsync(int jizdaId);
-        Task UpdateStatusesAsync(); // Вызов процедуры для обновления статусов
+
+        Task UpdateStatusesAsync(); 
         Task<(string LinkaNazev, DateTime CasOd, DateTime CasDo, TimeSpan Duration)> GetLongestJizdaAsync();
-        Task<string> CalculateDurationAsync(int jizdaId); // Вызов функции для расчета длительности
+        Task<string> CalculateDurationAsync(int jizdaId); 
+
     }
 }

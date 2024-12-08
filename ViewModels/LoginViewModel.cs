@@ -15,7 +15,7 @@ namespace DopravniPodnikSem.ViewModels
         private readonly IUserDataRepository _userDataRepository;
         private readonly NavigationVM _navigation;
 
-        public event Action RequestClose; // Событие для закрытия окна
+        public event Action RequestClose; 
 
         public string Email
         {
@@ -68,16 +68,12 @@ namespace DopravniPodnikSem.ViewModels
                 }
                 else
                 {
-                    // Авторизация успешна
                     MessageBox.Show($"Welcome, {user.Jmeno}!");
 
-                    // Сохраняем авторизованного пользователя в CurrentSession
                     CurrentSession.LoggedInUser = await _userDataRepository.GetUserDetailsAsync(user.ZamestnanecId);
 
-                    // Передаем данные в NavigationVM
                     _navigation.Authorized(user);
 
-                    // Старое окно пока не закрывается
                 }
             }
             catch (Exception ex)
@@ -88,7 +84,6 @@ namespace DopravniPodnikSem.ViewModels
 
         private bool CanExecuteLoginCommand(object obj)
         {
-            // Команда активна только при заполненных полях
             return !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password);
         }
     }

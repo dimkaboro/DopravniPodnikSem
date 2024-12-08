@@ -51,7 +51,6 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _cisloBytu, value);
         }
 
-        // Навигационные свойства
         public virtual ICollection<Zamestnanec> Zamestnanci { get; set; } = new List<Zamestnanec>();
     }
 }

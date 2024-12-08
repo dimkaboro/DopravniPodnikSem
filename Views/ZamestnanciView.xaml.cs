@@ -16,18 +16,18 @@ using System.Windows.Shapes;
 namespace DopravniPodnikSem.Views
 {
     /// <summary>
-    /// Interaction logic for SelectRealtionsWindow.xaml
+    /// Логика взаимодействия для ZamestnanciView.xaml
     /// </summary>
-    public partial class SelectRealtionsWindow : Window
+    public partial class ZamestnanciView : UserControl
     {
-        public SelectRealtionsWindow()
+        public ZamestnanciView()
         {
             InitializeComponent();
         }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        private void EmployeesDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.Close(); 
+
         }
     }
 }

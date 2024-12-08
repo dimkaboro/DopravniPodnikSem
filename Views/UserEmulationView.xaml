@@ -5,7 +5,6 @@
     <Grid Margin="45">
         <Border Background="#FFFFFF" CornerRadius="10" Padding="20, 20, 20, 5" MinWidth="100" MaxWidth="800" MinHeight="300" MaxHeight="500" Effect="{DynamicResource ShadowEffect}">
             <StackPanel>
-                <!-- Заголовок -->
                 <TextBlock Text="Select Role:"
                            FontSize="18"
                            FontWeight="Bold"
@@ -13,7 +12,6 @@
                            Margin="0,0,0,20"
                            HorizontalAlignment="Center" />
 
-                <!-- Комбобокс -->
                 <ComboBox ItemsSource="{Binding Roles}" 
                           SelectedItem="{Binding SelectedRole}" 
                           Height="30" 
@@ -32,7 +30,6 @@
                      DisplayMemberPath="FullName" 
                      Height="250" Margin="0,0,0,30"/>
                 
-                <!-- Кнопка для эмуляции -->
                 <Button Content="Emulate"
                         Command="{Binding EmulateCommand}"
                         IsEnabled="{Binding SelectedUser}"

@@ -14,10 +14,8 @@ public class UserEmulationViewModel : INotifyPropertyChanged
 {
     private readonly IUserDataRepository _userDataRepository;
 
-    // Роли для ComboBox
     public ObservableCollection<Role> Roles { get; set; }
 
-    // Выбранная роль
     private Role _selectedRole;
     public Role SelectedRole
     {
@@ -26,22 +24,19 @@ public class UserEmulationViewModel : INotifyPropertyChanged
         {
             _selectedRole = value;
             OnPropertyChanged(nameof(SelectedRole));
-            LoadUsersByRole(); // Загружаем пользователей при выборе роли
+            LoadUsersByRole(); 
         }
     }
 
-    // Список пользователей для отображения
     public ObservableCollection<Zamestnanec> Users { get; set; }
     public Zamestnanec SelectedUser { get; set; }
 
-    // Команды
     public ICommand EmulateCommand { get; }
 
     public UserEmulationViewModel(IUserDataRepository userDataRepository)
     {
         _userDataRepository = userDataRepository;
 
-        // Инициализация списков
         Roles = new ObservableCollection<Role>(Enum.GetValues(typeof(Role)).Cast<Role>());
         Users = new ObservableCollection<Zamestnanec>();
 
@@ -53,8 +48,8 @@ public class UserEmulationViewModel : INotifyPropertyChanged
         if (SelectedRole == 0) return;
 
         Users.Clear();
-        var users = await _userDataRepository.GetAllUsersAsync(); // Загружаем всех пользователей
-        var filteredUsers = users.Where(user => user.Role == SelectedRole).ToList(); // Фильтруем по роли
+        var users = await _userDataRepository.GetAllUsersAsync(); 
+        var filteredUsers = users.Where(user => user.Role == SelectedRole).ToList(); 
 
         foreach (var user in filteredUsers)
         {

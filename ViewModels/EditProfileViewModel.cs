@@ -98,7 +98,6 @@ public class EditProfileViewModel : INotifyPropertyChanged
     {
         try
         {
-            // Сохраняем изменения в репозитории
             if (NewAvatar != null)
             {
                 var newAvatarId = await _souboryRepository.UpdateUserAvatarAsync(EditedUser.ZamestnanecId, "User avatar", NewAvatar);
@@ -125,14 +124,12 @@ public class EditProfileViewModel : INotifyPropertyChanged
     {
         try
         {
-            // Получаем обновлённые данные из базы
             var updatedUser = await _userDataRepository.GetUserDetailsAsync(EditedUser.ZamestnanecId);
             var updatedSoubor = await _souboryRepository.GetUserAvatarAsync(updatedUser.SouborId);
 
-            // Обновляем ViewModel
             EditedUser = updatedUser;
             CurrentSoubor = updatedSoubor;
-            NewAvatar = null; // Сбрасываем временную аватарку
+            NewAvatar = null; 
         }
         catch (Exception ex)
         {
@@ -142,7 +139,7 @@ public class EditProfileViewModel : INotifyPropertyChanged
 
     public void CancelChanges()
     {
-        NewAvatar = null; // Сбрасываем временную аватарку
+        NewAvatar = null; 
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

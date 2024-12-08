@@ -30,7 +30,6 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _soubor, value);
         }
 
-        // Навигационное свойство
         public virtual ICollection<Zamestnanec> Zamestnanci { get; set; } = new List<Zamestnanec>();
     }
 }

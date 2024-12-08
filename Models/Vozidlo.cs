@@ -52,9 +52,8 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _udrzbaVozidlaUdrzbaId, value);
         }
 
-        // Навигационные свойства
-        public virtual Garaz Garaz { get; set; }             // Связь с Garaz
-        public virtual UdrzbaVozidla UdrzbaVozidla { get; set; } // Связь с UdrzbaVozidla
+        public virtual Garaz Garaz { get; set; }            
+        public virtual UdrzbaVozidla UdrzbaVozidla { get; set; } 
     }
 }
 

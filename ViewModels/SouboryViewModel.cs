@@ -1,51 +1,87 @@
 ﻿using DopravniPodnikSem.Models;
+using DopravniPodnikSem.Repository;
+using DopravniPodnikSem.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DopravniPodnikSem.ViewModels
 {
-    public class SouboryViewModel : BaseViewModel
+    public class SouboryViewModel : BaseViewModel, INotifyPropertyChanged
     {
-        private Soubory _soubory;
+        private readonly ISouboryRepository _souboryRepository;
 
-        public SouboryViewModel(Soubory soubory)
+        private Zamestnanec _originalZamestnanec;
+        private Soubory _currentSoubor;
+        private byte[] _newAvatar;
+
+        public SouboryViewModel(ISouboryRepository souboryRepository, Zamestnanec selectedZamestnanec, Soubory selectedSoubor)
         {
-            _soubory = soubory;
+            _souboryRepository = souboryRepository;
+
+            _originalZamestnanec = selectedZamestnanec;
+
+            CurrentSoubor = selectedSoubor;
         }
 
-        public int SouborId
+        public Zamestnanec OriginalZamestnanec
         {
-            get => _soubory.SouborId;
+            get => _originalZamestnanec;
             set
             {
-                _soubory.SouborId = value;
-                OnPropertyChanged();
+                _originalZamestnanec = value;
+                OnPropertyChanged(nameof(OriginalZamestnanec));
             }
         }
 
-        public string Nazev
+        public Soubory CurrentSoubor
         {
-            get => _soubory.Nazev;
+            get => _currentSoubor;
             set
             {
-                _soubory.Nazev = value;
-                OnPropertyChanged();
+                _currentSoubor = value;
+                OnPropertyChanged(nameof(CurrentSoubor));
+                OnPropertyChanged(nameof(CurrentAvatar));
             }
         }
 
-        // Для работы с бинарными данными файла можно хранить путь к файлу или использовать byte[].
-        // Если вам нужно работать с файлом в приложении, добавьте:
-        public byte[] Soubor
+        public byte[] NewAvatar
         {
-            get => _soubory.Soubor;
+            get => _newAvatar;
             set
             {
-                _soubory.Soubor = value;
-                OnPropertyChanged();
+                _newAvatar = value;
+                OnPropertyChanged(nameof(NewAvatar));
+                OnPropertyChanged(nameof(CurrentAvatar));
             }
+        }
+
+        public byte[] CurrentAvatar => NewAvatar ?? CurrentSoubor?.Soubor;
+
+        public async Task SaveChangesAsync()
+        {
+            try
+            {
+                if (NewAvatar != null)
+                {
+                    var newAvatarId = await _souboryRepository.UpdateUserAvatarAsync(OriginalZamestnanec.ZamestnanecId, "User avatar", NewAvatar);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
