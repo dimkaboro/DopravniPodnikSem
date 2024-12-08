@@ -52,5 +52,10 @@ namespace DopravniPodnikSem.Views
                     ((ProfileViewModel)DataContext).CurrentSoubor)
             };
         }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.Logout();
+        }
     }
 }

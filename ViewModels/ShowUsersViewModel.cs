@@ -29,12 +29,35 @@ public class ShowUsersViewModel : INotifyPropertyChanged
     public ICommand ShowProfileCommand { get; }
     public ICommand ReturnCommand { get; }
 
-    public string DisplayPhoneNumber => SelectedUser?.JePrivate == 1 ? "***" : SelectedUser?.CisloTelefonu;
-    public string DisplayCity => SelectedUser?.JePrivate == 1 ? "***" : SelectedAdresa?.Mesto;
-    public string DisplayStreet => SelectedUser?.JePrivate == 1 ? "***" : SelectedAdresa?.Ulice;
-    public string DisplayHouseNumber => SelectedUser?.JePrivate == 1 ? "***" : SelectedAdresa?.CisloBudovy;
-    public string DisplayPostalCode => SelectedUser?.JePrivate == 1 ? "***" : SelectedAdresa?.ZipCode;
-    public string DisplayApartmentNumber => SelectedUser?.JePrivate == 1 ? "***" : SelectedAdresa?.CisloBytu;
+    public string DisplayPhoneNumber =>
+        CurrentSession.LoggedInUser.Role == Role.Administrator || SelectedUser?.JePrivate == 0
+            ? SelectedUser?.CisloTelefonu
+            : "***";
+
+    public string DisplayCity =>
+        CurrentSession.LoggedInUser.Role == Role.Administrator || SelectedUser?.JePrivate == 0
+            ? SelectedAdresa?.Mesto
+            : "***";
+
+    public string DisplayStreet =>
+        CurrentSession.LoggedInUser.Role == Role.Administrator || SelectedUser?.JePrivate == 0
+            ? SelectedAdresa?.Ulice
+            : "***";
+
+    public string DisplayHouseNumber =>
+        CurrentSession.LoggedInUser.Role == Role.Administrator || SelectedUser?.JePrivate == 0
+            ? SelectedAdresa?.CisloBudovy
+            : "***";
+
+    public string DisplayPostalCode =>
+        CurrentSession.LoggedInUser.Role == Role.Administrator || SelectedUser?.JePrivate == 0
+            ? SelectedAdresa?.ZipCode
+            : "***";
+
+    public string DisplayApartmentNumber =>
+        CurrentSession.LoggedInUser.Role == Role.Administrator || SelectedUser?.JePrivate == 0
+            ? SelectedAdresa?.CisloBytu
+            : "***";
 
 
     public ShowUsersViewModel()
