@@ -96,6 +96,28 @@ public class NavigationVM : INotifyPropertyChanged
         }
     }
 
+    public void Logout()
+    {
+        CurrentSession.LoggedInUser = null;
+        CurrentSession.OriginalUser = null;
+        EmulatedUser = null;
+        UserRole = null;
+
+        var guestWindow = new MainWindow();
+        guestWindow.Show();
+
+        CurrentView = new HomeView();
+
+        foreach (Window window in Application.Current.Windows)
+        {
+            if (window is EmployeeWindow || window is AdminWindow)
+            {
+                window.Close();
+                break;
+            }
+        }
+    }
+
     public void EmulateUser(Zamestnanec userToEmulate)
     {
         EmulatedUser = userToEmulate;
@@ -120,7 +142,15 @@ public class NavigationVM : INotifyPropertyChanged
         }
 
         CurrentView = new HomeView();
-        CloseWindow();
+
+        foreach (Window window in Application.Current.Windows)
+        {
+            if (window is MainWindow || window is EmployeeWindow || window is AdminWindow)
+            {
+                window.Close();
+                break;
+            }
+        }
     }
 
     private void ExecuteStopEmulation(object parameter)
@@ -134,11 +164,7 @@ public class NavigationVM : INotifyPropertyChanged
         adminWindow.Show();
 
         CurrentView = new HomeView();
-        CloseWindow();
-    }
 
-    private void CloseWindow()
-    {
         foreach (Window window in Application.Current.Windows)
         {
             if (window is MainWindow || window is EmployeeWindow || window is AdminWindow)
