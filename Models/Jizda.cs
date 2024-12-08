@@ -16,6 +16,8 @@ namespace DopravniPodnikSem.Models
         private int _ridicId;
         private int _vozidloId;
 
+        public string DisplayText => $"{CasOd:dd.MM.yy HH:mm} - {CasDo:HH:mm} ({Stav})";
+
         public int JizdaId
         {
             get => _jizdaId;

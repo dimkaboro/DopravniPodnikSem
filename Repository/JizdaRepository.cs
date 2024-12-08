@@ -155,6 +155,39 @@ namespace DopravniPodnikSem.Repository
             }
         }
 
+        public async Task<(string LinkaNazev, DateTime CasOd, DateTime CasDo, TimeSpan Duration)> GetLongestJizdaAsync()
+        {
+            var query = "BEGIN :result_cursor := GetLongestJizda(); END;";
+
+            using (var connection = _databaseService.GetConnection())
+            using (var command = new OracleCommand(query, connection))
+            {
+                command.Parameters.Add(new OracleParameter(":result_cursor", OracleDbType.RefCursor) { Direction = ParameterDirection.Output });
+
+                if (connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                }
+
+                await command.ExecuteNonQueryAsync();
+
+                using (var reader = ((OracleRefCursor)command.Parameters[":result_cursor"].Value).GetDataReader())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        return (
+                            LinkaNazev: reader.GetString(0),
+                            CasOd: reader.GetDateTime(1),
+                            CasDo: reader.GetDateTime(2),
+                            Duration: reader.GetTimeSpan(3)
+                        );
+                    }
+                }
+            }
+
+            throw new Exception("No data found for the longest jizda.");
+        }
+
         public async Task UpdateStatusesAsync()
         {
             var query = "BEGIN UpdateAllJizdaStatuses(); END;";

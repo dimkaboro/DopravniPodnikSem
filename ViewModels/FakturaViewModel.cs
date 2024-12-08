@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace DopravniPodnikSem.ViewModels
 {
-    public class FakturaViewModel : DopravniPlatbaViewModel
+    public class FakturaViewModel : BaseViewModel
     {
-        private readonly Faktura _faktura;
+        private Faktura _faktura;
 
-        public FakturaViewModel(Faktura faktura) : base(faktura)
+        public FakturaViewModel(Faktura faktura)
         {
             _faktura = faktura;
         }
@@ -32,27 +32,6 @@ namespace DopravniPodnikSem.ViewModels
             set
             {
                 _faktura.DatumSplatnosti = value;
-                OnPropertyChanged();
-            }
-        }
-
-        // Дополнительные свойства от наследуемой модели DopravniPlatba
-        public int BiletId
-        {
-            get => _faktura.BiletId;
-            set
-            {
-                _faktura.BiletId = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public decimal Cena
-        {
-            get => _faktura.Cena;
-            set
-            {
-                _faktura.Cena = value;
                 OnPropertyChanged();
             }
         }

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace DopravniPodnikSem.ViewModels
 {
-    public class KartaViewModel : DopravniPlatbaViewModel
+    public class KartaViewModel : BaseViewModel
     {
-        private readonly Karta _karta;
+        private Karta _karta;
 
-        public KartaViewModel(Karta karta) : base(karta)
+        public KartaViewModel(Karta karta)
         {
             _karta = karta;
         }
