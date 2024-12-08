@@ -2,6 +2,7 @@
 using DopravniPodnikSem.Repository.Interfaces;
 using DopravniPodnikSem.Services;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -93,65 +94,44 @@ namespace DopravniPodnikSem.Repository
 
         public async Task AddAsync(Jizda jizda)
         {
-            var query = @"BEGIN AddJizdaWithRelations(:CasOd, :CasDo, :LinkaId, :RidicId, :VozidloId); END;";
+            var query = "BEGIN manage_jizda('INSERT', :JizdaId, :CasOd, :CasDo, :Stav, :LinkaId, :RidicId, :VozidloId); END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
-                // Проверяем параметры
-                Console.WriteLine($"CasOd: {jizda.CasOd}, CasDo: {jizda.CasDo}, LinkaId: {jizda.LinkaId}, RidicId: {jizda.RidicId}, VozidloId: {jizda.VozidloId}");
-
-                // Добавляем параметры
-                command.Parameters.Add(new OracleParameter(":CasOd", OracleDbType.Date) { Value = jizda.CasOd });
-                command.Parameters.Add(new OracleParameter(":CasDo", OracleDbType.Date) { Value = jizda.CasDo });
-                command.Parameters.Add(new OracleParameter(":LinkaId", OracleDbType.Int32) { Value = jizda.LinkaId });
-                command.Parameters.Add(new OracleParameter(":RidicId", OracleDbType.Int32) { Value = jizda.RidicId });
-                command.Parameters.Add(new OracleParameter(":VozidloId", OracleDbType.Int32) { Value = jizda.VozidloId });
-
-                if (connection.State != ConnectionState.Open)
+                command.Parameters.Add(new OracleParameter(":JizdaId", OracleDbType.Int32)
                 {
-                    await connection.OpenAsync();
-                }
-
-                try
-                {
-                    await command.ExecuteNonQueryAsync();
-                    Console.WriteLine("Процедура выполнена успешно.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Ошибка при выполнении процедуры: {ex.Message}");
-                    throw;
-                }
-            }
-        }
-
-        public async Task UpdateAsync(Jizda jizda)
-        {
-            var query = @"UPDATE JIZDY 
-                      SET CAS_OD = :CasOd, 
-                          CAS_DO = :CasDo, 
-                          STAV = :Stav, 
-                          LINKA_LINKA_ID = :LinkaId, 
-                          RIDIC_RIDIC_ID = :RidicId, 
-                          VOZIDLO_VOZIDLO_ID = :VozidloId 
-                      WHERE JIZDA_ID = :JizdaId";
-
-            using (var connection = _databaseService.GetConnection())
-            using (var command = new OracleCommand(query, connection))
-            {
+                    Direction = ParameterDirection.InputOutput,
+                    Value = DBNull.Value // ID будет создан процедурой
+                });
                 command.Parameters.Add(new OracleParameter(":CasOd", jizda.CasOd));
                 command.Parameters.Add(new OracleParameter(":CasDo", jizda.CasDo));
                 command.Parameters.Add(new OracleParameter(":Stav", jizda.Stav));
                 command.Parameters.Add(new OracleParameter(":LinkaId", jizda.LinkaId));
                 command.Parameters.Add(new OracleParameter(":RidicId", jizda.RidicId));
                 command.Parameters.Add(new OracleParameter(":VozidloId", jizda.VozidloId));
-                command.Parameters.Add(new OracleParameter(":JizdaId", jizda.JizdaId));
 
-                if (connection.State != ConnectionState.Open)
-                {
-                    await connection.OpenAsync();
-                }
+                await command.ExecuteNonQueryAsync();
+
+                // Обновление ID записи
+                jizda.JizdaId = Convert.ToInt32(((OracleDecimal)command.Parameters[":JizdaId"].Value).Value);
+            }
+        }
+
+        public async Task UpdateAsync(Jizda jizda)
+        {
+            var query = "BEGIN manage_jizda('UPDATE', :JizdaId, :CasOd, :CasDo, :Stav, :LinkaId, :RidicId, :VozidloId); END;";
+
+            using (var connection = _databaseService.GetConnection())
+            using (var command = new OracleCommand(query, connection))
+            {
+                command.Parameters.Add(new OracleParameter(":JizdaId", jizda.JizdaId));
+                command.Parameters.Add(new OracleParameter(":CasOd", jizda.CasOd));
+                command.Parameters.Add(new OracleParameter(":CasDo", jizda.CasDo));
+                command.Parameters.Add(new OracleParameter(":Stav", jizda.Stav));
+                command.Parameters.Add(new OracleParameter(":LinkaId", jizda.LinkaId));
+                command.Parameters.Add(new OracleParameter(":RidicId", jizda.RidicId));
+                command.Parameters.Add(new OracleParameter(":VozidloId", jizda.VozidloId));
 
                 await command.ExecuteNonQueryAsync();
             }

@@ -10,7 +10,7 @@ namespace DopravniPodnikSem.Repository.Interfaces
     public interface IZastavkaRepository
     {
         Task<IEnumerable<Zastavka>> GetAllAsync();
-        Task<Zastavka> GetByIdAsync(int zastavkaId);
+        Task<Zastavka> GetByNazevAsync(string nazev);
         Task AddAsync(Zastavka zastavka);
         Task UpdateAsync(Zastavka zastavka);
         Task DeleteAsync(int zastavkaId);

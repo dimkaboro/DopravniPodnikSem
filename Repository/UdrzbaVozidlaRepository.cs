@@ -2,8 +2,10 @@
 using DopravniPodnikSem.Repository.Interfaces;
 using DopravniPodnikSem.Services;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,46 +72,40 @@ namespace DopravniPodnikSem.Repository
 
         public async Task AddAsync(UdrzbaVozidla udrzba, int vozidloId)
         {
-            var query = @"
-INSERT INTO UDRZBY_VOZIDLA (UDRZBA_ID, CAS_UDRZBY, POPIS)
-VALUES ((SELECT NVL(MAX(UDRZBA_ID), 0) + 1 FROM UDRZBY_VOZIDLA), :CasUdrzby, :Popis)";
-
-            var updateQuery = "UPDATE VOZIDLA SET UDRZBA_VOZIDLA_UDRZBA_ID = (SELECT MAX(UDRZBA_ID) FROM UDRZBY_VOZIDLA) WHERE VOZIDLO_ID = :VozidloId";
+            var query = "BEGIN manage_udrzba_vozdila('INSERT', :UdrzbaId, :CasUdrzby, :Popis, :VozidloId); END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
-            using (var updateCommand = new OracleCommand(updateQuery, connection))
             {
+                command.Parameters.Add(new OracleParameter(":UdrzbaId", OracleDbType.Int32)
+                {
+                    Direction = ParameterDirection.InputOutput,
+                    Value = DBNull.Value // ID будет создан процедурой
+                });
                 command.Parameters.Add(new OracleParameter(":CasUdrzby", udrzba.DatumUdrzby));
                 command.Parameters.Add(new OracleParameter(":Popis", udrzba.Popis));
-                updateCommand.Parameters.Add(new OracleParameter(":VozidloId", vozidloId));
+                command.Parameters.Add(new OracleParameter(":VozidloId", vozidloId));
 
                 await command.ExecuteNonQueryAsync();
-                await updateCommand.ExecuteNonQueryAsync();
+
+                // Обновление ID записи
+                udrzba.UdrzbaId = Convert.ToInt32(((OracleDecimal)command.Parameters[":UdrzbaId"].Value).Value);
             }
         }
 
         public async Task UpdateAsync(UdrzbaVozidla udrzba, int vozidloId)
         {
-            var query = @"
-UPDATE UDRZBY_VOZIDLA
-SET CAS_UDRZBY = :CasUdrzby, POPIS = :Popis
-WHERE UDRZBA_ID = :UdrzbaId";
-
-            var updateQuery = "UPDATE VOZIDLA SET UDRZBA_VOZIDLA_UDRZBA_ID = :UdrzbaId WHERE VOZIDLO_ID = :VozidloId";
+            var query = "BEGIN manage_udrzba_vozdila('UPDATE', :UdrzbaId, :CasUdrzby, :Popis, :VozidloId); END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
-            using (var updateCommand = new OracleCommand(updateQuery, connection))
             {
+                command.Parameters.Add(new OracleParameter(":UdrzbaId", udrzba.UdrzbaId));
                 command.Parameters.Add(new OracleParameter(":CasUdrzby", udrzba.DatumUdrzby));
                 command.Parameters.Add(new OracleParameter(":Popis", udrzba.Popis));
-                command.Parameters.Add(new OracleParameter(":UdrzbaId", udrzba.UdrzbaId));
-                updateCommand.Parameters.Add(new OracleParameter(":UdrzbaId", udrzba.UdrzbaId));
-                updateCommand.Parameters.Add(new OracleParameter(":VozidloId", vozidloId));
+                command.Parameters.Add(new OracleParameter(":VozidloId", vozidloId));
 
                 await command.ExecuteNonQueryAsync();
-                await updateCommand.ExecuteNonQueryAsync();
             }
         }
 

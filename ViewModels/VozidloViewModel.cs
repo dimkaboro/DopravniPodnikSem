@@ -1,6 +1,8 @@
 ﻿using DopravniPodnikSem.Models;
 using DopravniPodnikSem.Repository.Interfaces;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace DopravniPodnikSem.ViewModels
@@ -9,19 +11,26 @@ namespace DopravniPodnikSem.ViewModels
     {
         private readonly IVozidloRepository _vozidloRepository;
         private ObservableCollection<Vozidlo> _vozidla;
+        private Vozidlo _vozidlo; // Поле для одного объекта Vozidlo
         private Vozidlo _selectedVozidlo;
         private string _searchQuery;
-        private Vozidlo _vozidlo;
-        private string _errorMessage;
 
-        public string ErrorMessage
+        public VozidloViewModel(Vozidlo vozidlo)
         {
-            get => _errorMessage;
-            set
-            {
-                _errorMessage = value;
-                OnPropertyChanged(nameof(ErrorMessage)); // Уведомление об изменении для обновления UI
-            }
+            _vozidlo = vozidlo; // Инициализируем объект Vozidlo
+        }
+
+        public VozidloViewModel(IVozidloRepository vozidloRepository)
+        {
+            _vozidloRepository = vozidloRepository;
+            Vozidla = new ObservableCollection<Vozidlo>();
+
+            SearchCommand = new ViewModelCommand(async _ => await SearchVozidloAsync(), _ => !string.IsNullOrEmpty(SearchQuery));
+            ClearCommand = new ViewModelCommand(_ => ClearSearch());
+            AddUpdateCommand = new ViewModelCommand(async _ => await AddOrUpdateVozidloAsync(), _ => SelectedVozidlo != null);
+            DeleteCommand = new ViewModelCommand(async _ => await DeleteVozidloAsync(), _ => SelectedVozidlo != null);
+
+            LoadAllVozidlaAsync();
         }
 
         public ObservableCollection<Vozidlo> Vozidla
@@ -59,26 +68,6 @@ namespace DopravniPodnikSem.ViewModels
         public ICommand AddUpdateCommand { get; }
         public ICommand DeleteCommand { get; }
 
-        // Конструктор для работы с репозиторием
-        public VozidloViewModel(IVozidloRepository vozidloRepository)
-        {
-            _vozidloRepository = vozidloRepository;
-            Vozidla = new ObservableCollection<Vozidlo>();
-
-            SearchCommand = new ViewModelCommand(async _ => await SearchVozidloAsync(), _ => !string.IsNullOrEmpty(SearchQuery));
-            ClearCommand = new ViewModelCommand(_ => ClearSearch());
-            AddUpdateCommand = new ViewModelCommand(async _ => await AddOrUpdateVozidloAsync(), _ => SelectedVozidlo != null);
-            DeleteCommand = new ViewModelCommand(async _ => await DeleteVozidloAsync(), _ => SelectedVozidlo != null);
-
-            LoadAllVozidlaAsync();
-        }
-
-        // Конструктор для работы с объектом Vozidlo
-        public VozidloViewModel(Vozidlo vozidlo)
-        {
-            _vozidlo = vozidlo; // Присваиваем переданный объект
-        }
-
         private async void LoadAllVozidlaAsync()
         {
             var vozidla = await _vozidloRepository.GetAllAsync();
@@ -87,70 +76,33 @@ namespace DopravniPodnikSem.ViewModels
 
         private async System.Threading.Tasks.Task SearchVozidloAsync()
         {
-            try
+            var vozidlo = await _vozidloRepository.GetByRegistrationNumberAsync(SearchQuery);
+            Vozidla.Clear();
+
+            if (vozidlo != null)
             {
-                if (string.IsNullOrWhiteSpace(SearchQuery))
-                {
-                    // Если поле поиска пустое, загружаем весь список
-                    LoadAllVozidlaAsync();
-                    return;
-                }
-
-                // Получаем все данные и фильтруем локально
-                var allVozidla = await _vozidloRepository.GetAllAsync();
-                var filteredVozidla = allVozidla
-                    .Where(v => v.RegistracniCislo.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-
-                if (filteredVozidla.Count == 0)
-                {
-                    ErrorMessage = "Žádné záznamy nenalezeny.";
-                }
-                else
-                {
-                    ErrorMessage = string.Empty;
-                }
-
-                Vozidla = new ObservableCollection<Vozidlo>(filteredVozidla);
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage = $"Chyba při vyhledávání: {ex.Message}";
+                Vozidla.Add(vozidlo);
             }
         }
 
         private void ClearSearch()
         {
             SearchQuery = string.Empty;
-            ErrorMessage = string.Empty;
             LoadAllVozidlaAsync();
         }
 
         private async System.Threading.Tasks.Task AddOrUpdateVozidloAsync()
         {
-            try
+            if (SelectedVozidlo.VozidloId == 0)
             {
-                if (SelectedVozidlo.VozidloId == 0)
-                {
-                    await _vozidloRepository.AddAsync(SelectedVozidlo);
-                    ErrorMessage = string.Empty;
-                }
-                else
-                {
-                    await _vozidloRepository.UpdateAsync(SelectedVozidlo);
-                    ErrorMessage = string.Empty;
-                }
+                await _vozidloRepository.AddAsync(SelectedVozidlo);
+            }
+            else
+            {
+                await _vozidloRepository.UpdateAsync(SelectedVozidlo);
+            }
 
-                LoadAllVozidlaAsync();
-            }
-            catch (InvalidOperationException ex)
-            {
-                ErrorMessage = ex.Message;
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage = $"Error: {ex.Message}";
-            }
+            LoadAllVozidlaAsync();
         }
 
         private async System.Threading.Tasks.Task DeleteVozidloAsync()
