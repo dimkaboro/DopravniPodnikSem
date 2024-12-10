@@ -20,15 +20,7 @@ namespace DopravniPodnikSem.ViewModels
 
             _originalZamestnanec = selectedZamestnanec;
 
-            EditedAddress = new Adresa
-            {
-                AdresaId = selectedAddress.AdresaId,
-                Mesto = selectedAddress.Mesto,
-                Ulice = selectedAddress.Ulice,
-                CisloBudovy = selectedAddress.CisloBudovy,
-                ZipCode = selectedAddress.ZipCode,
-                CisloBytu = selectedAddress.CisloBytu
-            };
+            EditedAddress = selectedAddress ?? new Adresa(); // Если адрес отсутствует, создаем новый
         }
 
         public Zamestnanec OriginalZamestnanec
@@ -53,15 +45,42 @@ namespace DopravniPodnikSem.ViewModels
 
         public async Task SaveChangesAsync()
         {
+            if (EditedAddress == null)
+            {
+                MessageBox.Show("Данные адреса отсутствуют.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
-                await _adresyRepository.UpdateAddressLogicAsync(EditedAddress, OriginalZamestnanec.ZamestnanecId, OriginalZamestnanec.AdresaId);
+                if (EditedAddress.AdresaId == 0) // Добавление нового адреса
+                {
+                    int newAddressId = await _adresyRepository.AddAddressAsync(
+                        EditedAddress.Mesto,
+                        EditedAddress.Ulice,
+                        EditedAddress.CisloBudovy,
+                        EditedAddress.ZipCode,
+                        EditedAddress.CisloBytu
+                    );
+
+                    OriginalZamestnanec.AdresaId = newAddressId; // Привязка нового адреса к сотруднику
+                    MessageBox.Show("Новый адрес успешно добавлен.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    // Обновление существующего адреса
+                    await _adresyRepository.UpdateAddressLogicAsync(
+                        EditedAddress,
+                        OriginalZamestnanec.ZamestnanecId,
+                        OriginalZamestnanec.AdresaId
+                    );
+                    MessageBox.Show("Адрес успешно обновлен.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error updating data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка при сохранении данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

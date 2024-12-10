@@ -1,4 +1,5 @@
-﻿using DopravniPodnikSem.Repository.Interfaces;
+﻿using DopravniPodnikSem.Models;
+using DopravniPodnikSem.Repository.Interfaces;
 using DopravniPodnikSem.Services;
 using DopravniPodnikSem.Views;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -218,12 +219,25 @@ namespace DopravniPodnikSem.ViewModels
                 if (addressID == 0)
                 {
                     addressID = await _adresyRepository.AddAddressAsync(City, Street, HouseNumber, PostCode, ApartmentNumber);
-                    await _userDataRepository.AddEmployeeAsync(Name, Surname, Email, hashedPassword, PhoneNumber, addressID);
                 }
-                else
+
+                var newEmployee = new Zamestnanec
                 {
-                    await _userDataRepository.AddEmployeeAsync(Name, Surname, Email, hashedPassword, PhoneNumber, addressID);
-                }
+                    Jmeno = Name,
+                    Prijmeni = Surname,
+                    Email = Email,
+                    Heslo = hashedPassword,
+                    CisloTelefonu = PhoneNumber,
+                    AdresaId = addressID,
+                    RoleId = 2, // Установите роль (например, 2 для сотрудника)
+                    Pozice = "Guest", // Или любая другая позиция
+                    Plat = 0, // Установите зарплату по умолчанию
+                    DatumNastupu = DateOnly.FromDateTime(DateTime.Now), // Текущая дата
+                    SouborId = 1, // Установите ID файла по умолчанию
+                    JePrivate = 1 // Настройте значение
+                };
+
+                await _userDataRepository.AddEmployeeAsync(newEmployee);
 
                 MessageBox.Show("Registration completed successfully!");
                 _navigation.Registered();

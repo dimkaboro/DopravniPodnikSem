@@ -20,6 +20,7 @@ namespace DopravniPodnikSem.ViewModels
         private readonly IAdresyRepository _adresyRepository;
         private readonly ISouboryRepository _souboryRepository;
         private readonly IConfiguration _configuration;
+        private readonly PasswordService _passwordService;
 
         private ObservableCollection<Zamestnanec> _zamestnanci;
 
@@ -98,17 +99,21 @@ namespace DopravniPodnikSem.ViewModels
         public ICommand ShowAddressCommand { get; }
         public ICommand ShowSouborCommand { get; }
 
-        public ZamestnanecViewModel(IConfiguration configuration)
+        public ZamestnanecViewModel(IConfiguration configuration, PasswordService passwordService)
         {
             _userDataRepository = App.ServiceProvider.GetService<IUserDataRepository>();
             _adresyRepository = App.ServiceProvider.GetService<IAdresyRepository>();
             _souboryRepository = App.ServiceProvider.GetService<ISouboryRepository>();
             _configuration = configuration;
+            _passwordService = passwordService;
 
             UpdateCommand = new ViewModelCommand(async _ => await UpdateZamestnanecAsync(), _ => SelectedZamestnanec != null);
             ClearCommand = new ViewModelCommand(_ => ClearFields());
             ShowAddressCommand = new ViewModelCommand(ShowAddress);
             ShowSouborCommand = new ViewModelCommand(ShowSoubor);
+            SearchCommand = new ViewModelCommand(async _ => await PerformSearchAsync());
+            AddCommand = new ViewModelCommand(async _ => await AddZamestnanecAsync());
+            DeleteCommand = new ViewModelCommand(async _ => await DeleteZamestnanecAsync(), _ => SelectedZamestnanec != null);
 
             LoadDataAsync();
         }
@@ -118,8 +123,40 @@ namespace DopravniPodnikSem.ViewModels
             this.zamestnanec = zamestnanec;
         }
 
+        private async Task AddZamestnanecAsync()
+        {
+            try
+            {
+                if (SelectedZamestnanec == null)
+                {
+                    ErrorMessage = "Пожалуйста, заполните все поля перед добавлением.";
+                    return;
+                }
 
-        private async void LoadDataAsync()
+                // Если администратор не выбрал аватар, устанавливаем дефолтный ID = 1
+                if (SelectedZamestnanec.SouborId == 0)
+                {
+                    SelectedZamestnanec.SouborId = 1; // ID дефолтного аватара
+                }
+
+                // Хешируем пароль перед отправкой
+                SelectedZamestnanec.Heslo = _passwordService.HashPassword(SelectedZamestnanec.Heslo);
+
+                // Добавляем сотрудника через репозиторий
+                await _userDataRepository.AddEmployeeAsync(SelectedZamestnanec);
+
+                // Обновляем данные
+                await LoadDataAsync();
+                ClearFields();
+                ErrorMessage = "Сотрудник успешно добавлен!";
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Ошибка: {ex.Message}";
+            }
+        }
+
+        private async Task LoadDataAsync()
         {
             var zamestnanci = await _userDataRepository.GetAllAsync();
             Zamestnanci = new ObservableCollection<Zamestnanec>(zamestnanci);
@@ -139,6 +176,28 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
+        private async Task PerformSearchAsync()
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(SearchQuery))
+                {
+                    var filteredEmployees = await _userDataRepository.GetAllUsersAsync();
+                    Zamestnanci = new ObservableCollection<Zamestnanec>(
+                        filteredEmployees.Where(z => z.Prijmeni.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase)));
+                }
+                else
+                {
+                    // Если поле пустое, то загружаем всех сотрудников
+                    await LoadDataAsync();
+                }
+                ErrorMessage = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error during search: {ex.Message}";
+            }
+        }
         private async Task DeleteZamestnanecAsync()
         {
             try
@@ -189,19 +248,28 @@ namespace DopravniPodnikSem.ViewModels
 
         private async void ShowSoubor(object parameter)
         {
-            await LoadAvatarDetails();
-            if (parameter is Zamestnanec zamestnanec && zamestnanec.SouborId != null)
+            try
             {
+                // Убедимся, что у пользователя есть аватар
+                if (SelectedZamestnanec != null && (SelectedSoubor == null || SelectedZamestnanec.SouborId == 0))
+                {
+                    // Назначаем дефолтный аватар
+                    SelectedZamestnanec.SouborId = 1;
+                    SelectedSoubor = await App.ServiceProvider
+                        .GetService<ISouboryRepository>()
+                        .GetUserAvatarAsync(1); // Асинхронно получаем аватар с ID 1
+                }
+
+                // Открываем окно изменения аватара
                 var souborWindow = new SouborWindow
                 {
                     DataContext = new SouboryViewModel(App.ServiceProvider.GetService<ISouboryRepository>(), SelectedZamestnanec, SelectedSoubor)
                 };
-
-                souborWindow.Show();
+                souborWindow.Show(); // Используем Show вместо ShowDialog
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Avatar not found for the selected employee.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

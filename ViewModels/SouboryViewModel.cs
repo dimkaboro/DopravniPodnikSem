@@ -19,13 +19,15 @@ namespace DopravniPodnikSem.ViewModels
         private Soubory _currentSoubor;
         private byte[] _newAvatar;
 
+        private const int DefaultAvatarId = 1; // ID дефолтного аватара
+
         public SouboryViewModel(ISouboryRepository souboryRepository, Zamestnanec selectedZamestnanec, Soubory selectedSoubor)
         {
             _souboryRepository = souboryRepository;
-
             _originalZamestnanec = selectedZamestnanec;
+            CurrentSoubor = selectedSoubor ?? throw new ArgumentNullException(nameof(selectedSoubor));
 
-            CurrentSoubor = selectedSoubor;
+            LoadDefaultAvatarAsync().Wait(); // Загружаем дефолтный аватар при инициализации
         }
 
         public Zamestnanec OriginalZamestnanec
@@ -62,6 +64,20 @@ namespace DopravniPodnikSem.ViewModels
 
         public byte[] CurrentAvatar => NewAvatar ?? CurrentSoubor?.Soubor;
 
+        private async Task LoadDefaultAvatarAsync()
+        {
+            try
+            {
+                _currentSoubor = await _souboryRepository.GetUserAvatarAsync(DefaultAvatarId);
+                OnPropertyChanged(nameof(CurrentSoubor));
+                OnPropertyChanged(nameof(CurrentAvatar));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки аватара: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         public async Task SaveChangesAsync()
         {
             try
@@ -69,13 +85,17 @@ namespace DopravniPodnikSem.ViewModels
                 if (NewAvatar != null)
                 {
                     var newAvatarId = await _souboryRepository.UpdateUserAvatarAsync(OriginalZamestnanec.ZamestnanecId, "User avatar", NewAvatar);
+                    MessageBox.Show($"Аватар успешно обновлён!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Новый аватар не выбран. Используется стандартный аватар.", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error updating data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка обновления данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
