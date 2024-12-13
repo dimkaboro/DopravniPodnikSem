@@ -197,6 +197,34 @@ namespace DopravniPodnikSem.Repository
             }
         }
 
+        public async Task<(string Type, int Count, double Percentage)> GetMostFrequentPaymentTypeWithDetailsAsync()
+        {
+            var query = "SELECT Type, Count, Percentage FROM MostFrequentPaymentTypeView";
+
+            using (var connection = _databaseService.GetConnection())
+            using (var command = new OracleCommand(query, connection))
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                }
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (await reader.ReadAsync())
+                    {
+                        return (
+                            Type: reader.GetString(reader.GetOrdinal("Type")),
+                            Count: reader.GetInt32(reader.GetOrdinal("Count")),
+                            Percentage: reader.GetDouble(reader.GetOrdinal("Percentage"))
+                        );
+                    }
+                }
+            }
+
+            throw new Exception("No payment type data found.");
+        }
+
         public async Task DeleteAsync(int platbaId)
         {
             var query = "DELETE FROM DOPRAVNI_PLATBY WHERE BILET_ID = :BiletId";

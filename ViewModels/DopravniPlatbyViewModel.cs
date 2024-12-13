@@ -3,10 +3,12 @@ using DopravniPodnikSem.Repository;
 using DopravniPodnikSem.Repository.Interfaces;
 using DopravniPodnikSem.Services;
 using DopravniPodnikSem.Views;
+using Microsoft.Win32;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -16,12 +18,12 @@ namespace DopravniPodnikSem.ViewModels
     public class DopravniPlatbyViewModel : BaseViewModel
     {
         private readonly IDopravniPlatbyRepository _repository;
-        private readonly IJizdaRepository _jizdaRepository; // Add this line
+        private readonly IJizdaRepository _jizdaRepository;
         private ObservableCollection<DopravniPlatba> _dopravniPlatby;
         private DopravniPlatba _selectedPlatba;
         private string _errorMessage;
         private readonly DatabaseService _databaseService;
-        private DateTime? _searchDate; // Change the type of _searchDate to DateTime?
+        private DateTime? _searchDate;
 
         public DateTime? SearchDate
         {
@@ -70,11 +72,11 @@ namespace DopravniPodnikSem.ViewModels
         public ICommand SearchCommand { get; }
         public ICommand GetMostFrequentPaymentTypeCommand { get; }
 
-        public DopravniPlatbyViewModel(IDopravniPlatbyRepository repository, IJizdaRepository jizdaRepository, DatabaseService databaseService) // Modify constructor
+        public DopravniPlatbyViewModel(IDopravniPlatbyRepository repository, IJizdaRepository jizdaRepository, DatabaseService databaseService)
         {
             _repository = repository;
-            _jizdaRepository = jizdaRepository; // Initialize the field
-            _databaseService = databaseService; // Add this line
+            _jizdaRepository = jizdaRepository;
+            _databaseService = databaseService;
 
             AddUpdateCommand = new ViewModelCommand(async _ => await AddOrUpdateAsync());
             DeleteCommand = new ViewModelCommand(async _ => await DeleteAsync(), _ => SelectedPlatba != null);
@@ -90,12 +92,58 @@ namespace DopravniPodnikSem.ViewModels
         {
             try
             {
-                var mostFrequentType = await _repository.GetMostFrequentPaymentTypeAsync();
-                MessageBox.Show($"Самый частый тип оплаты: {mostFrequentType}", "Результат", MessageBoxButton.OK, MessageBoxImage.Information);
+                // Fetch the most frequent payment type and related data
+                var mostFrequentTypeData = await _repository.GetMostFrequentPaymentTypeWithDetailsAsync();
+
+                // Display the result in a popup message
+                MessageBox.Show($"Most Frequent Payment Type: {mostFrequentTypeData.Type}\n" +
+                                $"Count: {mostFrequentTypeData.Count}\n" +
+                                $"Percentage: {mostFrequentTypeData.Percentage:F2}%",
+                    "Result",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                // Prompt the user to save the result to a CSV file
+                var saveDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "CSV files (*.csv)|*.csv",
+                    FileName = "MostFrequentPaymentTypeDetails.csv"
+                };
+
+                if (saveDialog.ShowDialog() == true)
+                {
+                    // Save the result to the selected file
+                    using (var writer = new StreamWriter(saveDialog.FileName))
+                    {
+                        // Write header
+                        writer.WriteLine("Payment Type,Count,Percentage");
+
+                        // Write the fetched data
+                        writer.WriteLine($"{mostFrequentTypeData.Type},{mostFrequentTypeData.Count},{mostFrequentTypeData.Percentage:F2}");
+                    }
+
+                    // Notify the user about the successful save
+                    MessageBox.Show($"The result has been successfully saved to the file: {saveDialog.FileName}",
+                        "Success",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+                else
+                {
+                    // Notify the user if the save operation was canceled
+                    MessageBox.Show("The save operation was canceled by the user.",
+                        "Information",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при получении самого частого типа оплаты: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                // Display any errors that occur during the process
+                MessageBox.Show($"An error occurred while processing: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -103,22 +151,22 @@ namespace DopravniPodnikSem.ViewModels
         {
             if (!SearchDate.HasValue)
             {
-                ErrorMessage = "Пожалуйста, выберите дату.";
+                ErrorMessage = "Vyberte prosím datum.";
                 return;
             }
 
             try
             {
-                // Убедимся, что используется только дата без времени
                 var filtered = await _repository.GetByDateAsync(SearchDate.Value.Date);
                 DopravniPlatby = new ObservableCollection<DopravniPlatba>(filtered);
                 ErrorMessage = string.Empty;
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Ошибка при поиске: {ex.Message}";
+                ErrorMessage = $"Chyba při hledání: {ex.Message}";
             }
         }
+
         private async void LoadDataAsync()
         {
             try
@@ -129,7 +177,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch
             {
-                ErrorMessage = "Ошибка загрузки данных.";
+                ErrorMessage = "Chyba při načítání dat.";
             }
         }
 
@@ -138,12 +186,48 @@ namespace DopravniPodnikSem.ViewModels
             try
             {
                 var (totalCount, totalSum) = await _repository.CalculatePaymentSummaryAsync();
-                MessageBox.Show($"Всего платежей: {totalCount}, Суммарная сумма: {totalSum:F2} CZK",
-                    "Результат расчёта", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                MessageBox.Show($"Celkový počet plateb: {totalCount}, Celková částka: {totalSum:F2} CZK",
+                    "Výsledek výpočtu", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Открываем диалог сохранения файла
+                var saveFileDialog = new SaveFileDialog
+                {
+                    Title = "Save Payment Summary",
+                    Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*",
+                    FileName = "dopravni_platby_export.csv"
+                };
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string filePath = saveFileDialog.FileName;
+
+                    var platby = await _repository.GetAllAsync();
+
+                    // Сохраняем данные в выбранный файл
+                    using (var writer = new StreamWriter(filePath))
+                    {
+                        writer.WriteLine("Cena,DatumNakupu,TypPlatby");
+
+                        foreach (var platba in platby)
+                        {
+                            writer.WriteLine($"{platba.Cena},{platba.DatumNakupu:yyyy-MM-dd},{platba.TypPlatby}");
+                        }
+
+                        writer.WriteLine();
+                        writer.WriteLine($"Total Count: {totalCount}, Total Sum: {totalSum:F2}");
+                    }
+
+                    MessageBox.Show($"Data successfully exported to: {filePath}", "Export Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Export cancelled by the user.", "Export Cancelled", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при расчёте сводки: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Chyba při výpočtu nebo exportu: {ex.Message}", "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -153,11 +237,11 @@ namespace DopravniPodnikSem.ViewModels
             {
                 if (SelectedPlatba == null)
                 {
-                    ErrorMessage = "Пожалуйста, заполните все поля перед добавлением или обновлением!";
+                    ErrorMessage = "Vyplňte prosím všechna pole před přidáním nebo aktualizací!";
                     return;
                 }
 
-                if (SelectedPlatba.BiletId == 0) // Новая запись
+                if (SelectedPlatba.BiletId == 0)
                 {
                     var typePlatbaView = new TypePlatbaView();
                     var typePlatbaViewModel = new TypePlatbaViewModel(_jizdaRepository);
@@ -170,20 +254,20 @@ namespace DopravniPodnikSem.ViewModels
                         SelectedPlatba.JizdaJizdaId = typePlatbaViewModel.SelectedJizda.JizdaId;
 
                         await _repository.AddAsync(SelectedPlatba);
-                        MessageBox.Show("Запись успешно добавлена!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Záznam úspěšně přidán!", "Úspěch", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
-                else // Обновление записи
+                else
                 {
                     await _repository.UpdateAsync(SelectedPlatba);
-                    MessageBox.Show("Запись успешно обновлена!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Záznam úspěšně aktualizován!", "Úspěch", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
 
                 LoadDataAsync();
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Ошибка добавления или обновления записи: {ex.Message}";
+                ErrorMessage = $"Chyba při přidávání nebo aktualizaci záznamu: {ex.Message}";
             }
         }
 
@@ -192,12 +276,12 @@ namespace DopravniPodnikSem.ViewModels
             try
             {
                 await _repository.DeleteAsync(SelectedPlatba.BiletId);
-                MessageBox.Show("Запись успешно удалена!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Záznam úspěšně smazán!", "Úspěch", MessageBoxButton.OK, MessageBoxImage.Information);
                 LoadDataAsync();
             }
             catch
             {
-                ErrorMessage = "Ошибка удаления записи.";
+                ErrorMessage = "Chyba při mazání záznamu.";
             }
         }
 

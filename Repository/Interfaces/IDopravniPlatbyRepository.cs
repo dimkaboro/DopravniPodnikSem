@@ -17,5 +17,6 @@ namespace DopravniPodnikSem.Repository.Interfaces
 
         Task<string> GetMostFrequentPaymentTypeAsync();
         Task<(int totalCount, decimal totalSum)> CalculatePaymentSummaryAsync();
+        Task<(string Type, int Count, double Percentage)> GetMostFrequentPaymentTypeWithDetailsAsync();
     }
 }
