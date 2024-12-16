@@ -229,12 +229,13 @@ namespace DopravniPodnikSem.ViewModels
                     Heslo = hashedPassword,
                     CisloTelefonu = PhoneNumber,
                     AdresaId = addressID,
-                    RoleId = 2, // Установите роль (например, 2 для сотрудника)
-                    Pozice = "Guest", // Или любая другая позиция
-                    Plat = 0, // Установите зарплату по умолчанию
-                    DatumNastupu = DateOnly.FromDateTime(DateTime.Now), // Текущая дата
-                    SouborId = 1, // Установите ID файла по умолчанию
-                    JePrivate = 1 // Настройте значение
+                    ZamestnanecZamestnanecId = 1,
+                    RoleId = 2, 
+                    Pozice = "Guest", 
+                    Plat = 0, 
+                    DatumNastupu = DateOnly.FromDateTime(DateTime.Now), 
+                    SouborId = 1, 
+                    JePrivate = 0 
                 };
 
                 await _userDataRepository.AddEmployeeAsync(newEmployee);

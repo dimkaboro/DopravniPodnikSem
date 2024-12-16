@@ -129,30 +129,31 @@ namespace DopravniPodnikSem.ViewModels
             {
                 if (SelectedZamestnanec == null)
                 {
-                    ErrorMessage = "Пожалуйста, заполните все поля перед добавлением.";
+                    ErrorMessage = "Před přidáním prosím vyplňte všechna pole.";
                     return;
                 }
 
-                // Если администратор не выбрал аватар, устанавливаем дефолтный ID = 1
                 if (SelectedZamestnanec.SouborId == 0)
                 {
-                    SelectedZamestnanec.SouborId = 1; // ID дефолтного аватара
+                    SelectedZamestnanec.SouborId = 1; 
                 }
 
-                // Хешируем пароль перед отправкой
+                if (SelectedZamestnanec.ZamestnanecZamestnanecId == 0)
+                {
+                    SelectedZamestnanec.ZamestnanecZamestnanecId = 1;
+                }
+
                 SelectedZamestnanec.Heslo = _passwordService.HashPassword(SelectedZamestnanec.Heslo);
 
-                // Добавляем сотрудника через репозиторий
                 await _userDataRepository.AddEmployeeAsync(SelectedZamestnanec);
 
-                // Обновляем данные
                 await LoadDataAsync();
                 ClearFields();
-                ErrorMessage = "Сотрудник успешно добавлен!";
+                ErrorMessage = "Zaměstnanec byl úspěšně přidán!";
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Ошибка: {ex.Message}";
+                ErrorMessage = $"ERROR: {ex.Message}";
             }
         }
 
@@ -188,7 +189,6 @@ namespace DopravniPodnikSem.ViewModels
                 }
                 else
                 {
-                    // Если поле пустое, то загружаем всех сотрудников
                     await LoadDataAsync();
                 }
                 ErrorMessage = string.Empty;
@@ -222,7 +222,7 @@ namespace DopravniPodnikSem.ViewModels
                     DataContext = new AdresaViewModel(App.ServiceProvider.GetService<IAdresyRepository>(), SelectedZamestnanec, SelectedAdresa)
                 };
 
-                adresaWindow.Show();
+                adresaWindow.ShowDialog();
             }
             else
             {
@@ -250,26 +250,22 @@ namespace DopravniPodnikSem.ViewModels
         {
             try
             {
-                // Убедимся, что у пользователя есть аватар
                 if (SelectedZamestnanec != null && (SelectedSoubor == null || SelectedZamestnanec.SouborId == 0))
                 {
-                    // Назначаем дефолтный аватар
                     SelectedZamestnanec.SouborId = 1;
-                    SelectedSoubor = await App.ServiceProvider
-                        .GetService<ISouboryRepository>()
-                        .GetUserAvatarAsync(1); // Асинхронно получаем аватар с ID 1
+                    await LoadAvatarDetails();
                 }
 
-                // Открываем окно изменения аватара
                 var souborWindow = new SouborWindow
                 {
                     DataContext = new SouboryViewModel(App.ServiceProvider.GetService<ISouboryRepository>(), SelectedZamestnanec, SelectedSoubor)
                 };
-                souborWindow.Show(); // Используем Show вместо ShowDialog
+
+                souborWindow.ShowDialog(); 
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"ERROR: {ex.Message}", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

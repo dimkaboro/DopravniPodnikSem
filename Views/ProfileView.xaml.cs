@@ -20,9 +20,6 @@ using System.Windows.Shapes;
 
 namespace DopravniPodnikSem.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для ProfileView.xaml
-    /// </summary>
     public partial class ProfileView : UserControl
     {
         private readonly NavigationVM _navigationVM;

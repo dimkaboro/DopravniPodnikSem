@@ -60,7 +60,6 @@ namespace DopravniPodnikSem.Repository
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
-                // Добавляем параметр для результата функции
                 command.Parameters.Add(new OracleParameter(":result", OracleDbType.Varchar2, 100)
                 {
                     Direction = ParameterDirection.Output
@@ -71,10 +70,8 @@ namespace DopravniPodnikSem.Repository
                     await connection.OpenAsync();
                 }
 
-                // Выполняем процедуру
                 await command.ExecuteNonQueryAsync();
 
-                // Возвращаем результат
                 return command.Parameters[":result"].Value.ToString();
             }
         }
@@ -127,7 +124,7 @@ namespace DopravniPodnikSem.Repository
                 command.Parameters.Add(new OracleParameter(":BiletId", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.InputOutput,
-                    Value = DBNull.Value // ID будет сгенерирован процедурой
+                    Value = DBNull.Value
                 });
                 command.Parameters.Add(new OracleParameter(":Cena", dopravniPlatba.Cena));
                 command.Parameters.Add(new OracleParameter(":DatumNakupu", dopravniPlatba.DatumNakupu));
@@ -141,7 +138,6 @@ namespace DopravniPodnikSem.Repository
 
                 await command.ExecuteNonQueryAsync();
 
-                // Явное преобразование OracleDecimal в int
                 if (command.Parameters[":BiletId"].Value is OracleDecimal oracleDecimal)
                 {
                     dopravniPlatba.BiletId = oracleDecimal.ToInt32();
@@ -160,14 +156,11 @@ namespace DopravniPodnikSem.Repository
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
-                // Добавляем параметры для OUT значений
                 command.Parameters.Add(new OracleParameter(":p_total_count", OracleDbType.Int32, ParameterDirection.Output));
                 command.Parameters.Add(new OracleParameter(":p_total_sum", OracleDbType.Decimal, ParameterDirection.Output));
 
-                // Выполняем процедуру
                 await command.ExecuteNonQueryAsync();
 
-                // Извлекаем значения из параметров
                 int totalCount = ((OracleDecimal)command.Parameters[":p_total_count"].Value).ToInt32();
                 decimal totalSum = ((OracleDecimal)command.Parameters[":p_total_sum"].Value).Value;
 

@@ -17,9 +17,6 @@ using Microsoft.Win32;
 
 namespace DopravniPodnikSem.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для SouborWindow.xaml
-    /// </summary>
     public partial class SouborWindow : Window
     {
         public SouborWindow()
@@ -32,7 +29,7 @@ namespace DopravniPodnikSem.Views
             var openFileDialog = new OpenFileDialog
             {
                 Filter = "Image Files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg",
-                Title = "Выберите изображение"
+                Title = "Select an image"
             };
 
             if (openFileDialog.ShowDialog() == true)
@@ -43,11 +40,11 @@ namespace DopravniPodnikSem.Views
                 if (DataContext is SouboryViewModel viewModel)
                 {
                     viewModel.NewAvatar = imageBytes;
-                    MessageBox.Show("Новый аватар выбран.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("New avatar selected.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
-                    MessageBox.Show("Ошибка загрузки аватара.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Error loading avatar.", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

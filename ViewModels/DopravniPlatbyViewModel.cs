@@ -92,10 +92,8 @@ namespace DopravniPodnikSem.ViewModels
         {
             try
             {
-                // Fetch the most frequent payment type and related data
                 var mostFrequentTypeData = await _repository.GetMostFrequentPaymentTypeWithDetailsAsync();
 
-                // Display the result in a popup message
                 MessageBox.Show($"Most Frequent Payment Type: {mostFrequentTypeData.Type}\n" +
                                 $"Count: {mostFrequentTypeData.Count}\n" +
                                 $"Percentage: {mostFrequentTypeData.Percentage:F2}%",
@@ -103,7 +101,6 @@ namespace DopravniPodnikSem.ViewModels
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
 
-                // Prompt the user to save the result to a CSV file
                 var saveDialog = new Microsoft.Win32.SaveFileDialog
                 {
                     Filter = "CSV files (*.csv)|*.csv",
@@ -112,17 +109,13 @@ namespace DopravniPodnikSem.ViewModels
 
                 if (saveDialog.ShowDialog() == true)
                 {
-                    // Save the result to the selected file
                     using (var writer = new StreamWriter(saveDialog.FileName))
                     {
-                        // Write header
                         writer.WriteLine("Payment Type,Count,Percentage");
 
-                        // Write the fetched data
                         writer.WriteLine($"{mostFrequentTypeData.Type},{mostFrequentTypeData.Count},{mostFrequentTypeData.Percentage:F2}");
                     }
 
-                    // Notify the user about the successful save
                     MessageBox.Show($"The result has been successfully saved to the file: {saveDialog.FileName}",
                         "Success",
                         MessageBoxButton.OK,
@@ -130,7 +123,6 @@ namespace DopravniPodnikSem.ViewModels
                 }
                 else
                 {
-                    // Notify the user if the save operation was canceled
                     MessageBox.Show("The save operation was canceled by the user.",
                         "Information",
                         MessageBoxButton.OK,
@@ -139,7 +131,6 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch (Exception ex)
             {
-                // Display any errors that occur during the process
                 MessageBox.Show($"An error occurred while processing: {ex.Message}",
                     "Error",
                     MessageBoxButton.OK,
@@ -190,7 +181,6 @@ namespace DopravniPodnikSem.ViewModels
                 MessageBox.Show($"Celkový počet plateb: {totalCount}, Celková částka: {totalSum:F2} CZK",
                     "Výsledek výpočtu", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Открываем диалог сохранения файла
                 var saveFileDialog = new SaveFileDialog
                 {
                     Title = "Save Payment Summary",
@@ -204,7 +194,6 @@ namespace DopravniPodnikSem.ViewModels
 
                     var platby = await _repository.GetAllAsync();
 
-                    // Сохраняем данные в выбранный файл
                     using (var writer = new StreamWriter(filePath))
                     {
                         writer.WriteLine("Cena,DatumNakupu,TypPlatby");

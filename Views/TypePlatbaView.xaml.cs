@@ -24,10 +24,9 @@ namespace DopravniPodnikSem.Views
             InitializeComponent();
         }
 
-        // Обработчик кнопки Cancel
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close(); // Закрываем текущее окно
+            this.Close(); /
         }
     }
 }

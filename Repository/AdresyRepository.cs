@@ -21,9 +21,6 @@ namespace DopravniPodnikSem.Repository
             _databaseService = databaseService;
         }
 
-        /// <summary>
-        /// Добавление нового адреса
-        /// </summary>
         public async Task<int> AddAddressAsync(string mesto, string ulice, string cisloBudovy, string zipCode, string cisloBytu)
         {
             using (var connection = _databaseService.GetConnection())
@@ -33,44 +30,37 @@ namespace DopravniPodnikSem.Repository
                     VALUES ((SELECT NVL(MAX(ADRESA_ID), 0) + 1 FROM ADRESY), :Mesto, :Ulice, :CisloBudovy, :ZipCode, :CisloBytu)
                     RETURNING ADRESA_ID INTO :NewId", connection);
 
-                // Параметры для вставки
                 insertCommand.Parameters.Add(new OracleParameter(":Mesto", mesto));
                 insertCommand.Parameters.Add(new OracleParameter(":Ulice", ulice));
                 insertCommand.Parameters.Add(new OracleParameter(":CisloBudovy", cisloBudovy));
                 insertCommand.Parameters.Add(new OracleParameter(":ZipCode", zipCode));
                 insertCommand.Parameters.Add(new OracleParameter(":CisloBytu", cisloBytu));
 
-                // Параметр для возврата нового ID
                 var newIdParameter = new OracleParameter(":NewId", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.Output
                 };
                 insertCommand.Parameters.Add(newIdParameter);
 
-                // Выполняем команду
                 await insertCommand.ExecuteNonQueryAsync();
 
-                // Возвращаем новый ID
                 if (newIdParameter.Value is OracleDecimal oracleDecimal)
                 {
                     return oracleDecimal.ToInt32();
                 }
                 else
                 {
-                    throw new InvalidOperationException("Не удалось вставить адрес и получить его ID.");
+                    throw new InvalidOperationException("ERROR");
                 }
             }
         }
 
-        /// <summary>
-        /// Получение информации об адресе по ID
-        /// </summary>
         public async Task<Adresa> GetAddressDetailsAsync(int adresaId)
         {
             using (var connection = _databaseService.GetConnection())
             {
                 var command = new OracleCommand(@"
-                    SELECT ADRESA_ID, MESTO, ULICE, CISLO_BUDОVY, ZIP_CODE, CISLO_BYTU 
+                    SELECT ADRESA_ID, MESTO, ULICE, CISLO_BUDOVY, ZIP_CODE, CISLO_BYTU 
                     FROM ADRESY 
                     WHERE ADRESA_ID = :AdresaId", connection);
 
@@ -95,9 +85,6 @@ namespace DopravniPodnikSem.Repository
             return null;
         }
 
-        /// <summary>
-        /// Обновление существующего адреса
-        /// </summary>
         public async Task<int> UpdateAddressLogicAsync(Adresa address, int zamestnanecId, int currentAddressId)
         {
             using (var connection = _databaseService.GetConnection())
@@ -107,7 +94,6 @@ namespace DopravniPodnikSem.Repository
                     CommandType = CommandType.StoredProcedure
                 };
 
-                // Параметры для обновления
                 command.Parameters.Add(new OracleParameter("p_Mesto", OracleDbType.Varchar2) { Value = address.Mesto });
                 command.Parameters.Add(new OracleParameter("p_Ulice", OracleDbType.Varchar2) { Value = address.Ulice });
                 command.Parameters.Add(new OracleParameter("p_CisloBudovy", OracleDbType.Varchar2) { Value = address.CisloBudovy });
@@ -116,7 +102,6 @@ namespace DopravniPodnikSem.Repository
                 command.Parameters.Add(new OracleParameter("p_ZamestnanecId", OracleDbType.Decimal) { Value = zamestnanecId });
                 command.Parameters.Add(new OracleParameter("p_CurrentAddressId", OracleDbType.Decimal) { Value = currentAddressId });
 
-                // Параметр для возврата нового ID
                 var outputParam = new OracleParameter("p_NewAddressId", OracleDbType.Decimal)
                 {
                     Direction = ParameterDirection.Output
@@ -125,15 +110,11 @@ namespace DopravniPodnikSem.Repository
 
                 await command.ExecuteNonQueryAsync();
 
-                // Возвращаем новый ID
                 var oracleDecimalValue = (OracleDecimal)outputParam.Value;
                 return oracleDecimalValue.ToInt32();
             }
         }
 
-        /// <summary>
-        /// Проверка наличия адреса в базе данных
-        /// </summary>
         public async Task<int> GetAddressIdAsync(string mesto, string ulice, string cisloBudovy, string zipCode, string cisloBytu)
         {
             using (var connection = _databaseService.GetConnection())
@@ -142,7 +123,6 @@ namespace DopravniPodnikSem.Repository
                     SELECT ADRESA_ID FROM ADRESY 
                     WHERE MESTO = :Mesto AND ULICE = :Ulice AND CISLO_BUDOVY = :CisloBudovy AND ZIP_CODE = :ZipCode AND CISLO_BYTU = :CisloBytu", connection);
 
-                // Параметры для поиска адреса
                 command.Parameters.Add(new OracleParameter(":Mesto", mesto));
                 command.Parameters.Add(new OracleParameter(":Ulice", ulice));
                 command.Parameters.Add(new OracleParameter(":CisloBudovy", cisloBudovy));
@@ -151,7 +131,6 @@ namespace DopravniPodnikSem.Repository
 
                 var result = await command.ExecuteScalarAsync();
 
-                // Возвращаем ID, если адрес найден
                 if (result != null)
                 {
                     return Convert.ToInt32(result);

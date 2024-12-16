@@ -114,25 +114,22 @@ namespace DopravniPodnikSem.ViewModels
         {
             try
             {
-                // Вызов метода GetLongestJizdaAsync из репозитория
                 var (linkaNazev, casOd, casDo, duration) = await _jizdaRepository.GetLongestJizdaAsync();
 
-                // Формирование и отображение сообщения с результатом
                 MessageBox.Show(
-                    $"Самая долгая поездка:\n" +
-                    $"Маршрут: {linkaNazev}\n" +
-                    $"Начало: {casOd:dd.MM.yyyy HH:mm:ss}\n" +
-                    $"Окончание: {casDo:dd.MM.yyyy HH:mm:ss}\n" +
-                    $"Длительность: {duration.TotalHours:F2} часов",
-                    "Самая долгая поездка",
+                    $"Nejdelší linka:\n" +
+                    $"Linka: {linkaNazev}\n" +
+                    $"Od: {casOd:dd.MM.yyyy HH:mm:ss}\n" +
+                    $"Do: {casDo:dd.MM.yyyy HH:mm:ss}\n" +
+                    $"Trvání: {duration.TotalHours:F2} hodin",
+                    "Nejdelší linka",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
                 );
             }
             catch (Exception ex)
             {
-                // Обработка ошибок и уведомление
-                MessageBox.Show($"Ошибка при получении самой долгой поездки: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Chyba při získávání nejdelší linky: {ex.Message}", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

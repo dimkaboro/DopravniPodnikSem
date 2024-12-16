@@ -80,7 +80,7 @@ namespace DopravniPodnikSem.Repository
                     CommandType = CommandType.Text
                 };
 
-                command.Parameters.Add(new OracleParameter(":ZamestnanecId", DBNull.Value)); // ID генерируется в процедуре
+                command.Parameters.Add(new OracleParameter(":ZamestnanecId", DBNull.Value)); 
                 command.Parameters.Add(new OracleParameter(":Jmeno", zamestnanec.Jmeno));
                 command.Parameters.Add(new OracleParameter(":Prijmeni", zamestnanec.Prijmeni));
                 command.Parameters.Add(new OracleParameter(":Email", zamestnanec.Email));
@@ -89,7 +89,7 @@ namespace DopravniPodnikSem.Repository
                 command.Parameters.Add(new OracleParameter(":Plat", zamestnanec.Plat));
                 command.Parameters.Add(new OracleParameter(":DatumNastupu", zamestnanec.DatumNastupu.ToDateTime(new TimeOnly())));
                 command.Parameters.Add(new OracleParameter(":CisloTelefonu", zamestnanec.CisloTelefonu));
-                command.Parameters.Add(new OracleParameter(":ZamestnanecZamestnanecId", zamestnanec.ZamestnanecZamestnanecId ?? (object)DBNull.Value));
+                command.Parameters.Add(new OracleParameter(":ZamestnanecZamestnanecId", zamestnanec.ZamestnanecZamestnanecId));
                 command.Parameters.Add(new OracleParameter(":AdresaId", zamestnanec.AdresaId));
                 command.Parameters.Add(new OracleParameter(":RoleId", zamestnanec.RoleId));
                 command.Parameters.Add(new OracleParameter(":SouborId", zamestnanec.SouborId));
@@ -229,7 +229,6 @@ namespace DopravniPodnikSem.Repository
                     }
                 }
 
-                // Строим иерархию
                 foreach (var employee in employees)
                 {
                     if (employee.ZamestnanecZamestnanecId.HasValue &&
@@ -241,7 +240,6 @@ namespace DopravniPodnikSem.Repository
                     }
                 }
 
-                // Возвращаем только верхний уровень
                 return employees.Where(e => e.ZamestnanecZamestnanecId == null || e.ZamestnanecZamestnanecId == e.ZamestnanecId).ToList();
             }
         }
