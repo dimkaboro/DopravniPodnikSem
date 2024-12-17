@@ -16,9 +16,6 @@ using System.Windows.Shapes;
 
 namespace DopravniPodnikSem.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для UsersView.xaml
-    /// </summary>
     public partial class ShowUsersView : UserControl
     {
         public ShowUsersView()

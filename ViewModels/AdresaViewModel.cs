@@ -20,15 +20,7 @@ namespace DopravniPodnikSem.ViewModels
 
             _originalZamestnanec = selectedZamestnanec;
 
-            EditedAddress = new Adresa
-            {
-                AdresaId = selectedAddress.AdresaId,
-                Mesto = selectedAddress.Mesto,
-                Ulice = selectedAddress.Ulice,
-                CisloBudovy = selectedAddress.CisloBudovy,
-                ZipCode = selectedAddress.ZipCode,
-                CisloBytu = selectedAddress.CisloBytu
-            };
+            EditedAddress = selectedAddress ?? new Adresa(); 
         }
 
         public Zamestnanec OriginalZamestnanec
@@ -53,15 +45,41 @@ namespace DopravniPodnikSem.ViewModels
 
         public async Task SaveChangesAsync()
         {
+            if (EditedAddress == null)
+            {
+                MessageBox.Show("No address data available.", "ERROR", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
-                await _adresyRepository.UpdateAddressLogicAsync(EditedAddress, OriginalZamestnanec.ZamestnanecId, OriginalZamestnanec.AdresaId);
+                if (EditedAddress.AdresaId == 0) 
+                {
+                    int newAddressId = await _adresyRepository.AddAddressAsync(
+                        EditedAddress.Mesto,
+                        EditedAddress.Ulice,
+                        EditedAddress.CisloBudovy,
+                        EditedAddress.ZipCode,
+                        EditedAddress.CisloBytu
+                    );
+
+                    OriginalZamestnanec.AdresaId = newAddressId; 
+                    MessageBox.Show("New address added successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    await _adresyRepository.UpdateAddressLogicAsync(
+                        EditedAddress,
+                        OriginalZamestnanec.ZamestnanecId,
+                        OriginalZamestnanec.AdresaId
+                    );
+                    MessageBox.Show("Address updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error updating data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error saving data: {ex.Message}", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

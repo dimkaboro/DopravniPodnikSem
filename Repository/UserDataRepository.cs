@@ -71,21 +71,29 @@ namespace DopravniPodnikSem.Repository
 
 
 
-        public async Task AddEmployeeAsync(string jmeno, string prijmeni, string email, string heslo, string cisloTelefonu, int adresa)
+        public async Task AddEmployeeAsync(Zamestnanec zamestnanec)
         {
             using (var connection = _databaseService.GetConnection())
             {
-                var command = new OracleCommand(@"
-                    INSERT INTO ZAMESTNANCI (ZAMESTNANEC_ID, JMENO, PRIJMENI, EMAIL, HESLO, POZICE, PLAT, DATUM_NASTUPU, CISLO_TELEFONU, 
-                    ZAMESTNANEC_ZAMESTNANEC_ID, ADRESA_ADRESA_ID, ROLE_ROLE_ID, SOUBOR_SOUBOR_ID)
-                    VALUES ((SELECT NVL(MAX(ZAMESTNANEC_ID), 0) + 1 FROM ZAMESTNANCI), :Jmeno, :Prijmeni, :Email, :Heslo, 'guest', 1, SYSDATE, :CisloTelefonu, 1, :Adresa, 2, 1)", connection);
+                var command = new OracleCommand("BEGIN manage_zamestnanec('INSERT', :ZamestnanecId, :Jmeno, :Prijmeni, :Email, :Heslo, :Pozice, :Plat, :DatumNastupu, :CisloTelefonu, :ZamestnanecZamestnanecId, :AdresaId, :RoleId, :SouborId, :JePrivate); END;", connection)
+                {
+                    CommandType = CommandType.Text
+                };
 
-                command.Parameters.Add(new OracleParameter(":Jmeno", jmeno));
-                command.Parameters.Add(new OracleParameter(":Prijmeni", prijmeni));
-                command.Parameters.Add(new OracleParameter(":Email", email));
-                command.Parameters.Add(new OracleParameter(":Heslo", heslo));
-                command.Parameters.Add(new OracleParameter(":CisloTelefonu", cisloTelefonu));
-                command.Parameters.Add(new OracleParameter(":Adresa", adresa));
+                command.Parameters.Add(new OracleParameter(":ZamestnanecId", DBNull.Value)); 
+                command.Parameters.Add(new OracleParameter(":Jmeno", zamestnanec.Jmeno));
+                command.Parameters.Add(new OracleParameter(":Prijmeni", zamestnanec.Prijmeni));
+                command.Parameters.Add(new OracleParameter(":Email", zamestnanec.Email));
+                command.Parameters.Add(new OracleParameter(":Heslo", zamestnanec.Heslo));
+                command.Parameters.Add(new OracleParameter(":Pozice", zamestnanec.Pozice));
+                command.Parameters.Add(new OracleParameter(":Plat", zamestnanec.Plat));
+                command.Parameters.Add(new OracleParameter(":DatumNastupu", zamestnanec.DatumNastupu.ToDateTime(new TimeOnly())));
+                command.Parameters.Add(new OracleParameter(":CisloTelefonu", zamestnanec.CisloTelefonu));
+                command.Parameters.Add(new OracleParameter(":ZamestnanecZamestnanecId", zamestnanec.ZamestnanecZamestnanecId));
+                command.Parameters.Add(new OracleParameter(":AdresaId", zamestnanec.AdresaId));
+                command.Parameters.Add(new OracleParameter(":RoleId", zamestnanec.RoleId));
+                command.Parameters.Add(new OracleParameter(":SouborId", zamestnanec.SouborId));
+                command.Parameters.Add(new OracleParameter(":JePrivate", zamestnanec.JePrivate));
 
                 await command.ExecuteNonQueryAsync();
             }
@@ -221,7 +229,6 @@ namespace DopravniPodnikSem.Repository
                     }
                 }
 
-                // Строим иерархию
                 foreach (var employee in employees)
                 {
                     if (employee.ZamestnanecZamestnanecId.HasValue &&
@@ -233,7 +240,6 @@ namespace DopravniPodnikSem.Repository
                     }
                 }
 
-                // Возвращаем только верхний уровень
                 return employees.Where(e => e.ZamestnanecZamestnanecId == null || e.ZamestnanecZamestnanecId == e.ZamestnanecId).ToList();
             }
         }

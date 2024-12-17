@@ -12,12 +12,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.IO;
+using Microsoft.Win32;
 
 namespace DopravniPodnikSem.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для SouborWindow.xaml
-    /// </summary>
     public partial class SouborWindow : Window
     {
         public SouborWindow()
@@ -25,32 +24,43 @@ namespace DopravniPodnikSem.Views
             InitializeComponent();
         }
 
-        private async void ChangeAvatar_Click(object sender, RoutedEventArgs e)
+        private void ChangeAvatar_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = (SouboryViewModel)DataContext;
-
-            await viewModel.SaveChangesAsync();
-
-            foreach (Window window in Application.Current.Windows)
+            var openFileDialog = new OpenFileDialog
             {
-                if (window is SouborWindow)
+                Filter = "Image Files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg",
+                Title = "Select an image"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                var filePath = openFileDialog.FileName;
+                var imageBytes = File.ReadAllBytes(filePath);
+
+                if (DataContext is SouboryViewModel viewModel)
                 {
-                    window.Close();
-                    break;
+                    viewModel.NewAvatar = imageBytes;
+                    MessageBox.Show("New avatar selected.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Error loading avatar.", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
-        private async void Cancel_Click(object sender, RoutedEventArgs e)
+        private async void SaveAvatar_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Window window in Application.Current.Windows)
+            if (DataContext is SouboryViewModel viewModel)
             {
-                if (window is SouborWindow)
-                {
-                    window.Close();
-                    break;
-                }
+                await viewModel.SaveChangesAsync();
+                Close();
             }
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

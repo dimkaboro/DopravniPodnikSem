@@ -81,11 +81,10 @@ namespace DopravniPodnikSem.ViewModels
         {
             if (string.IsNullOrEmpty(SelectedType) || SelectedJizda == null)
             {
-                MessageBox.Show("Пожалуйста, выберите тип оплаты и поездку.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Vyberte prosím typ platby a cestu.", "ERROR", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Устанавливаем данные в SelectedPlatba
             var currentWindow = Application.Current.Windows.OfType<TypePlatbaView>().FirstOrDefault();
             if (currentWindow?.DataContext is DopravniPlatbyViewModel parentViewModel)
             {
@@ -93,7 +92,6 @@ namespace DopravniPodnikSem.ViewModels
                 parentViewModel.SelectedPlatba.JizdaJizdaId = SelectedJizda.JizdaId;
             }
 
-            // Закрытие окна
             currentWindow.DialogResult = true;
             currentWindow.Close();
         }

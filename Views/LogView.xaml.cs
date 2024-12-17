@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace DopravniPodnikSem.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для LogView.xaml
-    /// </summary>
     public partial class LogView : UserControl
     {
         public LogView()

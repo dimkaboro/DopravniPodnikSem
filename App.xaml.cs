@@ -90,7 +90,7 @@ namespace DopravniPodnikSem
 
             services.AddTransient<IDopravniPlatbyRepository, DopravniPlatbyRepository>();
             services.AddTransient<DopravniPlatbyViewModel>();
-            services.AddTransient<TypePlatbaView>();// Добавляем эту строку>
+            services.AddTransient<TypePlatbaView>();
         }
 
 

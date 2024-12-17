@@ -11,7 +11,7 @@ namespace DopravniPodnikSem.Repository.Interfaces
     public interface IUserDataRepository
     {
         Task<Zamestnanec> CheckCredentialsAsync(string email, string password);
-        Task AddEmployeeAsync(string jmeno, string prijmeni, string email, string heslo, string cisloTelefonu, int adresa);
+        Task AddEmployeeAsync(Zamestnanec zamestnanec);
         Task<Zamestnanec> GetUserDetailsAsync(int userId);
         Task UpdateEmployeeAsync(Zamestnanec employee);
         Task<IEnumerable<Zamestnanec>> GetAllUsersAsync();

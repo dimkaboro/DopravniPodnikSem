@@ -22,10 +22,8 @@ namespace DopravniPodnikSem.ViewModels
         public SouboryViewModel(ISouboryRepository souboryRepository, Zamestnanec selectedZamestnanec, Soubory selectedSoubor)
         {
             _souboryRepository = souboryRepository;
-
             _originalZamestnanec = selectedZamestnanec;
-
-            CurrentSoubor = selectedSoubor;
+            CurrentSoubor = selectedSoubor ?? throw new ArgumentNullException(nameof(selectedSoubor));
         }
 
         public Zamestnanec OriginalZamestnanec
@@ -69,13 +67,17 @@ namespace DopravniPodnikSem.ViewModels
                 if (NewAvatar != null)
                 {
                     var newAvatarId = await _souboryRepository.UpdateUserAvatarAsync(OriginalZamestnanec.ZamestnanecId, "User avatar", NewAvatar);
+                    MessageBox.Show($"Avatar byl úspěšně aktualizován!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Nebyl vybrán žádný nový avatar. Je použit standardní avatar.", "Informace", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error updating data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Chyba aktualizace dat: {ex.Message}", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

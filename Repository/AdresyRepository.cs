@@ -21,7 +21,6 @@ namespace DopravniPodnikSem.Repository
             _databaseService = databaseService;
         }
 
-
         public async Task<int> AddAddressAsync(string mesto, string ulice, string cisloBudovy, string zipCode, string cisloBytu)
         {
             using (var connection = _databaseService.GetConnection())
@@ -37,7 +36,10 @@ namespace DopravniPodnikSem.Repository
                 insertCommand.Parameters.Add(new OracleParameter(":ZipCode", zipCode));
                 insertCommand.Parameters.Add(new OracleParameter(":CisloBytu", cisloBytu));
 
-                var newIdParameter = new OracleParameter(":NewId", OracleDbType.Int32) { Direction = ParameterDirection.Output };
+                var newIdParameter = new OracleParameter(":NewId", OracleDbType.Int32)
+                {
+                    Direction = ParameterDirection.Output
+                };
                 insertCommand.Parameters.Add(newIdParameter);
 
                 await insertCommand.ExecuteNonQueryAsync();
@@ -48,7 +50,7 @@ namespace DopravniPodnikSem.Repository
                 }
                 else
                 {
-                    throw new InvalidOperationException("Failed to insert address and retrieve ID.");
+                    throw new InvalidOperationException("ERROR");
                 }
             }
         }
@@ -108,12 +110,10 @@ namespace DopravniPodnikSem.Repository
 
                 await command.ExecuteNonQueryAsync();
 
-                var oracleDecimalValue = (Oracle.ManagedDataAccess.Types.OracleDecimal)outputParam.Value;
-                return oracleDecimalValue.ToInt32(); 
+                var oracleDecimalValue = (OracleDecimal)outputParam.Value;
+                return oracleDecimalValue.ToInt32();
             }
         }
-
-
 
         public async Task<int> GetAddressIdAsync(string mesto, string ulice, string cisloBudovy, string zipCode, string cisloBytu)
         {
@@ -131,20 +131,13 @@ namespace DopravniPodnikSem.Repository
 
                 var result = await command.ExecuteScalarAsync();
 
-                try
+                if (result != null)
                 {
-                    if (result != null)
-                    {
-                        return Convert.ToInt32(result);
-                    }
-                    else
-                    {
-                        return 0;
-                    }
+                    return Convert.ToInt32(result);
                 }
-                catch (Exception ex)
+                else
                 {
-                    throw new InvalidOperationException($"Failed to get address.");
+                    return 0;
                 }
             }
         }
