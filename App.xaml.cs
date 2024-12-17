@@ -50,7 +50,7 @@ namespace DopravniPodnikSem
             services.AddTransient<IAdresyRepository, AdresyRepository>();
             services.AddTransient<ISouboryRepository, SouboryRepository>();
             services.AddTransient<ILogRepository, LogRepository>();
-            
+
             services.AddTransient<RegistrationViewModel>();
             services.AddTransient<LoginViewModel>();
             services.AddTransient<ProfileViewModel>();
@@ -73,8 +73,8 @@ namespace DopravniPodnikSem
 
             services.AddTransient<ILinkyRepository, LinkyRepository>();
             services.AddTransient<LinkaViewModel>();
-            
-            services.AddTransient<IUdrzbaVozidlaRepository, UdrzbaVozidlaRepository>(); 
+
+            services.AddTransient<IUdrzbaVozidlaRepository, UdrzbaVozidlaRepository>();
             services.AddTransient<UdrzbaVozidlaViewModel>();
 
             services.AddTransient<UdrzbaVozidlaViewModel>();
@@ -82,15 +82,18 @@ namespace DopravniPodnikSem
             services.AddTransient<SearchVozidloWindow>();
 
             services.AddTransient<IZastavkaRepository, ZastavkaRepository>();
-            services.AddTransient<ZastavkaViewModel>(); 
+            services.AddTransient<ZastavkaViewModel>();
 
             services.AddTransient<IJizdaRepository, JizdaRepository>();
-            services.AddTransient<JizdaViewModel>(); 
+            services.AddTransient<JizdaViewModel>();
             services.AddTransient<SelectRealtionsWindow>();
 
             services.AddTransient<IDopravniPlatbyRepository, DopravniPlatbyRepository>();
             services.AddTransient<DopravniPlatbyViewModel>();
             services.AddTransient<TypePlatbaView>();
+
+            services.AddTransient<ISystemKatalogRepository, SystemKatalogRepository>();
+            services.AddTransient<SystemKatalogViewModel>();
         }
 
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DopravniPodnikSem.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,23 +11,20 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace DopravniPodnikSem.Views
 {
     /// <summary>
-    /// Interaction logic for TypePlatbaView.xaml
+    /// Interaction logic for SystemKatalogView.xaml
     /// </summary>
-    public partial class TypePlatbaView : Window
+    public partial class SystemKatalogView : UserControl
     {
-        public TypePlatbaView()
+        public SystemKatalogView(SystemKatalogViewModel viewModel)
         {
             InitializeComponent();
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close(); 
+            DataContext = viewModel; // Привязка ViewModel
         }
     }
 }

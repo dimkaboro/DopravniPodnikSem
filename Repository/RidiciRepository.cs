@@ -117,6 +117,42 @@ namespace DopravniPodnikSem.Repository
             }
         }
 
+        public async Task<List<string>> GetBirthdaysInCurrentMonthAsync()
+        {
+            var birthdays = new List<string>();
+            var query = @"BEGIN GetRidiciBirthdaysInCurrentMonth; END;";
+
+            using (var connection = _databaseService.GetConnection())
+            using (var command = new OracleCommand(query, connection))
+            {
+                command.CommandType = CommandType.Text;
+
+                // Подключение DBMS_OUTPUT для чтения вывода из процедуры
+                OracleCommand enableDbmsOutput = new OracleCommand("BEGIN DBMS_OUTPUT.ENABLE(); END;", connection);
+                await enableDbmsOutput.ExecuteNonQueryAsync();
+
+                // Выполнение процедуры
+                await command.ExecuteNonQueryAsync();
+
+                // Чтение вывода
+                OracleCommand readDbmsOutput = new OracleCommand("BEGIN DBMS_OUTPUT.GET_LINE(:line, :status); END;", connection);
+                readDbmsOutput.Parameters.Add("line", OracleDbType.Varchar2, 4000).Direction = ParameterDirection.Output;
+                readDbmsOutput.Parameters.Add("status", OracleDbType.Int32).Direction = ParameterDirection.Output;
+
+                while (true)
+                {
+                    await readDbmsOutput.ExecuteNonQueryAsync();
+                    var line = readDbmsOutput.Parameters["line"].Value.ToString();
+                    var status = ((OracleDecimal)readDbmsOutput.Parameters["status"].Value).ToInt32();
+
+                    if (status != 0) break; 
+                    birthdays.Add(line);
+                }
+            }
+
+            return birthdays;
+        }
+
         public async Task DeleteAsync(int ridicId)
         {
             var query = "DELETE FROM RIDICI WHERE RIDIC_ID = :RidicId";

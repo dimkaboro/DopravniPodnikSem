@@ -46,13 +46,13 @@
                     <TextBlock Text="Enter Last Name (Prijmeni)" Foreground="Gray" FontSize="12" Margin="0,0,0,5" />
                     <Border Style="{StaticResource RoundedInputBorderStyle}" Height="40" Width="260">
                         <TextBox Width="250" 
-                                 Height="30" 
-                                 Text="{Binding SearchPrijmeni, UpdateSourceTrigger=PropertyChanged}" 
-                                 Style="{StaticResource EnhancedTextBoxStyle}" 
-                                 Margin="5,0,5,0"
-                                 VerticalContentAlignment="Center" 
-                                 HorizontalContentAlignment="Left">
-                        <TextBox.InputBindings>
+                 Height="30" 
+                 Text="{Binding SearchPrijmeni, UpdateSourceTrigger=PropertyChanged}" 
+                 Style="{StaticResource EnhancedTextBoxStyle}" 
+                 Margin="5,0,5,0"
+                 VerticalContentAlignment="Center" 
+                 HorizontalContentAlignment="Left">
+                            <TextBox.InputBindings>
                                 <KeyBinding Key="Enter" Command="{Binding SearchCommand}"/>
                             </TextBox.InputBindings>
                         </TextBox>
@@ -61,6 +61,8 @@
                     <Button Content="CLEAR" Command="{Binding ClearCommand}" Style="{StaticResource CustomButtonStyle}" Margin="0,10,0,10" Width="150"/>
                     <Button Content="ADD/UPDATE" Command="{Binding AddUpdateCommand}" Style="{StaticResource CustomButtonStyle}" Margin="0,10,0,10" Width="150" Height="37"/>
                     <Button Content="DELETE" Command="{Binding DeleteCommand}" Style="{StaticResource CustomButtonStyle}" Margin="0,10,0,10" Width="150" Height="37"/>
+                    <Button Content="Birthdays of Month" Command="{Binding HowManyBirthdaysCommand}" Style="{StaticResource CustomButtonStyle}" Margin="0,10,0,10" Width="150" Height="37"/>
+                    
                 </StackPanel>
 
                 <Border Grid.Row="1" Grid.Column="0" BorderBrush="#00f0ff" BorderThickness="1" CornerRadius="10" Background="#212529" Padding="2,0,3,3" Margin="20">

@@ -14,5 +14,6 @@ namespace DopravniPodnikSem.Repository.Interfaces
         Task AddAsync(Ridic ridic);
         Task UpdateAsync(Ridic ridic);
         Task DeleteAsync(int ridicId);
+        Task<List<string>> GetBirthdaysInCurrentMonthAsync();
     }
 }

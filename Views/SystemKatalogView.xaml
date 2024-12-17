@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="DopravniPodnikSem.Views.SystemKatalogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             d:DesignHeight="600"
+             d:DesignWidth="800"
+             Background="#212529">
+
+    <UserControl.Resources>
+        <Style x:Key="HeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Montserrat"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border Background="#28AEED" BorderBrush="White" BorderThickness="0.2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="#212529">
+        <!-- Main Content -->
+        <Border Background="#212529" Opacity="0.95" CornerRadius="10" Padding="20" Margin="20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <TextBlock Grid.Row="0" Text="System Catalog" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="#6C63FF" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,20" />
+
+                <!-- Data Grid -->
+                <Border Grid.Row="1" BorderBrush="#00f0ff" BorderThickness="1" CornerRadius="10" Background="#212529" Padding="2,0,3,3" Margin="20">
+                    <DataGrid ItemsSource="{Binding SystemKatalogList}" 
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              Background="Transparent"
+                              Foreground="White"
+                              HeadersVisibility="Column"
+                              BorderThickness="0">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontFamily" Value="Montserrat"/>
+                                <Setter Property="FontWeight" Value="Medium"/>
+                            </Style>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#28AEED"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.Resources>
+
+                        <!-- Columns -->
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Owner" Binding="{Binding OWNER}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                            <DataGridTextColumn Header="Object Name" Binding="{Binding OBJECT_NAME}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                            <DataGridTextColumn Header="Object ID" Binding="{Binding OBJECT_ID}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                            <DataGridTextColumn Header="Created" Binding="{Binding CREATED}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                            <DataGridTextColumn Header="Status" Binding="{Binding STATUS}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                            <DataGridTextColumn Header="Object Type" Binding="{Binding OBJECT_TYPE}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                            <DataGridTextColumn Header="Last DDL Time" Binding="{Binding LAST_DDL_TIME}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

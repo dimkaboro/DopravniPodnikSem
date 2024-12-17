@@ -43,7 +43,7 @@ namespace DopravniPodnikSem
             _souboryRepository = App.ServiceProvider.GetService<ISouboryRepository>();
 
             _navigationVM = App.ServiceProvider.GetService<NavigationVM>();
-            DataContext = _navigationVM;  
+            DataContext = _navigationVM;
         }
 
         private void BurgerButton_Click(object sender, RoutedEventArgs e)
@@ -174,5 +174,12 @@ namespace DopravniPodnikSem
                 DataContext = App.ServiceProvider.GetService<DopravniPlatbyViewModel>()
             };
         }
+
+        private void SystemovyKatalogButton_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = App.ServiceProvider.GetService<SystemKatalogViewModel>();
+            _navigationVM.CurrentView = new SystemKatalogView(viewModel);
+        }
     }
 }
+
