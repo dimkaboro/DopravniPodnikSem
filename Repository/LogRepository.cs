@@ -37,18 +37,23 @@ namespace DopravniPodnikSem.Repository
                 {
                     logy.Add(new Log
                     {
-                        LogId = reader.GetInt32(0),
-                        JakaTabulka = reader.GetString(1),
-                        Operace = reader.GetString(2),
-                        CasOperace = reader.GetDateTime(3),
-                        Uzivatel = reader.GetString(4),
-                        Popis = reader.GetString(5)
+                        LogId = reader.GetInt32(reader.GetOrdinal("LOG_ID")),
+                        JakaTabulka = reader.GetString(reader.GetOrdinal("JAKA_TABULKA")),
+                        Operace = reader.GetString(reader.GetOrdinal("OPERACE")),
+                        CasOperace = reader.GetDateTime(reader.GetOrdinal("CAS_OPERACE")),
+                        Uzivatel = reader.GetString(reader.GetOrdinal("UZIVATEL")),
+                        Popis = reader.GetString(reader.GetOrdinal("POPIS")),
+                        OldValues = reader.IsDBNull(reader.GetOrdinal("OLD_VALUES"))
+                                    ? null : reader.GetString(reader.GetOrdinal("OLD_VALUES")),
+                        NewValues = reader.IsDBNull(reader.GetOrdinal("NEW_VALUES"))
+                                    ? null : reader.GetString(reader.GetOrdinal("NEW_VALUES"))
                     });
                 }
             }
 
             return logy;
         }
+
 
         public async Task<Log> GetByTabulkaAsync(string jakaTabulka)
         {

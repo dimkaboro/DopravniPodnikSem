@@ -14,6 +14,8 @@ namespace DopravniPodnikSem.Models
         private DateTime _casOperace;
         private string _uzivatel;
         private string _popis;
+        private string _oldValues;
+        private string _newValues;
 
         public int LogId
         {
@@ -49,6 +51,18 @@ namespace DopravniPodnikSem.Models
         {
             get => _popis;
             set => SetField(ref _popis, value);
+        }
+
+        public string OldValues
+        {
+            get => _oldValues;
+            set => SetField(ref _oldValues, value);
+        }
+
+        public string NewValues
+        {
+            get => _newValues;
+            set => SetField(ref _newValues, value);
         }
     }
 }
