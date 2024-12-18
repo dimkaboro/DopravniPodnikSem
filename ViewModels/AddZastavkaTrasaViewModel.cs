@@ -67,7 +67,7 @@ namespace DopravniPodnikSem.ViewModels
         public ICommand ConfirmCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public ICommand OpenAddViewCommand { get; }
+        //public ICommand OpenAddViewCommand { get; }
 
         public AddZastavkaTrasaViewModel(IJizdaRepository jizdaRepository, IZastavkaRepository zastavkaRepository)
         {
@@ -76,29 +76,33 @@ namespace DopravniPodnikSem.ViewModels
 
             LoadData();
 
-            OpenAddViewCommand = new ViewModelCommand(_ => OpenAddView());
+            //OpenAddViewCommand = new ViewModelCommand(_ => OpenAddView());
             ConfirmCommand = new ViewModelCommand(param => Confirm());
             CancelCommand = new ViewModelCommand(param => Cancel());
         }
 
+        //private void OpenAddView()
+        //{
+        //    var addWindow = new AddZastavkaTrasaView
+        //    {
+        //        DataContext = new AddZastavkaTrasaViewModel(_jizdaRepository, _zastavkaRepository)
+        //    };
 
-        private void OpenAddView()
-        {
-            var addWindow = new AddZastavkaTrasaView
-            {
-                DataContext = new AddZastavkaTrasaViewModel(_jizdaRepository, _zastavkaRepository)
-            };
+        //    if (addWindow.ShowDialog() == true)
+        //    {
+        //        MessageBox.Show("Запись добавлена успешно.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        //        LoadAllZastavkyTrasyAsync();
+        //    }
+        //}
 
-            if (addWindow.ShowDialog() == true)
-            {
-                MessageBox.Show("Запись добавлена успешно.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                LoadAllZastavkyTrasyAsync();
-            }
-        }
         private async void LoadData()
         {
-            Jizdy = new ObservableCollection<Jizda>(await _jizdaRepository.GetAllAsync());
-            Zastavky = new ObservableCollection<Zastavka>(await _zastavkaRepository.GetAllAsync());
+            var jizdy = await _jizdaRepository.GetAllAsync();
+            Jizdy = new ObservableCollection<Jizda>(jizdy);
+
+
+            var zastavky = await _zastavkaRepository.GetAllAsync();
+            Zastavky = new ObservableCollection<Zastavka>(zastavky);
         }
 
         private void Confirm()
@@ -109,7 +113,13 @@ namespace DopravniPodnikSem.ViewModels
                 return;
             }
 
-            var currentWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.DataContext == this);
+            var currentWindow = Application.Current.Windows.OfType<AddZastavkaTrasaView>().FirstOrDefault();
+            if (currentWindow?.DataContext is ZastavkyTrasyViewModel parentViewModel)
+            {
+                parentViewModel.SelectedZastavkaTrasa.JizdaId = SelectedJizda.JizdaId;
+                parentViewModel.SelectedZastavkaTrasa.ZastavkaId = SelectedZastavka.ZastavkaId;
+            }
+
             currentWindow.DialogResult = true;
             currentWindow.Close();
         }

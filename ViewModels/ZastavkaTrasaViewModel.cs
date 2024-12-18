@@ -1,6 +1,7 @@
 ﻿using DopravniPodnikSem.Models;
 using DopravniPodnikSem.Repository;
 using DopravniPodnikSem.Repository.Interfaces;
+using DopravniPodnikSem.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace DopravniPodnikSem.ViewModels
@@ -15,12 +17,13 @@ namespace DopravniPodnikSem.ViewModels
     public class ZastavkyTrasyViewModel : BaseViewModel
     {
         private readonly IZastavkyTrasyRepository _zastavkyTrasyRepository;
+        private readonly IJizdaRepository _jizdaRepository;
+        private readonly IZastavkaRepository _zastavkaRepository;
         private ObservableCollection<ZastavkaTrasa> _zastavkyTrasy;
         private ZastavkaTrasa _selectedZastavkaTrasa;
         private string _searchCasPrijezdu;
         private string _errorMessage;
 
-        // Свойства
         public string SearchCasPrijezdu
         {
             get => _searchCasPrijezdu;
@@ -61,19 +64,18 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        // Команды
         public ICommand SearchCommand { get; }
         public ICommand AddUpdateCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand ClearCommand { get; }
 
-        // Конструктор
-        public ZastavkyTrasyViewModel(IZastavkyTrasyRepository zastavkyTrasyRepository)
+        public ZastavkyTrasyViewModel(IZastavkyTrasyRepository zastavkyTrasyRepository, IJizdaRepository jizdaRepository, IZastavkaRepository zastavkaRepository)
         {
             _zastavkyTrasyRepository = zastavkyTrasyRepository;
+            _jizdaRepository = jizdaRepository;
+            _zastavkaRepository = zastavkaRepository;
             ZastavkyTrasy = new ObservableCollection<ZastavkaTrasa>();
 
-            // Привязка команд
             AddUpdateCommand = new ViewModelCommand(async _ => await AddOrUpdateZastavkaTrasaAsync(), _ => SelectedZastavkaTrasa != null);
             DeleteCommand = new ViewModelCommand(async _ => await DeleteZastavkaTrasaAsync(), _ => SelectedZastavkaTrasa != null);
             SearchCommand = new ViewModelCommand(async _ => await SearchByCasPrijezduAsync(), _ => !string.IsNullOrEmpty(SearchCasPrijezdu));
@@ -82,7 +84,6 @@ namespace DopravniPodnikSem.ViewModels
             LoadAllZastavkyTrasyAsync();
         }
 
-        // Загрузка всех данных
         private async void LoadAllZastavkyTrasyAsync()
         {
             try
@@ -99,19 +100,39 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        // Добавление или обновление записи
         private async Task AddOrUpdateZastavkaTrasaAsync()
         {
             try
             {
+                if (SelectedZastavkaTrasa == null)
+                {
+                    ErrorMessage = "Vyplňte prosím všechna pole před přidáním nebo aktualizací!";
+                    return;
+                }
+
                 if (SelectedZastavkaTrasa.ZastavkaTrasaId == 0)
                 {
-                    await _zastavkyTrasyRepository.AddAsync(SelectedZastavkaTrasa);
+                    var addZastavkaTrasaView = new AddZastavkaTrasaView();
+                    var addZastavkaTrasaViewModel = new AddZastavkaTrasaViewModel(_jizdaRepository, _zastavkaRepository);
+                    addZastavkaTrasaView.DataContext = addZastavkaTrasaViewModel;
+
+
+                    var dialogResult = addZastavkaTrasaView.ShowDialog();
+                    if (dialogResult == true)
+                    {
+                        SelectedZastavkaTrasa.JizdaId = addZastavkaTrasaViewModel.SelectedJizda.JizdaId;
+                        SelectedZastavkaTrasa.ZastavkaId = addZastavkaTrasaViewModel.SelectedZastavka.ZastavkaId;
+
+                        await _zastavkyTrasyRepository.AddAsync(SelectedZastavkaTrasa);
+                        MessageBox.Show("Záznam úspěšně přidán!", "Úspěch", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
                 }
                 else
                 {
                     await _zastavkyTrasyRepository.UpdateAsync(SelectedZastavkaTrasa);
+                    MessageBox.Show("Záznam úspěšně aktualizován!", "Úspěch", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
+
                 LoadAllZastavkyTrasyAsync();
             }
             catch (Exception ex)
@@ -120,7 +141,6 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        // Удаление записи
         private async Task DeleteZastavkaTrasaAsync()
         {
             try
@@ -129,16 +149,13 @@ namespace DopravniPodnikSem.ViewModels
                 {
                     Console.WriteLine($"Удаляется запись с ID: {SelectedZastavkaTrasa.ZastavkaTrasaId}");
 
-                    // Удаление записи из базы данных
                     await _zastavkyTrasyRepository.DeleteAsync(SelectedZastavkaTrasa.ZastavkaTrasaId);
 
-                    // Удаление из локальной коллекции
                     ZastavkyTrasy.Remove(SelectedZastavkaTrasa);
 
-                    // Перезагрузка всей коллекции на случай рассинхронизации
                     LoadAllZastavkyTrasyAsync();
 
-                    SelectedZastavkaTrasa = null; // Сброс выделенной записи
+                    SelectedZastavkaTrasa = null; 
                     ErrorMessage = string.Empty;
                 }
                 else
@@ -154,7 +171,6 @@ namespace DopravniPodnikSem.ViewModels
         }
 
 
-        // Поиск по времени CasPrijezdu
         private async Task SearchByCasPrijezduAsync()
         {
             try
@@ -193,7 +209,6 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
-        // Очистка полей и перезагрузка данных
         private void ClearFields()
         {
             SearchCasPrijezdu = string.Empty;

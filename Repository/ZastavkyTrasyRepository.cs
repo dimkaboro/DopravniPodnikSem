@@ -22,7 +22,6 @@ namespace DopravniPodnikSem.Repository
             _databaseService = databaseService;
         }
 
-        // Получение всех записей с использованием функции GetZastavkyTrasyDetail
         public async Task<IEnumerable<ZastavkaTrasa>> GetAllAsync()
         {
             var zastavkyTrasy = new List<ZastavkaTrasa>();
@@ -47,8 +46,8 @@ namespace DopravniPodnikSem.Repository
                     {
                         zastavkyTrasy.Add(new ZastavkaTrasa
                         {
-                            ZastavkaTrasaId = reader.GetInt32(0),                 // Чтение ZASTAVKATRASA_ID
-                            CasPrijezdu = reader.GetDateTime(1),                 // Чтение времени прибытия
+                            ZastavkaTrasaId = reader.GetInt32(0),                 
+                            CasPrijezdu = reader.GetDateTime(1),                 
                             JizdaDisplay = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
                             ZastavkaDisplay = reader.IsDBNull(3) ? string.Empty : reader.GetString(3)
                         });

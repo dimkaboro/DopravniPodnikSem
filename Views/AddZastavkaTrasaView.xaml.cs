@@ -10,17 +10,13 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace DopravniPodnikSem.Views
 {
-    /// <summary>
-    /// Interaction logic for AddZastavkaTrasa.xaml
-    /// </summary>
-    public partial class AddZastavkaTrasa : UserControl
+    public partial class AddZastavkaTrasaView : Window
     {
-        public AddZastavkaTrasa()
+        public AddZastavkaTrasaView()
         {
             InitializeComponent();
         }
