@@ -104,20 +104,36 @@ namespace DopravniPodnikSem.Repository
         // Добавление записи с использованием процедуры ManageZastavkyTrasyTransaction
         public async Task AddAsync(ZastavkaTrasa zastavkaTrasa)
         {
-            var query = @"BEGIN ManageZastavkyTrasyTransaction('INSERT', :Id, :CasPrijezdu, :JizdaId, :ZastavkaId); END;";
+            var query = @"
+        BEGIN 
+            ManageZastavkyTrasyTransaction('INSERT', :p_zastavkaTrasaId, :p_casPrijezdu, :p_jizdaId, :p_zastavkaId); 
+        END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
-                command.Parameters.Add(new OracleParameter(":Id", DBNull.Value));
-                command.Parameters.Add(new OracleParameter(":CasPrijezdu", zastavkaTrasa.CasPrijezdu));
-                command.Parameters.Add(new OracleParameter(":JizdaId", zastavkaTrasa.JizdaId));
-                command.Parameters.Add(new OracleParameter(":ZastavkaId", zastavkaTrasa.ZastavkaId));
+                // Параметр для ID
+                var idParameter = new OracleParameter(":p_zastavkaTrasaId", OracleDbType.Int32)
+                {
+                    Direction = ParameterDirection.InputOutput,
+                    Value = DBNull.Value
+                };
+
+                command.Parameters.Add(idParameter);
+                command.Parameters.Add(new OracleParameter(":p_casPrijezdu", OracleDbType.TimeStamp) { Value = zastavkaTrasa.CasPrijezdu });
+                command.Parameters.Add(new OracleParameter(":p_jizdaId", OracleDbType.Int32) { Value = zastavkaTrasa.JizdaId });
+                command.Parameters.Add(new OracleParameter(":p_zastavkaId", OracleDbType.Int32) { Value = zastavkaTrasa.ZastavkaId });
 
                 if (connection.State != ConnectionState.Open)
                     await connection.OpenAsync();
 
                 await command.ExecuteNonQueryAsync();
+
+                // Конвертация OracleDecimal в Int32
+                if (idParameter.Value != DBNull.Value && idParameter.Value is OracleDecimal oracleDecimal)
+                {
+                    zastavkaTrasa.ZastavkaTrasaId = Convert.ToInt32(oracleDecimal.Value);
+                }
             }
         }
 

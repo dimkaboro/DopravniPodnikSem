@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows;
 using DopravniPodnikSem.Views;
 using DopravniPodnikSem.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DopravniPodnikSem.ViewModels
 {
@@ -23,6 +24,18 @@ namespace DopravniPodnikSem.ViewModels
 
         private ObservableCollection<Jizda> _jizdy;
         private ObservableCollection<Zastavka> _zastavky;
+
+        private ZastavkaTrasa _currentZastavkaTrasa;
+
+        public ZastavkaTrasa CurrentZastavkaTrasa
+        {
+            get => _currentZastavkaTrasa;
+            set
+            {
+                _currentZastavkaTrasa = value;
+                OnPropertyChanged();
+            }
+        }
 
         public Jizda SelectedJizda
         {
@@ -67,33 +80,30 @@ namespace DopravniPodnikSem.ViewModels
         public ICommand ConfirmCommand { get; }
         public ICommand CancelCommand { get; }
 
-        //public ICommand OpenAddViewCommand { get; }
 
-        public AddZastavkaTrasaViewModel(IJizdaRepository jizdaRepository, IZastavkaRepository zastavkaRepository)
+
+        public AddZastavkaTrasaViewModel(IJizdaRepository jizdaRepository, IZastavkaRepository zastavkaRepository, ZastavkaTrasa existingZastavkaTrasa = null)
         {
             _jizdaRepository = jizdaRepository;
             _zastavkaRepository = zastavkaRepository;
 
+            // Инициализация CurrentZastavkaTrasa для нового объекта
+            CurrentZastavkaTrasa = existingZastavkaTrasa ?? new ZastavkaTrasa();
+
             LoadData();
 
-            //OpenAddViewCommand = new ViewModelCommand(_ => OpenAddView());
             ConfirmCommand = new ViewModelCommand(param => Confirm());
             CancelCommand = new ViewModelCommand(param => Cancel());
+
+            // Если передана существующая запись, используем её для редактирования
+            if (existingZastavkaTrasa != null)
+            {
+                SelectedJizda = new Jizda { JizdaId = existingZastavkaTrasa.JizdaId };
+                SelectedZastavka = new Zastavka { ZastavkaId = existingZastavkaTrasa.ZastavkaId };
+            }
         }
 
-        //private void OpenAddView()
-        //{
-        //    var addWindow = new AddZastavkaTrasaView
-        //    {
-        //        DataContext = new AddZastavkaTrasaViewModel(_jizdaRepository, _zastavkaRepository)
-        //    };
 
-        //    if (addWindow.ShowDialog() == true)
-        //    {
-        //        MessageBox.Show("Запись добавлена успешно.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-        //        LoadAllZastavkyTrasyAsync();
-        //    }
-        //}
 
         private async void LoadData()
         {
@@ -105,7 +115,7 @@ namespace DopravniPodnikSem.ViewModels
             Zastavky = new ObservableCollection<Zastavka>(zastavky);
         }
 
-        private void Confirm()
+        private async void Confirm()
         {
             if (SelectedJizda == null || SelectedZastavka == null)
             {
@@ -113,21 +123,55 @@ namespace DopravniPodnikSem.ViewModels
                 return;
             }
 
-            var currentWindow = Application.Current.Windows.OfType<AddZastavkaTrasaView>().FirstOrDefault();
-            if (currentWindow?.DataContext is ZastavkyTrasyViewModel parentViewModel)
+            try
             {
-                parentViewModel.SelectedZastavkaTrasa.JizdaId = SelectedJizda.JizdaId;
-                parentViewModel.SelectedZastavkaTrasa.ZastavkaId = SelectedZastavka.ZastavkaId;
-            }
+                var repository = App.ServiceProvider.GetService<IZastavkyTrasyRepository>();
 
-            currentWindow.DialogResult = true;
-            currentWindow.Close();
+                if (CurrentZastavkaTrasa.ZastavkaTrasaId == 0)
+                {
+                    // Добавление новой записи
+                    var zastavkaTrasa = new ZastavkaTrasa
+                    {
+                        JizdaId = SelectedJizda.JizdaId,
+                        ZastavkaId = SelectedZastavka.ZastavkaId,
+                        CasPrijezdu = DateTime.Now
+                    };
+
+                    await repository.AddAsync(zastavkaTrasa);
+                    MessageBox.Show("Záznam úspěšně přidán!", "Úspěch", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    // Обновление существующей записи
+                    CurrentZastavkaTrasa.JizdaId = SelectedJizda.JizdaId;
+                    CurrentZastavkaTrasa.ZastavkaId = SelectedZastavka.ZastavkaId;
+                    CurrentZastavkaTrasa.CasPrijezdu = DateTime.Now;
+
+                    await repository.UpdateAsync(CurrentZastavkaTrasa);
+                    MessageBox.Show("Záznam úspěšně aktualizován!", "Úspěch", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+                CloseWindow(true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Chyba: {ex.Message}", "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Cancel()
         {
             var currentWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.DataContext == this);
             currentWindow?.Close();
+        }
+        private void CloseWindow(bool result)
+        {
+            var currentWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.DataContext == this);
+            if (currentWindow != null)
+            {
+                currentWindow.DialogResult = result;
+                currentWindow.Close();
+            }
         }
     }
 }

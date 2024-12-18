@@ -102,11 +102,13 @@
                                 <DataGridTextColumn Header="Jizda" 
                                                     Binding="{Binding JizdaDisplay}" 
                                                     Width="*" 
+                                                    IsReadOnly="true"
                                                     HeaderStyle="{StaticResource HeaderStyle}" />
 
                                 <DataGridTextColumn Header="Zastavka" 
                                                     Binding="{Binding ZastavkaDisplay}" 
                                                     Width="*" 
+                                                    IsReadOnly="true"
                                                     HeaderStyle="{StaticResource HeaderStyle}" />
                             </DataGrid.Columns>
                         </DataGrid>

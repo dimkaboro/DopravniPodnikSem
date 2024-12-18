@@ -104,40 +104,25 @@ namespace DopravniPodnikSem.ViewModels
         {
             try
             {
-                if (SelectedZastavkaTrasa == null)
+                var addZastavkaTrasaView = new AddZastavkaTrasaView();
+
+                var addZastavkaTrasaViewModel = new AddZastavkaTrasaViewModel(
+                    _jizdaRepository,
+                    _zastavkaRepository,
+                    SelectedZastavkaTrasa // Передаём выбранную строку для редактирования
+                );
+
+                addZastavkaTrasaView.DataContext = addZastavkaTrasaViewModel;
+
+                var dialogResult = addZastavkaTrasaView.ShowDialog();
+                if (dialogResult == true)
                 {
-                    ErrorMessage = "Vyplňte prosím všechna pole před přidáním nebo aktualizací!";
-                    return;
+                    LoadAllZastavkyTrasyAsync();
                 }
-
-                if (SelectedZastavkaTrasa.ZastavkaTrasaId == 0)
-                {
-                    var addZastavkaTrasaView = new AddZastavkaTrasaView();
-                    var addZastavkaTrasaViewModel = new AddZastavkaTrasaViewModel(_jizdaRepository, _zastavkaRepository);
-                    addZastavkaTrasaView.DataContext = addZastavkaTrasaViewModel;
-
-
-                    var dialogResult = addZastavkaTrasaView.ShowDialog();
-                    if (dialogResult == true)
-                    {
-                        SelectedZastavkaTrasa.JizdaId = addZastavkaTrasaViewModel.SelectedJizda.JizdaId;
-                        SelectedZastavkaTrasa.ZastavkaId = addZastavkaTrasaViewModel.SelectedZastavka.ZastavkaId;
-
-                        await _zastavkyTrasyRepository.AddAsync(SelectedZastavkaTrasa);
-                        MessageBox.Show("Záznam úspěšně přidán!", "Úspěch", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                }
-                else
-                {
-                    await _zastavkyTrasyRepository.UpdateAsync(SelectedZastavkaTrasa);
-                    MessageBox.Show("Záznam úspěšně aktualizován!", "Úspěch", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-
-                LoadAllZastavkyTrasyAsync();
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error: {ex.Message}";
+                ErrorMessage = $"Chyba při přidání nebo aktualizaci záznamu: {ex.Message}";
             }
         }
 
