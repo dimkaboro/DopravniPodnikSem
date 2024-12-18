@@ -188,19 +188,20 @@ namespace DopravniPodnikSem.Repository
             }
         }
 
+
+
         public async Task<List<Zamestnanec>> GetEmployeeHierarchyAsync()
         {
-            using (var connection = _databaseService.GetConnection())
-            {
-                var command = new OracleCommand(@"
-                    SELECT *
-                    FROM ZAMESTNANCI
-                    WHERE ROLE_ROLE_ID != 3
-                    START WITH ZAMESTNANEC_ZAMESTNANEC_ID IS NULL OR ZAMESTNANEC_ID = ZAMESTNANEC_ZAMESTNANEC_ID
-                    CONNECT BY NOCYCLE PRIOR ZAMESTNANEC_ID = ZAMESTNANEC_ZAMESTNANEC_ID", connection);
+            var employees = new List<Zamestnanec>();
+            var employeeMap = new Dictionary<int, Zamestnanec>();
 
-                var employees = new List<Zamestnanec>();
-                var employeeMap = new Dictionary<int, Zamestnanec>();
+            using (var connection = _databaseService.GetConnection())
+            using (var command = new OracleCommand("GET_EMPLOYEE_HIERARCHY", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                var cursor = new OracleParameter("p_cursor", OracleDbType.RefCursor, ParameterDirection.Output);
+                command.Parameters.Add(cursor);
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {
@@ -208,41 +209,42 @@ namespace DopravniPodnikSem.Repository
                     {
                         var employee = new Zamestnanec
                         {
-                            ZamestnanecId = reader.GetInt32("ZAMESTNANEC_ID"),
-                            Jmeno = reader.GetString("JMENO"),
-                            Prijmeni = reader.GetString("PRIJMENI"),
-                            Email = reader.GetString("EMAIL"),
-                            Pozice = reader.GetString("POZICE"),
+                            ZamestnanecId = reader.GetInt32(reader.GetOrdinal("ZAMESTNANEC_ID")),
+                            Jmeno = reader.GetString(reader.GetOrdinal("JMENO")),
+                            Prijmeni = reader.GetString(reader.GetOrdinal("PRIJMENI")),
+                            Email = reader.GetString(reader.GetOrdinal("EMAIL")),
+                            Pozice = reader.GetString(reader.GetOrdinal("POZICE")),
                             DatumNastupu = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("DATUM_NASTUPU"))),
-                            CisloTelefonu = reader.GetString("CISLO_TELEFONU"),
+                            CisloTelefonu = reader.GetString(reader.GetOrdinal("CISLO_TELEFONU")),
                             ZamestnanecZamestnanecId = reader.IsDBNull(reader.GetOrdinal("ZAMESTNANEC_ZAMESTNANEC_ID"))
                                 ? (int?)null
                                 : reader.GetInt32(reader.GetOrdinal("ZAMESTNANEC_ZAMESTNANEC_ID")),
-                            AdresaId = reader.GetInt32("ADRESA_ADRESA_ID"),
-                            Role = (Role)reader.GetInt32("ROLE_ROLE_ID"),
-                            SouborId = reader.GetInt32("SOUBOR_SOUBOR_ID"),
-                            JePrivate = reader.GetInt32("JE_PRIVATE")
+                            AdresaId = reader.GetInt32(reader.GetOrdinal("ADRESA_ADRESA_ID")),
+                            Role = (Role)reader.GetInt32(reader.GetOrdinal("ROLE_ROLE_ID")),
+                            SouborId = reader.GetInt32(reader.GetOrdinal("SOUBOR_SOUBOR_ID")),
+                            JePrivate = reader.GetInt32(reader.GetOrdinal("JE_PRIVATE"))
                         };
 
                         employeeMap[employee.ZamestnanecId] = employee;
                         employees.Add(employee);
                     }
                 }
-
-                foreach (var employee in employees)
-                {
-                    if (employee.ZamestnanecZamestnanecId.HasValue &&
-                        employeeMap.ContainsKey(employee.ZamestnanecZamestnanecId.Value) &&
-                        employee.ZamestnanecZamestnanecId != employee.ZamestnanecId)
-                    {
-                        var manager = employeeMap[employee.ZamestnanecZamestnanecId.Value];
-                        manager.Podrizeni.Add(employee);
-                    }
-                }
-
-                return employees.Where(e => e.ZamestnanecZamestnanecId == null || e.ZamestnanecZamestnanecId == e.ZamestnanecId).ToList();
             }
+
+            foreach (var employee in employees)
+            {
+                if (employee.ZamestnanecZamestnanecId.HasValue &&
+                    employeeMap.ContainsKey(employee.ZamestnanecZamestnanecId.Value) &&
+                    employee.ZamestnanecZamestnanecId != employee.ZamestnanecId)
+                {
+                    var manager = employeeMap[employee.ZamestnanecZamestnanecId.Value];
+                    manager.Podrizeni.Add(employee);
+                }
+            }
+
+            return employees.Where(e => e.ZamestnanecZamestnanecId == null || e.ZamestnanecZamestnanecId == e.ZamestnanecId).ToList();
         }
+
 
 
 
