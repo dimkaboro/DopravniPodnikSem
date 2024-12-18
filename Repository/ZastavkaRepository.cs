@@ -142,24 +142,34 @@ namespace DopravniPodnikSem.Repository
             }
         }
 
-        public async Task DeleteAsync(int zastavkaId)
+        public async Task DeleteAsync(int zastavkaTrasaId)
         {
-            var query = "DELETE FROM ZASTAVKY WHERE ZASTAVKA_ID = :ZastavkaId";
+            var query = "DELETE FROM ZASTAVKY_TRASY WHERE ZASTAVKATRASA_ID = :ZastavkaTrasaId";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
-                command.Parameters.Add(new OracleParameter(":ZastavkaId", OracleDbType.Int32)
+                command.Parameters.Add(new OracleParameter(":ZastavkaTrasaId", OracleDbType.Int32)
                 {
-                    Value = zastavkaId
+                    Value = zastavkaTrasaId
                 });
 
-                if (connection.State != ConnectionState.Open)
+                try
                 {
-                    await connection.OpenAsync();
-                }
+                    if (connection.State != ConnectionState.Open)
+                        await connection.OpenAsync();
 
-                await command.ExecuteNonQueryAsync();
+                    var rowsAffected = await command.ExecuteNonQueryAsync();
+                    Console.WriteLine($"Rows affected: {rowsAffected}");
+
+                    if (rowsAffected == 0)
+                        throw new Exception("Запись не найдена в базе данных.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка при удалении записи: {ex.Message}");
+                    throw;
+                }
             }
         }
     }

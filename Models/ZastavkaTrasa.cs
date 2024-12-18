@@ -13,6 +13,9 @@ namespace DopravniPodnikSem.Models
         private int _jizdaId;
         private int _zastavkaId;
 
+        public string JizdaDisplay { get; set; } 
+        public string ZastavkaDisplay { get; set; }
+
         public int ZastavkaTrasaId
         {
             get => _zastavkaTrasaId;
