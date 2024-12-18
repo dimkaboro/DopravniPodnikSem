@@ -22,6 +22,7 @@ namespace DopravniPodnikSem.Views
         public TypePlatbaView()
         {
             InitializeComponent();
+
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

@@ -74,6 +74,10 @@ namespace DopravniPodnikSem.ViewModels
         private async void LoadJizdaList()
         {
             var jizdy = await _jizdaRepository.GetAllAsync();
+            foreach (var jizda in jizdy)
+            {
+                Console.WriteLine($"Loaded Jizda: {jizda.DisplayText}");
+            }
             JizdaList = new ObservableCollection<Jizda>(jizdy);
         }
 

@@ -92,6 +92,8 @@ namespace DopravniPodnikSem
             services.AddTransient<DopravniPlatbyViewModel>();
             services.AddTransient<TypePlatbaView>();
 
+            services.AddTransient<TypePlatbaViewModel>();
+
             services.AddTransient<ISystemKatalogRepository, SystemKatalogRepository>();
             services.AddTransient<SystemKatalogViewModel>();
         }
