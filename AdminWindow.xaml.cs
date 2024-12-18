@@ -180,6 +180,14 @@ namespace DopravniPodnikSem
             var viewModel = App.ServiceProvider.GetService<SystemKatalogViewModel>();
             _navigationVM.CurrentView = new SystemKatalogView(viewModel);
         }
+
+        private void ZastavkyTrasyButton_Click(object sender, RoutedEventArgs e)
+        {
+            _navigationVM.CurrentView = new ZastavkyTrasyView
+            {
+                DataContext = App.ServiceProvider.GetService<ZastavkyTrasyViewModel>()
+            };
+        }
     }
 }
 

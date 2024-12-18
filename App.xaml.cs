@@ -96,6 +96,9 @@ namespace DopravniPodnikSem
 
             services.AddTransient<ISystemKatalogRepository, SystemKatalogRepository>();
             services.AddTransient<SystemKatalogViewModel>();
+
+            services.AddTransient<IZastavkyTrasyRepository, ZastavkyTrasyRepository>();
+            services.AddScoped<ZastavkyTrasyViewModel>();
         }
 
 
