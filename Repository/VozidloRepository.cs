@@ -153,6 +153,46 @@ namespace DopravniPodnikSem.Repository
             }
         }
 
+        public async Task<List<(string VehicleType, string CapacityRange, int Count)>> GetVehicleCountsByCapacityAsync()
+        {
+            var result = new List<(string VehicleType, string CapacityRange, int Count)>();
+
+            var query = @"
+BEGIN 
+    GetVehicleCountsByCapacity(:result_cursor); 
+END;";
+
+            using (var connection = _databaseService.GetConnection())
+            using (var command = new OracleCommand(query, connection))
+            {
+                command.Parameters.Add(new OracleParameter(":result_cursor", OracleDbType.RefCursor)
+                {
+                    Direction = ParameterDirection.Output
+                });
+
+                if (connection.State != ConnectionState.Open)
+                    await connection.OpenAsync();
+
+                await command.ExecuteNonQueryAsync();
+
+                using (var reader = ((OracleRefCursor)command.Parameters[":result_cursor"].Value).GetDataReader())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        result.Add((
+                            VehicleType: reader.GetString(0),
+                            CapacityRange: reader.GetString(1),
+                            Count: reader.GetInt32(2)
+                        ));
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
+
         public async Task DeleteAsync(int vozidloId)
         {
             var query = "DELETE FROM VOZIDLA WHERE VOZIDLO_ID = :VozidloId";

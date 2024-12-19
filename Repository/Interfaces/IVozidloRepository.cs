@@ -14,6 +14,9 @@ namespace DopravniPodnikSem.Repository.Interfaces
         Task AddAsync(Vozidlo vozidlo);
         Task UpdateAsync(Vozidlo vozidlo);
         Task DeleteAsync(int vozidloId);
-        
+
+        Task<List<(string VehicleType, string CapacityRange, int Count)>> GetVehicleCountsByCapacityAsync();
+
+
     }
 }

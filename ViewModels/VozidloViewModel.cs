@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DopravniPodnikSem.Repository;
+using System.Windows;
+using System.Text;
 
 namespace DopravniPodnikSem.ViewModels
 {
@@ -19,6 +21,7 @@ namespace DopravniPodnikSem.ViewModels
         private Vozidlo _selectedVozidlo;
         private string _searchQuery;
         private string _errorMessage;
+        private string _procedureOutput;
 
         public VozidloViewModel(IVozidloRepository vozidloRepository, ITypyVozidlaRepository typyVozidlaRepository)
         {
@@ -32,9 +35,55 @@ namespace DopravniPodnikSem.ViewModels
             ClearCommand = new ViewModelCommand(_ => ClearSearch());
             AddUpdateCommand = new ViewModelCommand(async _ => await AddOrUpdateVozidloAsync(), _ => SelectedVozidlo != null);
             DeleteCommand = new ViewModelCommand(async _ => await DeleteVozidloAsync(), _ => SelectedVozidlo != null);
+            GetVehicleCountsCommand = new ViewModelCommand(async _ => await GetVehicleCountsAsync());
 
             LoadAllVozidlaAsync();
             LoadTypyVozidlaAsync();
+        }
+
+        public string ProcedureOutput
+        {
+            get => _procedureOutput;
+            set
+            {
+                _procedureOutput = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private async Task GetVehicleCountsAsync()
+        {
+            try
+            {
+                var vehicleCounts = await _vozidloRepository.GetVehicleCountsByCapacityAsync();
+
+                // Группируем данные по типу транспорта
+                var groupedData = vehicleCounts
+                    .GroupBy(vc => vc.VehicleType)
+                    .Select(g => new
+                    {
+                        VehicleType = g.Key,
+                        Ranges = g.Select(vc => $"{vc.CapacityRange}: {vc.Count}").ToList()
+                    });
+
+                // Формируем текст для отображения
+                var message = new StringBuilder();
+                foreach (var group in groupedData)
+                {
+                    message.AppendLine($"{group.VehicleType}:");
+                    foreach (var range in group.Ranges)
+                    {
+                        message.AppendLine($"  {range}");
+                    }
+                }
+
+                MessageBox.Show(message.ToString(), "Vehicle Counts by Capacity", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public ObservableCollection<Vozidlo> Vozidla
@@ -92,6 +141,7 @@ namespace DopravniPodnikSem.ViewModels
         public ICommand ClearCommand { get; }
         public ICommand AddUpdateCommand { get; }
         public ICommand DeleteCommand { get; }
+        public ICommand GetVehicleCountsCommand { get; }
 
         private async void LoadAllVozidlaAsync()
         {
