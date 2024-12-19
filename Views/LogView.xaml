@@ -31,10 +31,13 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="4.5*" />
+                    <!-- Широкая колонка для DataGrid -->
+                    <ColumnDefinition Width="1.5*" />
+                    <!-- Уже колонка для StackPanel -->
                 </Grid.ColumnDefinitions>
 
+                <!-- Заголовок -->
                 <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Logs (Logy)" 
                            FontSize="24" 
                            FontWeight="Bold" 
@@ -42,7 +45,12 @@
                            HorizontalAlignment="Center" 
                            Margin="0,0,0,20" />
 
-                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0">
+                <!-- Правый StackPanel -->
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Center" 
+                            Margin="50,0,0,0">
+                    <!-- Сдвиг правее -->
                     <TextBlock Text="Enter the table name:" Foreground="Gray" FontSize="14" Margin="0,0,0,5" />
                     <Border Style="{StaticResource RoundedInputBorderStyle}" Height="40" Width="260">
                         <TextBox Width="250" 
@@ -58,11 +66,17 @@
                         </TextBox>
                     </Border>
 
-                    <Button Content="CLEAR" Command="{Binding ClearCommand}" Style="{StaticResource CustomButtonStyle}" Margin="0,10,0,10" Width="150"/>
-                    <Button Content="DELETE" Command="{Binding DeleteCommand}" Style="{StaticResource CustomButtonStyle}" Margin="0,10,0,10" Width="150" Height="37"/>
+                    <Button Content="CLEAR" Command="{Binding ClearCommand}" 
+                            Style="{StaticResource CustomButtonStyle}" 
+                            Margin="0,10,0,10" Width="150"/>
+                    <Button Content="DELETE" Command="{Binding DeleteCommand}" 
+                            Style="{StaticResource CustomButtonStyle}" 
+                            Margin="0,10,0,10" Width="150" Height="37"/>
                 </StackPanel>
 
-                <Border Grid.Row="1" Grid.Column="0" BorderBrush="#00f0ff" BorderThickness="1" CornerRadius="10" Background="#212529" Padding="2,0,3,3" Margin="20">
+                <!-- DataGrid -->
+                <Border Grid.Row="1" Grid.Column="0" BorderBrush="#00f0ff" BorderThickness="1" 
+                        CornerRadius="10" Background="#212529" Padding="2,0,3,3" Margin="20,10,20,10">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
@@ -77,7 +91,8 @@
                                   CanUserSortColumns="False"
                                   BorderThickness="0"
                                   Background="Transparent"
-                                  HeadersVisibility="Column" SelectionChanged="LogsDataGrid_SelectionChanged">
+                                  HeadersVisibility="Column" 
+                                  SelectionChanged="LogsDataGrid_SelectionChanged">
                             <DataGrid.Resources>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter Property="Foreground" Value="DarkGray"/>
@@ -106,35 +121,15 @@
                                 </Style>
                             </DataGrid.Resources>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Tabulka" 
-                                                    Binding="{Binding JakaTabulka, UpdateSourceTrigger=PropertyChanged}" 
-                                                    Width="*" 
-                                                    HeaderStyle="{StaticResource HeaderStyle}" />
-                                <DataGridTextColumn Header="Operace" 
-                                                    Binding="{Binding Operace, UpdateSourceTrigger=PropertyChanged}" 
-                                                    Width="*" 
-                                                    HeaderStyle="{StaticResource HeaderStyle}" />
-                                <DataGridTextColumn Header="Cas operace" 
-                                                    Binding="{Binding CasOperace, UpdateSourceTrigger=PropertyChanged}" 
-                                                    Width="*" 
-                                                    HeaderStyle="{StaticResource HeaderStyle}" />
-                                <DataGridTextColumn Header="Uzivatel"
-                                                    Binding="{Binding Uzivatel, UpdateSourceTrigger=PropertyChanged}"
-                                                    Width="*" 
-                                                    HeaderStyle="{StaticResource HeaderStyle}" />
-                                <DataGridTextColumn Header="Popis"
-                                                    Binding="{Binding Popis, UpdateSourceTrigger=PropertyChanged}"
-                                                    Width="*" 
-                                                    HeaderStyle="{StaticResource HeaderStyle}" />
+                                <DataGridTextColumn Header="Tabulka" Binding="{Binding JakaTabulka}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                                <DataGridTextColumn Header="Operace" Binding="{Binding Operace}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                                <DataGridTextColumn Header="Cas operace" Binding="{Binding CasOperace}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                                <DataGridTextColumn Header="Uzivatel" Binding="{Binding Uzivatel}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                                <DataGridTextColumn Header="Popis" Binding="{Binding Popis}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                                <DataGridTextColumn Header="Old Values" Binding="{Binding OldValues}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
+                                <DataGridTextColumn Header="New Values" Binding="{Binding NewValues}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
                             </DataGrid.Columns>
                         </DataGrid>
-                        <TextBlock Grid.Row="1" 
-                                   Text="{Binding ErrorMessage}" 
-                                   Foreground="Red" 
-                                   FontSize="14" 
-                                   HorizontalAlignment="Center" 
-                                   Margin="0,10,0,0" 
-                                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" />
                     </Grid>
                 </Border>
             </Grid>
