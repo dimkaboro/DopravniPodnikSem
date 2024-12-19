@@ -26,20 +26,29 @@ namespace DopravniPodnikSem.Repository
         public async Task<IEnumerable<Linka>> GetAllAsync()
         {
             var linky = new List<Linka>();
-            var query = "SELECT * FROM LINKY";
+            var query = @"
+        SELECT l.LINKA_ID, l.NAZEV, l.TYP_LINKY_TYPLINKY_ID, t.TYP AS TYP_NAZEV
+        FROM LINKY l
+        LEFT JOIN TYPY_LINKY t ON l.TYP_LINKY_TYPLINKY_ID = t.TYPLINKY_ID";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
-            using (var reader = await command.ExecuteReaderAsync())
             {
-                while (await reader.ReadAsync())
+                if (connection.State != ConnectionState.Open)
+                    await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    linky.Add(new Linka
+                    while (await reader.ReadAsync())
                     {
-                        LinkaId = reader.GetInt32(0),
-                        Nazev = reader.GetString(1),
-                        Typ = reader.GetString(2)
-                    });
+                        linky.Add(new Linka
+                        {
+                            LinkaId = reader.GetInt32(0),
+                            Nazev = reader.GetString(1),
+                            TypLinkyId = reader.GetInt32(2),
+                            TypNazev = reader.IsDBNull(3) ? null : reader.GetString(3)
+                        });
+                    }
                 }
             }
 
@@ -48,7 +57,7 @@ namespace DopravniPodnikSem.Repository
 
         public async Task AddAsync(Linka linka)
         {
-            var query = "BEGIN manage_linka('INSERT', :LinkaId, :Nazev, :Typ); END;";
+            var query = "BEGIN manage_linka('INSERT', :LinkaId, :Nazev, :TypId); END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
@@ -56,27 +65,36 @@ namespace DopravniPodnikSem.Repository
                 command.Parameters.Add(new OracleParameter(":LinkaId", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.InputOutput,
-                    Value = DBNull.Value 
+                    Value = DBNull.Value // Передаем NULL для создания нового ID
                 });
                 command.Parameters.Add(new OracleParameter(":Nazev", linka.Nazev));
-                command.Parameters.Add(new OracleParameter(":Typ", linka.Typ));
+                command.Parameters.Add(new OracleParameter(":TypId", linka.TypLinkyId));
+
+                if (connection.State != ConnectionState.Open)
+                    await connection.OpenAsync();
 
                 await command.ExecuteNonQueryAsync();
 
-                linka.LinkaId = Convert.ToInt32(((OracleDecimal)command.Parameters[":LinkaId"].Value).Value);
+                linka.LinkaId = Convert.ToInt32(command.Parameters[":LinkaId"].Value.ToString());
             }
         }
 
         public async Task UpdateAsync(Linka linka)
         {
-            var query = "BEGIN manage_linka('UPDATE', :LinkaId, :Nazev, :Typ); END;";
+            var query = @"
+        BEGIN
+            manage_linka('UPDATE', :LinkaId, :Nazev, :TypId);
+        END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
                 command.Parameters.Add(new OracleParameter(":LinkaId", linka.LinkaId));
                 command.Parameters.Add(new OracleParameter(":Nazev", linka.Nazev));
-                command.Parameters.Add(new OracleParameter(":Typ", linka.Typ));
+                command.Parameters.Add(new OracleParameter(":TypId", linka.TypLinkyId));
+
+                if (connection.State != ConnectionState.Open)
+                    await connection.OpenAsync();
 
                 await command.ExecuteNonQueryAsync();
             }
@@ -91,16 +109,13 @@ namespace DopravniPodnikSem.Repository
             {
                 command.Parameters.Add(new OracleParameter(":LinkaId", linkaId));
 
-                try
-                {
-                    await command.ExecuteNonQueryAsync();
-                    ErrorMessage = string.Empty;
-                }
-                catch (OracleException ex)
-                {
-                    ErrorMessage = $"Error: {ex.Message}";
-                }
+                if (connection.State != ConnectionState.Open)
+                    await connection.OpenAsync();
+
+                await command.ExecuteNonQueryAsync();
             }
         }
     }
 }
+
+

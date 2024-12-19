@@ -106,6 +106,8 @@ namespace DopravniPodnikSem
             services.AddTransient<ITypyVozidlaRepository, TypyVozidlaRepository>();
 
             services.AddTransient<IStavyJizdyRepository, StavyJizdyRepository>();
+
+            services.AddTransient<ITypyLinkyRepository, TypyLinkyRepository>();
         }
 
 
