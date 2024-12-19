@@ -102,6 +102,10 @@ namespace DopravniPodnikSem
 
             services.AddTransient<AddZastavkaTrasaView>();
             services.AddTransient<AddZastavkaTrasaViewModel>();
+
+            services.AddTransient<ITypyVozidlaRepository, TypyVozidlaRepository>();
+
+            services.AddTransient<IStavyJizdyRepository, StavyJizdyRepository>();
         }
 
 

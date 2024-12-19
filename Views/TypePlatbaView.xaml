@@ -47,7 +47,7 @@
                                 <MultiBinding StringFormat="{}{0} - {1} ({2})">
                                     <Binding Path="CasOd" Converter="{StaticResource DateTimeConverter}" />
                                     <Binding Path="CasDo" Converter="{StaticResource DateTimeConverter}" />
-                                    <Binding Path="Stav" />
+                                    <Binding Path="StavNazev" />
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
