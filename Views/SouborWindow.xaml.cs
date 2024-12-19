@@ -11,7 +11,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.IO;
 using Microsoft.Win32;
 
@@ -36,11 +35,12 @@ namespace DopravniPodnikSem.Views
             {
                 var filePath = openFileDialog.FileName;
                 var imageBytes = File.ReadAllBytes(filePath);
+                var fileExtension = Path.GetExtension(filePath)?.ToLower();
 
                 if (DataContext is SouboryViewModel viewModel)
                 {
                     viewModel.NewAvatar = imageBytes;
-                    MessageBox.Show("New avatar selected.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    viewModel.NewAvatarExtension = fileExtension;
                 }
                 else
                 {

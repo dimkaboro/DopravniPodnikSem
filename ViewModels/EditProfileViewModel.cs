@@ -19,6 +19,7 @@ public class EditProfileViewModel : INotifyPropertyChanged
     private Adresa _editedAddress;
     private Soubory _currentSoubor;
     private byte[] _newAvatar;
+    private string _newAvatrExtension;
 
 
     public EditProfileViewModel(IUserDataRepository userDataRepository, IAdresyRepository adresyRepository, ISouboryRepository souboryRepository, Zamestnanec currentUser, Adresa currentAddress, Soubory currentSoubor)
@@ -94,13 +95,23 @@ public class EditProfileViewModel : INotifyPropertyChanged
 
     public byte[] CurrentAvatar => NewAvatar ?? CurrentSoubor?.Soubor;
 
+    public string NewAvatarExtension
+    {
+        get => _newAvatrExtension;
+        set
+        {
+            _newAvatrExtension = value;
+            OnPropertyChanged(nameof(NewAvatarExtension));
+        }
+    }
+
     public async Task SaveChangesAsync()
     {
         try
         {
             if (NewAvatar != null)
             {
-                var newAvatarId = await _souboryRepository.UpdateUserAvatarAsync(EditedUser.ZamestnanecId, "User avatar", NewAvatar);
+                var newAvatarId = await _souboryRepository.UpdateUserAvatarAsync(EditedUser.ZamestnanecId, "User avatar", NewAvatar, "Image", NewAvatarExtension);
                 EditedUser.SouborId = newAvatarId; 
             }
 

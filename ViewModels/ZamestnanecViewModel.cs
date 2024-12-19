@@ -138,7 +138,7 @@ namespace DopravniPodnikSem.ViewModels
                     SelectedZamestnanec.SouborId = 1; 
                 }
 
-                if (SelectedZamestnanec.ZamestnanecZamestnanecId == 0)
+                if (SelectedZamestnanec.ZamestnanecZamestnanecId == null)
                 {
                     SelectedZamestnanec.ZamestnanecZamestnanecId = 1;
                 }
@@ -169,7 +169,7 @@ namespace DopravniPodnikSem.ViewModels
             {
                 await _userDataRepository.UpdateAsync(SelectedZamestnanec);
                 LoadDataAsync();
-                ErrorMessage = string.Empty;
+                ErrorMessage = "Editace proběhla úspěšně!";
             }
             catch (System.Exception ex)
             {
@@ -250,18 +250,21 @@ namespace DopravniPodnikSem.ViewModels
         {
             try
             {
-                if (SelectedZamestnanec != null && (SelectedSoubor == null || SelectedZamestnanec.SouborId == 0))
+                if (SelectedZamestnanec != null && SelectedZamestnanec.SouborId != 0)
                 {
-                    SelectedZamestnanec.SouborId = 1;
                     await LoadAvatarDetails();
+
+                    var souborWindow = new SouborWindow
+                    {
+                        DataContext = new SouboryViewModel(App.ServiceProvider.GetService<ISouboryRepository>(), SelectedZamestnanec, SelectedSoubor)
+                    };
+
+                    souborWindow.ShowDialog();
                 }
-
-                var souborWindow = new SouborWindow
+                else
                 {
-                    DataContext = new SouboryViewModel(App.ServiceProvider.GetService<ISouboryRepository>(), SelectedZamestnanec, SelectedSoubor)
-                };
-
-                souborWindow.ShowDialog(); 
+                    MessageBox.Show("No avatar found for this user.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }  
             }
             catch (Exception ex)
             {

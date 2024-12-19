@@ -16,7 +16,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DopravniPodnikSem.Views
 {
@@ -50,8 +49,11 @@ namespace DopravniPodnikSem.Views
 
                 var imageBytes = await File.ReadAllBytesAsync(filePath);
 
+                var fileExtension = Path.GetExtension(filePath)?.ToLower();
+
                 var viewModel = (EditProfileViewModel)DataContext;
                 viewModel.NewAvatar = imageBytes;
+                viewModel.NewAvatarExtension = fileExtension;
             }
         }
 

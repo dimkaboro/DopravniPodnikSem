@@ -175,8 +175,10 @@ namespace DopravniPodnikSem.Repository
                             Prijmeni = reader.GetString("PRIJMENI"),
                             Email = reader.GetString("EMAIL"),
                             Pozice = reader.GetString("POZICE"),
+                            Plat = reader.GetInt32("PLAT"),
                             DatumNastupu = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("DATUM_NASTUPU"))),
                             CisloTelefonu = reader.GetString("CISLO_TELEFONU"),
+                            ZamestnanecZamestnanecId = reader.GetInt32("ZAMESTNANEC_ZAMESTNANEC_ID"),
                             AdresaId = reader.GetInt32("ADRESA_ADRESA_ID"),
                             Role = (Role)reader.GetInt32("ROLE_ROLE_ID"),
                             SouborId = reader.GetInt32("SOUBOR_SOUBOR_ID"),
@@ -279,6 +281,7 @@ namespace DopravniPodnikSem.Repository
                             Plat = reader.GetInt32(6),
                             DatumNastupu = DateOnly.FromDateTime(reader.GetDateTime(7)),
                             CisloTelefonu = reader.GetString(8),
+                            ZamestnanecZamestnanecId = reader.GetInt32(9),
                             AdresaId = reader.GetInt32(10),
                             Role = (Role)reader.GetInt32(11),
                             SouborId = reader.GetInt32(12),
@@ -291,9 +294,11 @@ namespace DopravniPodnikSem.Repository
             return zamestnanci;
         }
 
+
+
         public async Task UpdateAsync(Zamestnanec zamestnanec)
         {
-            var query = "BEGIN manage_zamestnanec('UPDATE', :ZamestnanecId, :Jmeno, :Prijmeni, :Email, :Heslo, :Pozice, :Plat :DatumNastupu :CisloTelefonu :ZamestnanecZamestnanecId :AdresaId :RoleId :SouborId :JePrivate); END;";
+            var query = "BEGIN manage_zamestnanec('UPDATE', :ZamestnanecId, :Jmeno, :Prijmeni, :Email, :Heslo, :Pozice, :Plat, :DatumNastupu, :CisloTelefonu, :ZamestnanecZamestnanecId, :AdresaId, :RoleId, :SouborId, :JePrivate); END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
@@ -305,9 +310,12 @@ namespace DopravniPodnikSem.Repository
                 command.Parameters.Add(new OracleParameter(":Heslo", zamestnanec.Heslo));
                 command.Parameters.Add(new OracleParameter(":Pozice", zamestnanec.Pozice));
                 command.Parameters.Add(new OracleParameter(":Plat", zamestnanec.Plat));
-                command.Parameters.Add(new OracleParameter(":DatumNastupu", zamestnanec.DatumNastupu));
+                command.Parameters.Add(new OracleParameter(":DatumNastupu", OracleDbType.Date)
+                {
+                    Value = zamestnanec.DatumNastupu.ToDateTime(TimeOnly.MinValue)
+                });
                 command.Parameters.Add(new OracleParameter(":CisloTelefonu", zamestnanec.CisloTelefonu));
-                command.Parameters.Add(new OracleParameter(":ZamestnanecZamestnanecId", zamestnanec.ZamestnanecZamestnanecId));
+                command.Parameters.Add(new OracleParameter(":ZamestnanecZamestnanecId", zamestnanec.ZamestnanecZamestnanecId.HasValue ? (object)zamestnanec.ZamestnanecZamestnanecId.Value : DBNull.Value));
                 command.Parameters.Add(new OracleParameter(":AdresaId", zamestnanec.AdresaId));
                 command.Parameters.Add(new OracleParameter(":RoleId", zamestnanec.RoleId));
                 command.Parameters.Add(new OracleParameter(":SouborId", zamestnanec.SouborId));

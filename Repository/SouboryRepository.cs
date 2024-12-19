@@ -26,7 +26,7 @@ namespace DopravniPodnikSem.Repository
             using (var connection = _databaseService.GetConnection())
             {
                 var command = new OracleCommand(@"
-                    SELECT SOUBOR_ID, NAZEV, SOUBOR 
+                    SELECT SOUBOR_ID, NAZEV, SOUBOR, TYP_SOUBORU, PRIPONA_SOUBORU, DATUM_NAHRANI, DATUM_MODIFIKACE, OPERACE_PROVEDL 
                     FROM SOUBORY 
                     WHERE SOUBOR_ID = :SouborId", connection);
 
@@ -40,7 +40,12 @@ namespace DopravniPodnikSem.Repository
                         {
                             SouborId = reader.GetInt32(reader.GetOrdinal("SOUBOR_ID")),
                             Nazev = reader.GetString(reader.GetOrdinal("NAZEV")),
-                            Soubor = reader.GetValue(reader.GetOrdinal("SOUBOR")) as byte[]
+                            Soubor = reader.GetValue(reader.GetOrdinal("SOUBOR")) as byte[],
+                            TypSouboru = reader.GetString(reader.GetOrdinal("TYP_SOUBORU")),
+                            PriponaSouboru = reader.GetString(reader.GetOrdinal("PRIPONA_SOUBORU")),
+                            DatumNahrani = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("DATUM_NAHRANI"))),
+                            DatumModifikace = DateOnly.FromDateTime(reader.GetDateTime(reader.GetOrdinal("DATUM_MODIFIKACE"))),
+                            OperaceProvedl = reader.GetString(reader.GetOrdinal("OPERACE_PROVEDL"))
                         };
                     }
                 }
@@ -48,7 +53,7 @@ namespace DopravniPodnikSem.Repository
             return null;
         }
 
-        public async Task<int> UpdateUserAvatarAsync(int userId, string avatarName, byte[] avatarData)
+        public async Task<int> UpdateUserAvatarAsync(int userId, string avatarName, byte[] avatarData, string avatarType, string avatarExtension)
         {
             using (var connection = _databaseService.GetConnection())
             {
@@ -59,6 +64,8 @@ namespace DopravniPodnikSem.Repository
 
                 command.Parameters.Add(new OracleParameter("p_AvatarNazev", OracleDbType.Varchar2) { Value = avatarName });
                 command.Parameters.Add(new OracleParameter("p_AvatarData", OracleDbType.Blob) { Value = avatarData });
+                command.Parameters.Add(new OracleParameter("p_AvatarType", OracleDbType.Varchar2) { Value = avatarType });
+                command.Parameters.Add(new OracleParameter("p_AvatarExtension", OracleDbType.Varchar2) { Value = avatarExtension });
                 command.Parameters.Add(new OracleParameter("p_UserId", OracleDbType.Decimal) { Value = userId });
 
                 var newAvatarIdParam = new OracleParameter("p_NewAvatarId", OracleDbType.Decimal)
@@ -69,8 +76,7 @@ namespace DopravniPodnikSem.Repository
 
                 await command.ExecuteNonQueryAsync();
 
-                var oracleDecimalValue = (Oracle.ManagedDataAccess.Types.OracleDecimal)newAvatarIdParam.Value;
-                return oracleDecimalValue.ToInt32();
+                return Convert.ToInt32(newAvatarIdParam.Value.ToString());
             }
         }
     }

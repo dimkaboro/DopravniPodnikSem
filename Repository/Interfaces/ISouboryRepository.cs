@@ -10,6 +10,6 @@ namespace DopravniPodnikSem.Repository.Interfaces
     public interface ISouboryRepository
     {
         Task<Soubory> GetUserAvatarAsync(int souborId);
-        Task<int> UpdateUserAvatarAsync(int userId, string avatarName, byte[] avatarData);
+        Task<int> UpdateUserAvatarAsync(int userId, string avatarName, byte[] avatarData, string avatarType, string avatarExtension);
     }
 }

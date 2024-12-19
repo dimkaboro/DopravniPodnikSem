@@ -18,6 +18,7 @@ namespace DopravniPodnikSem.ViewModels
         private Zamestnanec _originalZamestnanec;
         private Soubory _currentSoubor;
         private byte[] _newAvatar;
+        private string _newAvatarExtension;
 
         public SouboryViewModel(ISouboryRepository souboryRepository, Zamestnanec selectedZamestnanec, Soubory selectedSoubor)
         {
@@ -60,13 +61,23 @@ namespace DopravniPodnikSem.ViewModels
 
         public byte[] CurrentAvatar => NewAvatar ?? CurrentSoubor?.Soubor;
 
+        public string NewAvatarExtension
+        {
+            get => _newAvatarExtension;
+            set
+            {
+                _newAvatarExtension = value;
+                OnPropertyChanged(nameof(NewAvatarExtension));
+            }
+        }
+
         public async Task SaveChangesAsync()
         {
             try
             {
                 if (NewAvatar != null)
                 {
-                    var newAvatarId = await _souboryRepository.UpdateUserAvatarAsync(OriginalZamestnanec.ZamestnanecId, "User avatar", NewAvatar);
+                    var newAvatarId = await _souboryRepository.UpdateUserAvatarAsync(OriginalZamestnanec.ZamestnanecId, "User avatar", NewAvatar, "Image", NewAvatarExtension);
                     MessageBox.Show($"Avatar byl úspěšně aktualizován!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
