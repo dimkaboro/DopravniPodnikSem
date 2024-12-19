@@ -10,29 +10,44 @@ namespace DopravniPodnikSem.Models
     {
         private int _vozidloId;
         private string _registracniCislo;
-        private string _typ;
+        private int? _typId;
+        private string _typNazev; // Название типа из справочника
         private int? _kapacita;
         private int? _garazeGarazId;
         private int? _udrzbaVozidlaUdrzbaId;
-        public string VehicleInfo => $"{RegistracniCislo} - {Typ}";
 
+        public string VehicleInfo => $"{RegistracniCislo} - {TypNazev}";
+
+        // ID машины
         public int VozidloId
         {
             get => _vozidloId;
             set => SetField(ref _vozidloId, value);
         }
 
+        // Регистрационный номер
         public string RegistracniCislo
         {
             get => _registracniCislo;
             set => SetField(ref _registracniCislo, value);
         }
 
-        public string Typ
+        // FK на тип машины
+        public int? TypId
         {
-            get => _typ;
-            set => SetField(ref _typ, value);
+            get => _typId;
+            set => SetField(ref _typId, value);
         }
+
+        // Название типа (для отображения)
+        public string TypNazev
+        {
+            get => _typNazev;
+            set => SetField(ref _typNazev, value);
+        }
+
+        // Навигационное свойство на справочник Типы
+        public virtual TypVozidla TypVozidla { get; set; }
 
         public int? Kapacita
         {
@@ -52,8 +67,9 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _udrzbaVozidlaUdrzbaId, value);
         }
 
-        public virtual Garaz Garaz { get; set; }            
-        public virtual UdrzbaVozidla UdrzbaVozidla { get; set; } 
+        // Связанные объекты
+        public virtual Garaz Garaz { get; set; }
+        public virtual UdrzbaVozidla UdrzbaVozidla { get; set; }
     }
 }
 

@@ -4,26 +4,29 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DopravniPodnikSem.Repository;
 
 namespace DopravniPodnikSem.ViewModels
 {
     public class VozidloViewModel : BaseViewModel
     {
         private readonly IVozidloRepository _vozidloRepository;
+        private readonly ITypyVozidlaRepository _typyVozidlaRepository;
+
         private ObservableCollection<Vozidlo> _vozidla;
-        private Vozidlo _vozidlo; 
+        private ObservableCollection<TypVozidla> _typyVozidla;
+
         private Vozidlo _selectedVozidlo;
         private string _searchQuery;
+        private string _errorMessage;
 
-        public VozidloViewModel(Vozidlo vozidlo)
-        {
-            _vozidlo = vozidlo; 
-        }
-
-        public VozidloViewModel(IVozidloRepository vozidloRepository)
+        public VozidloViewModel(IVozidloRepository vozidloRepository, ITypyVozidlaRepository typyVozidlaRepository)
         {
             _vozidloRepository = vozidloRepository;
+            _typyVozidlaRepository = typyVozidlaRepository;
+
             Vozidla = new ObservableCollection<Vozidlo>();
+            TypyVozidla = new ObservableCollection<TypVozidla>();
 
             SearchCommand = new ViewModelCommand(async _ => await SearchVozidloAsync(), _ => !string.IsNullOrEmpty(SearchQuery));
             ClearCommand = new ViewModelCommand(_ => ClearSearch());
@@ -31,6 +34,7 @@ namespace DopravniPodnikSem.ViewModels
             DeleteCommand = new ViewModelCommand(async _ => await DeleteVozidloAsync(), _ => SelectedVozidlo != null);
 
             LoadAllVozidlaAsync();
+            LoadTypyVozidlaAsync();
         }
 
         public ObservableCollection<Vozidlo> Vozidla
@@ -43,6 +47,16 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
+        public ObservableCollection<TypVozidla> TypyVozidla
+        {
+            get => _typyVozidla;
+            set
+            {
+                _typyVozidla = value;
+                OnPropertyChanged();
+            }
+        }
+
         public Vozidlo SelectedVozidlo
         {
             get => _selectedVozidlo;
@@ -50,6 +64,7 @@ namespace DopravniPodnikSem.ViewModels
             {
                 _selectedVozidlo = value;
                 OnPropertyChanged();
+                ErrorMessage = string.Empty; // Очищаем ошибку при выборе нового элемента
             }
         }
 
@@ -63,6 +78,16 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
+                _errorMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand SearchCommand { get; }
         public ICommand ClearCommand { get; }
         public ICommand AddUpdateCommand { get; }
@@ -70,18 +95,56 @@ namespace DopravniPodnikSem.ViewModels
 
         private async void LoadAllVozidlaAsync()
         {
-            var vozidla = await _vozidloRepository.GetAllAsync();
-            Vozidla = new ObservableCollection<Vozidlo>(vozidla);
+            try
+            {
+                var vozidla = await _vozidloRepository.GetAllAsync();
+                Vozidla = new ObservableCollection<Vozidlo>(vozidla);
+                ErrorMessage = string.Empty; // Очищаем ошибку при успешной загрузке
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage($"Ошибка загрузки: {ex.Message}");
+            }
         }
 
-        private async System.Threading.Tasks.Task SearchVozidloAsync()
+        private async void LoadTypyVozidlaAsync()
         {
-            var vozidlo = await _vozidloRepository.GetByRegistrationNumberAsync(SearchQuery);
-            Vozidla.Clear();
-
-            if (vozidlo != null)
+            try
             {
-                Vozidla.Add(vozidlo);
+                var typy = await _typyVozidlaRepository.GetAllAsync();
+                TypyVozidla = new ObservableCollection<TypVozidla>(typy);
+
+                // Лог для проверки данных
+                foreach (var typ in TypyVozidla)
+                {
+                    System.Diagnostics.Debug.WriteLine($"TypVozidlaId: {typ.TypVozidlaId}, Typ: {typ.Typ}");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage($"Ошибка загрузки типов: {ex.Message}");
+            }
+        }
+
+        private async Task SearchVozidloAsync()
+        {
+            try
+            {
+                var vozidlo = await _vozidloRepository.GetByRegistrationNumberAsync(SearchQuery);
+                Vozidla.Clear();
+
+                if (vozidlo != null)
+                {
+                    Vozidla.Add(vozidlo);
+                }
+                else
+                {
+                    ShowErrorMessage("Запись не найдена.");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage($"Ошибка поиска: {ex.Message}");
             }
         }
 
@@ -91,27 +154,53 @@ namespace DopravniPodnikSem.ViewModels
             LoadAllVozidlaAsync();
         }
 
-        private async System.Threading.Tasks.Task AddOrUpdateVozidloAsync()
+        private async Task AddOrUpdateVozidloAsync()
         {
-            if (SelectedVozidlo.VozidloId == 0)
+            try
             {
-                await _vozidloRepository.AddAsync(SelectedVozidlo);
-            }
-            else
-            {
-                await _vozidloRepository.UpdateAsync(SelectedVozidlo);
-            }
+                if (SelectedVozidlo != null)
+                {
+                    if (SelectedVozidlo.VozidloId == 0)
+                    {
+                        await _vozidloRepository.AddAsync(SelectedVozidlo);
+                        ErrorMessage = "Запись добавлена успешно!";
+                    }
+                    else
+                    {
+                        await _vozidloRepository.UpdateAsync(SelectedVozidlo);
+                        ErrorMessage = "Запись обновлена успешно!";
+                    }
 
-            LoadAllVozidlaAsync();
+                    LoadAllVozidlaAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage($"Ошибка сохранения: {ex.Message}");
+            }
         }
 
-        private async System.Threading.Tasks.Task DeleteVozidloAsync()
+        private async Task DeleteVozidloAsync()
         {
-            if (SelectedVozidlo != null)
+            try
             {
-                await _vozidloRepository.DeleteAsync(SelectedVozidlo.VozidloId);
-                LoadAllVozidlaAsync();
+                if (SelectedVozidlo != null)
+                {
+                    await _vozidloRepository.DeleteAsync(SelectedVozidlo.VozidloId);
+                    ErrorMessage = "Запись удалена успешно!";
+                    LoadAllVozidlaAsync();
+                }
             }
+            catch (Exception ex)
+            {
+                ShowErrorMessage($"Ошибка удаления: {ex.Message}");
+            }
+        }
+
+        private void ShowErrorMessage(string message)
+        {
+            ErrorMessage = message;
+            System.Diagnostics.Debug.WriteLine(message);
         }
     }
 }

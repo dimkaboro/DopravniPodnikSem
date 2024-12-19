@@ -115,10 +115,21 @@
                                                     Binding="{Binding Nazev, UpdateSourceTrigger=PropertyChanged}" 
                                                     Width="*" 
                                                     HeaderStyle="{StaticResource HeaderStyle}" />
-                                <DataGridTextColumn Header="Typ" 
-                                                    Binding="{Binding Typ, UpdateSourceTrigger=PropertyChanged}" 
-                                                    Width="*" 
-                                                    HeaderStyle="{StaticResource HeaderStyle}" />
+                                <DataGridTemplateColumn Header="Typ" HeaderStyle="{StaticResource HeaderStyle}" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox ItemsSource="{Binding DataContext.TypyLinky, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                      SelectedValue="{Binding TypLinkyId, UpdateSourceTrigger=PropertyChanged}"
+                                                      SelectedValuePath="TypLinkyId"
+                                                      DisplayMemberPath="Typ"
+                                                      Width="Auto"
+                                                      Background="#333333"
+                                                      Foreground="#6C63FF"
+                                                      BorderBrush="#28AEED"
+                                                      BorderThickness="1" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <TextBlock Grid.Row="1" 

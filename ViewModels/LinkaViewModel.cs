@@ -1,4 +1,5 @@
 ﻿using DopravniPodnikSem.Models;
+using DopravniPodnikSem.Repository;
 using DopravniPodnikSem.Repository.Interfaces;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -8,6 +9,8 @@ namespace DopravniPodnikSem.ViewModels
     public class LinkaViewModel : BaseViewModel
     {
         private readonly ILinkyRepository _linkyRepository;
+        private readonly ITypyLinkyRepository _typyLinkyRepository;
+        private ObservableCollection<TypLinky> _typyLinky;
         private ObservableCollection<Linka> _linky;
         private Linka _selectedLinka;
         private string _errorMessage;
@@ -20,6 +23,16 @@ namespace DopravniPodnikSem.ViewModels
             {
                 _errorMessage = value;
                 OnPropertyChanged(nameof(ErrorMessage));
+            }
+        }
+
+        public ObservableCollection<TypLinky> TypyLinky
+        {
+            get => _typyLinky;
+            set
+            {
+                _typyLinky = value;
+                OnPropertyChanged();
             }
         }
 
@@ -58,9 +71,10 @@ namespace DopravniPodnikSem.ViewModels
         public ICommand ClearCommand { get; }
         public ICommand SearchCommand { get; }
 
-        public LinkaViewModel(ILinkyRepository linkyRepository)
+        public LinkaViewModel(ILinkyRepository linkyRepository, ITypyLinkyRepository typyLinkyRepository)
         {
             _linkyRepository = linkyRepository;
+            _typyLinkyRepository = typyLinkyRepository;
             Linky = new ObservableCollection<Linka>();
 
             AddUpdateCommand = new ViewModelCommand(async _ => await AddOrUpdateLinkaAsync(), _ => SelectedLinka != null);
@@ -69,6 +83,13 @@ namespace DopravniPodnikSem.ViewModels
             SearchCommand = new ViewModelCommand(async _ => await SearchLinkyAsync());
 
             LoadAllLinkyAsync();
+            LoadTypyLinkyAsync();
+        }
+
+        private async void LoadTypyLinkyAsync()
+        {
+            var typy = await _typyLinkyRepository.GetAllAsync();
+            TypyLinky = new ObservableCollection<TypLinky>(typy);
         }
 
         private async void LoadAllLinkyAsync()
@@ -156,6 +177,10 @@ namespace DopravniPodnikSem.ViewModels
         private void ClearSelection()
         {
             SelectedLinka = null;
+            SearchNazev = string.Empty;
+            LoadAllLinkyAsync();
+            ErrorMessage = string.Empty;
+            
         }
     }
 }

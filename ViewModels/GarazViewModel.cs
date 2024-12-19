@@ -1,14 +1,19 @@
 ﻿using DopravniPodnikSem.Models;
+using DopravniPodnikSem.Repository.Interfaces;
 
 namespace DopravniPodnikSem.ViewModels
 {
     public class GarazViewModel : BaseViewModel
     {
         private Garaz _garaz;
+        private readonly IVozidloRepository _vozidloRepository;
+        private readonly ITypyVozidlaRepository _typyVozidlaRepository;
 
-        public GarazViewModel(Garaz garaz)
+        public GarazViewModel(Garaz garaz, IVozidloRepository vozidloRepository, ITypyVozidlaRepository typyVozidlaRepository)
         {
             _garaz = garaz;
+            _vozidloRepository = vozidloRepository;
+            _typyVozidlaRepository = typyVozidlaRepository;
         }
 
         public int GarazId
@@ -43,6 +48,7 @@ namespace DopravniPodnikSem.ViewModels
 
         public ZamestnanecViewModel ZamestnanecViewModel => new ZamestnanecViewModel(_garaz.Zamestnanec);
 
-        public IEnumerable<VozidloViewModel> VozidlaViewModel => _garaz.Vozidla?.Select(v => new VozidloViewModel(v));
+        public IEnumerable<VozidloViewModel> VozidlaViewModel =>
+            _garaz.Vozidla?.Select(v => new VozidloViewModel(_vozidloRepository, _typyVozidlaRepository));
     }
 }

@@ -94,6 +94,21 @@
                                                     Binding="{Binding CasDo, UpdateSourceTrigger=PropertyChanged}" 
                                                     Width="*" 
                                                     HeaderStyle="{StaticResource HeaderStyle}" />
+                                <DataGridTemplateColumn Header="Stav" HeaderStyle="{StaticResource HeaderStyle}" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox ItemsSource="{Binding DataContext.StavyJizdy, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      SelectedValue="{Binding StavJizdyId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedValuePath="StavJizdyId"
+                      DisplayMemberPath="Stav"
+                      Width="Auto"
+                      Background="#333333"
+                      Foreground="#6C63FF"
+                      BorderBrush="#28AEED"
+                      BorderThickness="1" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <TextBlock Grid.Row="1" 

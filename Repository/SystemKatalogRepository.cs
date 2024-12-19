@@ -37,7 +37,7 @@ namespace DopravniPodnikSem.Repository
                 FROM 
                     ALL_OBJECTS
                 WHERE 
-                    OWNER = 'ST69641'
+                    OWNER = 'ST69588'
                 ORDER BY 
                     OBJECT_NAME";
 

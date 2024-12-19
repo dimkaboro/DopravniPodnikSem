@@ -10,7 +10,8 @@ namespace DopravniPodnikSem.Models
     {
         private int _linkaId;
         private string _nazev;
-        private string _typ;
+        private int _typLinkyId; // FK
+        private string _typNazev; // Название типа
 
         public override string ToString()
         {
@@ -29,10 +30,16 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _nazev, value);
         }
 
-        public string Typ
+        public int TypLinkyId
         {
-            get => _typ;
-            set => SetField(ref _typ, value);
+            get => _typLinkyId;
+            set => SetField(ref _typLinkyId, value);
+        }
+
+        public string TypNazev
+        {
+            get => _typNazev;
+            set => SetField(ref _typNazev, value);
         }
 
         public virtual ICollection<Jizda> Jizdy { get; set; } = new List<Jizda>();
