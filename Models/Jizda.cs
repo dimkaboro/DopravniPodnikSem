@@ -11,12 +11,13 @@ namespace DopravniPodnikSem.Models
         private int _jizdaId;
         private DateTime _casOd;
         private DateTime _casDo;
-        private string _stav;
+        private int _stavJizdyId;
+        private string _stavNazev;
         private int _linkaId;
         private int _ridicId;
         private int _vozidloId;
 
-        public string DisplayText => $"{CasOd:dd.MM.yy HH:mm} - {CasDo:HH:mm} ({Stav})";
+        public string DisplayText => $"{CasOd:dd.MM.yy HH:mm} - {CasDo:HH:mm} ({StavNazev ?? "Neznámý stav"})";
 
         public int JizdaId
         {
@@ -36,10 +37,16 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _casDo, value);
         }
 
-        public string Stav
+        public int StavJizdyId
         {
-            get => _stav;
-            set => SetField(ref _stav, value);
+            get => _stavJizdyId;
+            set => SetField(ref _stavJizdyId, value);
+        }
+
+        public string StavNazev
+        {
+            get => _stavNazev;
+            set => SetField(ref _stavNazev, value);
         }
 
         public int LinkaId
@@ -60,9 +67,11 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _vozidloId, value);
         }
 
-        public virtual Linka Linka { get; set; }       
-        public virtual Ridic Ridic { get; set; }       
-        public virtual Vozidlo Vozidlo { get; set; }   
+        // Навигационные свойства
+        public virtual Linka Linka { get; set; }
+        public virtual Ridic Ridic { get; set; }
+        public virtual Vozidlo Vozidlo { get; set; }
+        public virtual StavJizdy StavJizdy { get; set; }
     }
 }
 

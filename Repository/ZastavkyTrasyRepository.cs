@@ -25,43 +25,44 @@ namespace DopravniPodnikSem.Repository
         public async Task<IEnumerable<ZastavkaTrasa>> GetAllAsync()
         {
             var zastavkyTrasy = new List<ZastavkaTrasa>();
-            var query = "BEGIN :result := GetZastavkyTrasyDetail(); END;";
+
+            var query = "BEGIN :result_cursor := GetZastavkyTrasyDetail(); END;";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
-                command.Parameters.Add(new OracleParameter("result", OracleDbType.RefCursor)
-                {
-                    Direction = ParameterDirection.Output
-                });
+                command.CommandType = CommandType.Text;
+                command.Parameters.Add(new OracleParameter(":result_cursor", OracleDbType.RefCursor, ParameterDirection.Output));
 
                 if (connection.State != ConnectionState.Open)
                     await connection.OpenAsync();
 
                 await command.ExecuteNonQueryAsync();
 
-                using (var reader = ((OracleRefCursor)command.Parameters["result"].Value).GetDataReader())
+                using (var reader = ((OracleRefCursor)command.Parameters[":result_cursor"].Value).GetDataReader())
                 {
                     while (await reader.ReadAsync())
                     {
                         zastavkyTrasy.Add(new ZastavkaTrasa
                         {
-                            ZastavkaTrasaId = reader.GetInt32(0),                 
-                            CasPrijezdu = reader.GetDateTime(1),                 
-                            JizdaDisplay = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
-                            ZastavkaDisplay = reader.IsDBNull(3) ? string.Empty : reader.GetString(3)
+                            ZastavkaTrasaId = reader.GetInt32(0),
+                            CasPrijezdu = reader.GetDateTime(1),
+                            JizdaDisplay = reader.GetString(2),      // Jizda_DETAILS из функции
+                            ZastavkaDisplay = reader.GetString(3)   // ZASTAVKA_DETAILS из функции
                         });
                     }
                 }
             }
-
             return zastavkyTrasy;
         }
 
         public async Task<IEnumerable<ZastavkaTrasa>> GetByCasPrijezduAsync(DateTime casPrijezdu)
         {
             var zastavkyTrasy = new List<ZastavkaTrasa>();
-            var query = @"SELECT * FROM TABLE(GetZastavkyTrasyDetail()) WHERE TRUNC(TO_DATE(CAS_PRIJEZDU, 'DD.MM.YY HH24:MI')) = :CasPrijezdu";
+
+            var query = @"
+        SELECT * FROM TABLE(GetZastavkyTrasyDetail()) 
+        WHERE TRUNC(TO_DATE(CAS_PRIJEZDU, 'DD.MM.YY HH24:MI')) = :CasPrijezdu";
 
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
@@ -85,13 +86,14 @@ namespace DopravniPodnikSem.Repository
                             {
                                 CasOd = DateTime.Parse(reader.GetString(4)),
                                 CasDo = DateTime.Parse(reader.GetString(5)),
-                                Stav = reader.GetString(6),
-                                LinkaId = reader.GetInt32(7)
+                                StavJizdyId = reader.GetInt32(6),
+                                StavNazev = reader.GetString(7), // Исправлено на StavNazev
+                                LinkaId = reader.GetInt32(8)
                             },
                             Zastavka = new Zastavka
                             {
-                                Nazev = reader.GetString(8),
-                                GpsSouradnice = reader.GetString(9)
+                                Nazev = reader.GetString(9),
+                                GpsSouradnice = reader.GetString(10)
                             }
                         });
                     }

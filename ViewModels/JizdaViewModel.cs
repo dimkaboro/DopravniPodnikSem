@@ -4,6 +4,7 @@ using DopravniPodnikSem.Repository.Interfaces;
 using DopravniPodnikSem.Services;
 using DopravniPodnikSem.Views;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Threading.Tasks;
@@ -25,6 +26,17 @@ namespace DopravniPodnikSem.ViewModels
         private Jizda jizda;
         private string _searchQuery;
 
+        private ObservableCollection<StavJizdy> _stavyJizdy;
+
+        public ObservableCollection<StavJizdy> StavyJizdy
+        {
+            get => _stavyJizdy;
+            set
+            {
+                _stavyJizdy = value;
+                OnPropertyChanged();
+            }
+        }
         public string SearchQuery
         {
             get => _searchQuery;
@@ -107,7 +119,8 @@ namespace DopravniPodnikSem.ViewModels
             CalculateDurationCommand = new ViewModelCommand(async _ => await CalculateDurationAsync(), _ => SelectedJizda != null && SelectedJizda.JizdaId > 0);
             GetLongestJizdaCommand = new ViewModelCommand(async _ => await ShowLongestJizdaAsync()); // Новая команда
 
-            LoadDataAsync();
+            LoadDataAsync(); 
+            LoadStavyJizdyAsync();
         }
 
         private async Task ShowLongestJizdaAsync()
@@ -142,6 +155,8 @@ namespace DopravniPodnikSem.ViewModels
         {
             var jizdy = await _jizdaRepository.GetAllAsync();
             Jizdy = new ObservableCollection<Jizda>(jizdy);
+            OnPropertyChanged(nameof(Jizdy));
+
         }
 
         private async Task AddJizdaAsync()
@@ -190,6 +205,7 @@ namespace DopravniPodnikSem.ViewModels
                     await _jizdaRepository.AddAsync(newJizda);
 
                     LoadDataAsync();
+                    
 
                     ErrorMessage = string.Empty;
                     MessageBox.Show("Nový záznam byl úspěšně přidán do databáze.", "Úspěch", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -207,6 +223,7 @@ namespace DopravniPodnikSem.ViewModels
             {
                 await _jizdaRepository.UpdateAsync(SelectedJizda);
                 LoadDataAsync();
+                LoadStavyJizdyAsync();
                 ErrorMessage = string.Empty;
             }
             catch (System.Exception ex)
@@ -267,6 +284,7 @@ namespace DopravniPodnikSem.ViewModels
             {
                 await _jizdaRepository.UpdateStatusesAsync();
                 LoadDataAsync();
+                LoadStavyJizdyAsync();
                 ErrorMessage = string.Empty;
             }
             catch (System.Exception ex)
@@ -275,6 +293,12 @@ namespace DopravniPodnikSem.ViewModels
             }
         }
 
+        private async void LoadStavyJizdyAsync()
+        {
+            var repository = App.ServiceProvider.GetService<IStavyJizdyRepository>();
+            var stavy = await repository.GetAllAsync();
+            StavyJizdy = new ObservableCollection<StavJizdy>(stavy);
+        }
 
 
         private async Task CalculateDurationAsync()
@@ -291,7 +315,7 @@ namespace DopravniPodnikSem.ViewModels
             SelectedJizda = null; 
             LoadDataAsync();
             ErrorMessage = string.Empty; 
-            DurationResult = string.Empty; 
+            DurationResult = string.Empty;
         }
     }
 }
