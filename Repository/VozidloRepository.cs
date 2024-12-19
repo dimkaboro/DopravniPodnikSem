@@ -43,14 +43,13 @@ namespace DopravniPodnikSem.Repository
                     {
                         VozidloId = reader.GetInt32(0),
                         RegistracniCislo = reader.GetString(1),
-                        TypId = reader.IsDBNull(2) ? (int?)null : reader.GetInt32(2), // Проверка DBNull перед преобразованием
+                        TypId = reader.IsDBNull(2) ? (int?)null : reader.GetInt32(2),
                         Kapacita = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
                         GarazeGarazId = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5)
                     });
                 }
             }
             return vozidla;
-             // Проверка DBNull перед преобразованием
         }
 
         public async Task<Vozidlo> GetByRegistrationNumberAsync(string registracniCislo)
@@ -125,37 +124,31 @@ namespace DopravniPodnikSem.Repository
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
-                // Параметр VOZIDLO_ID (обязательный)
                 command.Parameters.Add(new OracleParameter(":VozidloId", OracleDbType.Int32)
                 {
                     Value = vozidlo.VozidloId
                 });
 
-                // Параметр REGISTRACNI_CISLO (обязательный)
                 command.Parameters.Add(new OracleParameter(":RegistracniCislo", OracleDbType.Varchar2, 50)
                 {
                     Value = vozidlo.RegistracniCislo ?? (object)DBNull.Value
                 });
 
-                // Параметр KAPACITA (NULL-обрабатываемый)
                 command.Parameters.Add(new OracleParameter(":Kapacita", OracleDbType.Int32)
                 {
                     Value = vozidlo.Kapacita ?? (object)DBNull.Value
                 });
 
-                // Параметр GARAZ_GARAZ_ID (NULL-обрабатываемый)
                 command.Parameters.Add(new OracleParameter(":GarazId", OracleDbType.Int32)
                 {
                     Value = vozidlo.GarazeGarazId ?? (object)DBNull.Value
                 });
 
-                // Параметр TYP_VOZIDLA_TYPVOZIDLA_ID (NULL-обрабатываемый)
                 command.Parameters.Add(new OracleParameter(":TypVozidlaId", OracleDbType.Int32)
                 {
                     Value = vozidlo.TypId ?? (object)DBNull.Value
                 });
 
-                // Выполнение команды
                 await command.ExecuteNonQueryAsync();
             }
         }

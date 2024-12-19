@@ -24,7 +24,7 @@ namespace DopravniPodnikSem.Views
         public SystemKatalogView(SystemKatalogViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = viewModel; // Привязка ViewModel
+            DataContext = viewModel; 
         }
     }
 }

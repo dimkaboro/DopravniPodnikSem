@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace DopravniPodnikSem.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для Step2View.xaml
-    /// </summary>
     public partial class Step2View : UserControl
     {
         public Step2View()

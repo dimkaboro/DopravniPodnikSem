@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace DopravniPodnikSem.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для UserEmulationView.xaml
-    /// </summary>
     public partial class UserEmulationView : UserControl
     {
         public UserEmulationView()

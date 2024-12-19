@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace DopravniPodnikSem.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для ZamestnanciView.xaml
-    /// </summary>
     public partial class ZamestnanciView : UserControl
     {
         public ZamestnanciView()

@@ -163,11 +163,11 @@ namespace DopravniPodnikSem.Repository
                     Console.WriteLine($"Rows affected: {rowsAffected}");
 
                     if (rowsAffected == 0)
-                        throw new Exception("Запись не найдена в базе данных.");
+                        throw new Exception("The data was not found in the database.");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Ошибка при удалении записи: {ex.Message}");
+                    Console.WriteLine($"Error when deleting data: {ex.Message}");
                     throw;
                 }
             }

@@ -64,7 +64,7 @@ namespace DopravniPodnikSem.ViewModels
             {
                 _selectedVozidlo = value;
                 OnPropertyChanged();
-                ErrorMessage = string.Empty; // Очищаем ошибку при выборе нового элемента
+                ErrorMessage = string.Empty; 
             }
         }
 
@@ -99,11 +99,11 @@ namespace DopravniPodnikSem.ViewModels
             {
                 var vozidla = await _vozidloRepository.GetAllAsync();
                 Vozidla = new ObservableCollection<Vozidlo>(vozidla);
-                ErrorMessage = string.Empty; // Очищаем ошибку при успешной загрузке
+                ErrorMessage = string.Empty; 
             }
             catch (Exception ex)
             {
-                ShowErrorMessage($"Ошибка загрузки: {ex.Message}");
+                ShowErrorMessage($"ERROR: {ex.Message}");
             }
         }
 
@@ -114,7 +114,7 @@ namespace DopravniPodnikSem.ViewModels
                 var typy = await _typyVozidlaRepository.GetAllAsync();
                 TypyVozidla = new ObservableCollection<TypVozidla>(typy);
 
-                // Лог для проверки данных
+                
                 foreach (var typ in TypyVozidla)
                 {
                     System.Diagnostics.Debug.WriteLine($"TypVozidlaId: {typ.TypVozidlaId}, Typ: {typ.Typ}");
@@ -122,7 +122,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch (Exception ex)
             {
-                ShowErrorMessage($"Ошибка загрузки типов: {ex.Message}");
+                ShowErrorMessage($"ERROR: {ex.Message}");
             }
         }
 
@@ -139,12 +139,12 @@ namespace DopravniPodnikSem.ViewModels
                 }
                 else
                 {
-                    ShowErrorMessage("Запись не найдена.");
+                    ShowErrorMessage("Not found.");
                 }
             }
             catch (Exception ex)
             {
-                ShowErrorMessage($"Ошибка поиска: {ex.Message}");
+                ShowErrorMessage($"Error: {ex.Message}");
             }
         }
 
@@ -163,12 +163,12 @@ namespace DopravniPodnikSem.ViewModels
                     if (SelectedVozidlo.VozidloId == 0)
                     {
                         await _vozidloRepository.AddAsync(SelectedVozidlo);
-                        ErrorMessage = "Запись добавлена успешно!";
+                        ErrorMessage = "Data added successfully!";
                     }
                     else
                     {
                         await _vozidloRepository.UpdateAsync(SelectedVozidlo);
-                        ErrorMessage = "Запись обновлена успешно!";
+                        ErrorMessage = "Data updated successfully!";
                     }
 
                     LoadAllVozidlaAsync();
@@ -176,7 +176,7 @@ namespace DopravniPodnikSem.ViewModels
             }
             catch (Exception ex)
             {
-                ShowErrorMessage($"Ошибка сохранения: {ex.Message}");
+                ShowErrorMessage($"ERROR: {ex.Message}");
             }
         }
 
@@ -187,13 +187,13 @@ namespace DopravniPodnikSem.ViewModels
                 if (SelectedVozidlo != null)
                 {
                     await _vozidloRepository.DeleteAsync(SelectedVozidlo.VozidloId);
-                    ErrorMessage = "Запись удалена успешно!";
+                    ErrorMessage = "Data deleted successfully!";
                     LoadAllVozidlaAsync();
                 }
             }
             catch (Exception ex)
             {
-                ShowErrorMessage($"Ошибка удаления: {ex.Message}");
+                ShowErrorMessage($"ERROR: {ex.Message}");
             }
         }
 

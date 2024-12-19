@@ -65,7 +65,7 @@ namespace DopravniPodnikSem.Repository
                 command.Parameters.Add(new OracleParameter(":LinkaId", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.InputOutput,
-                    Value = DBNull.Value // Передаем NULL для создания нового ID
+                    Value = DBNull.Value 
                 });
                 command.Parameters.Add(new OracleParameter(":Nazev", linka.Nazev));
                 command.Parameters.Add(new OracleParameter(":TypId", linka.TypLinkyId));

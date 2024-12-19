@@ -47,8 +47,8 @@ namespace DopravniPodnikSem.Repository
                         {
                             ZastavkaTrasaId = reader.GetInt32(0),
                             CasPrijezdu = reader.GetDateTime(1),
-                            JizdaDisplay = reader.GetString(2),      // Jizda_DETAILS из функции
-                            ZastavkaDisplay = reader.GetString(3)   // ZASTAVKA_DETAILS из функции
+                            JizdaDisplay = reader.GetString(2),      
+                            ZastavkaDisplay = reader.GetString(3)   
                         });
                     }
                 }
@@ -87,7 +87,7 @@ namespace DopravniPodnikSem.Repository
                                 CasOd = DateTime.Parse(reader.GetString(4)),
                                 CasDo = DateTime.Parse(reader.GetString(5)),
                                 StavJizdyId = reader.GetInt32(6),
-                                StavNazev = reader.GetString(7), // Исправлено на StavNazev
+                                StavNazev = reader.GetString(7), 
                                 LinkaId = reader.GetInt32(8)
                             },
                             Zastavka = new Zastavka
@@ -103,7 +103,7 @@ namespace DopravniPodnikSem.Repository
             return zastavkyTrasy;
         }
 
-        // Добавление записи с использованием процедуры ManageZastavkyTrasyTransaction
+        
         public async Task AddAsync(ZastavkaTrasa zastavkaTrasa)
         {
             var query = @"
@@ -114,7 +114,6 @@ namespace DopravniPodnikSem.Repository
             using (var connection = _databaseService.GetConnection())
             using (var command = new OracleCommand(query, connection))
             {
-                // Параметр для ID
                 var idParameter = new OracleParameter(":p_zastavkaTrasaId", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.InputOutput,
@@ -131,7 +130,6 @@ namespace DopravniPodnikSem.Repository
 
                 await command.ExecuteNonQueryAsync();
 
-                // Конвертация OracleDecimal в Int32
                 if (idParameter.Value != DBNull.Value && idParameter.Value is OracleDecimal oracleDecimal)
                 {
                     zastavkaTrasa.ZastavkaTrasaId = Convert.ToInt32(oracleDecimal.Value);
@@ -139,7 +137,6 @@ namespace DopravniPodnikSem.Repository
             }
         }
 
-        // Обновление записи с использованием процедуры ManageZastavkyTrasyTransaction
         public async Task UpdateAsync(ZastavkaTrasa zastavkaTrasa)
         {
             var query = @"BEGIN ManageZastavkyTrasyTransaction('UPDATE', :Id, :CasPrijezdu, :JizdaId, :ZastavkaId); END;";
@@ -159,7 +156,6 @@ namespace DopravniPodnikSem.Repository
             }
         }
 
-        // Удаление записи по ID
         public async Task DeleteAsync(int zastavkaTrasaId)
         {
             var query = "DELETE FROM ZASTAVKY_TRASY WHERE ZASTAVKATRASA_ID = :ZastavkaTrasaId";
@@ -181,11 +177,11 @@ namespace DopravniPodnikSem.Repository
                     Console.WriteLine($"Rows affected: {rowsAffected}, Deleted ID: {zastavkaTrasaId}");
 
                     if (rowsAffected == 0)
-                        throw new Exception("Запись не найдена в базе данных.");
+                        throw new Exception("The data was not found in the database.");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Ошибка при удалении записи: {ex.Message}");
+                    Console.WriteLine($"Error when deleting data: {ex.Message}");
                     throw;
                 }
             }

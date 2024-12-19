@@ -109,7 +109,7 @@ namespace DopravniPodnikSem.ViewModels
                 var addZastavkaTrasaViewModel = new AddZastavkaTrasaViewModel(
                     _jizdaRepository,
                     _zastavkaRepository,
-                    SelectedZastavkaTrasa // Передаём выбранную строку для редактирования
+                    SelectedZastavkaTrasa 
                 );
 
                 addZastavkaTrasaView.DataContext = addZastavkaTrasaViewModel;
@@ -132,7 +132,7 @@ namespace DopravniPodnikSem.ViewModels
             {
                 if (SelectedZastavkaTrasa != null)
                 {
-                    Console.WriteLine($"Удаляется запись с ID: {SelectedZastavkaTrasa.ZastavkaTrasaId}");
+                    Console.WriteLine($"The data with ID is deleted: {SelectedZastavkaTrasa.ZastavkaTrasaId}");
 
                     await _zastavkyTrasyRepository.DeleteAsync(SelectedZastavkaTrasa.ZastavkaTrasaId);
 

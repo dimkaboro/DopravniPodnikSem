@@ -10,8 +10,8 @@ namespace DopravniPodnikSem.Models
     {
         private int _linkaId;
         private string _nazev;
-        private int _typLinkyId; // FK
-        private string _typNazev; // Название типа
+        private int _typLinkyId; 
+        private string _typNazev; 
 
         public override string ToString()
         {

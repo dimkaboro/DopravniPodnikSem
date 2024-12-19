@@ -26,7 +26,6 @@
     </UserControl.Resources>
 
     <Grid Background="#212529">
-        <!-- Main Content -->
         <Border Background="#212529" Opacity="0.95" CornerRadius="10" Padding="20" Margin="20">
             <Grid>
                 <Grid.RowDefinitions>
@@ -34,7 +33,6 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <!-- Header -->
                 <TextBlock Grid.Row="0" Text="System Catalog" 
                            FontSize="24" 
                            FontWeight="Bold" 
@@ -42,7 +40,6 @@
                            HorizontalAlignment="Center" 
                            Margin="0,0,0,20" />
 
-                <!-- Data Grid -->
                 <Border Grid.Row="1" BorderBrush="#00f0ff" BorderThickness="1" CornerRadius="10" Background="#212529" Padding="2,0,3,3" Margin="20">
                     <DataGrid ItemsSource="{Binding SystemKatalogList}" 
                               AutoGenerateColumns="False"
@@ -71,7 +68,6 @@
                             </Style>
                         </DataGrid.Resources>
 
-                        <!-- Columns -->
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Owner" Binding="{Binding OWNER}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />
                             <DataGridTextColumn Header="Object Name" Binding="{Binding OBJECT_NAME}" Width="*" HeaderStyle="{StaticResource HeaderStyle}" />

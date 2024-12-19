@@ -87,7 +87,6 @@ namespace DopravniPodnikSem.ViewModels
             _jizdaRepository = jizdaRepository;
             _zastavkaRepository = zastavkaRepository;
 
-            // Инициализация CurrentZastavkaTrasa для нового объекта
             CurrentZastavkaTrasa = existingZastavkaTrasa ?? new ZastavkaTrasa();
 
             LoadData();
@@ -95,7 +94,6 @@ namespace DopravniPodnikSem.ViewModels
             ConfirmCommand = new ViewModelCommand(param => Confirm());
             CancelCommand = new ViewModelCommand(param => Cancel());
 
-            // Если передана существующая запись, используем её для редактирования
             if (existingZastavkaTrasa != null)
             {
                 SelectedJizda = new Jizda { JizdaId = existingZastavkaTrasa.JizdaId };
@@ -129,7 +127,6 @@ namespace DopravniPodnikSem.ViewModels
 
                 if (CurrentZastavkaTrasa.ZastavkaTrasaId == 0)
                 {
-                    // Добавление новой записи
                     var zastavkaTrasa = new ZastavkaTrasa
                     {
                         JizdaId = SelectedJizda.JizdaId,
@@ -142,7 +139,6 @@ namespace DopravniPodnikSem.ViewModels
                 }
                 else
                 {
-                    // Обновление существующей записи
                     CurrentZastavkaTrasa.JizdaId = SelectedJizda.JizdaId;
                     CurrentZastavkaTrasa.ZastavkaId = SelectedZastavka.ZastavkaId;
                     CurrentZastavkaTrasa.CasPrijezdu = DateTime.Now;

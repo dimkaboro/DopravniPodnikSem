@@ -23,7 +23,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <!-- Define the Proxy -->
         <FrameworkElement x:Key="ProxyElement" DataContext="{Binding DataContext, ElementName=VozidlaViewControl}" />
     </UserControl.Resources>
     <Grid Background="#212529">
@@ -110,13 +109,11 @@
                                 </Style>
                             </DataGrid.Resources>
                             <DataGrid.Columns>
-                                <!-- Колонка для регистрационного номера -->
                                 <DataGridTextColumn Header="RegistracniCislo" 
                         Binding="{Binding RegistracniCislo, UpdateSourceTrigger=PropertyChanged}" 
                         Width="*" 
                         HeaderStyle="{StaticResource HeaderStyle}" />
 
-                                <!-- Колонка для выбора типа (ComboBox) -->
                                 <DataGridTemplateColumn Header="Typ" HeaderStyle="{StaticResource HeaderStyle}" Width="*">
     <DataGridTemplateColumn.CellTemplate>
         <DataTemplate>
@@ -133,13 +130,11 @@
     </DataGridTemplateColumn.CellTemplate>
 </DataGridTemplateColumn>
 
-                                <!-- Колонка для емкости -->
                                 <DataGridTextColumn Header="Kapacita" 
                                                     Binding="{Binding Kapacita, UpdateSourceTrigger=PropertyChanged}" 
                                                     Width="*" 
                                                     HeaderStyle="{StaticResource HeaderStyle}" />
 
-                                <!-- Колонка для гаража -->
                                 <DataGridTextColumn Header="GarazId"
                                                     Binding="{Binding GarazeGarazId, UpdateSourceTrigger=PropertyChanged}"
                                                     Width="*" 

@@ -46,8 +46,8 @@ namespace DopravniPodnikSem.Repository
                             JizdaId = reader.GetInt32(0),
                             CasOd = reader.GetDateTime(1),
                             CasDo = reader.GetDateTime(2),
-                            StavJizdyId = reader.GetInt32(3), // FK на таблицу STAVY_JIZDY
-                            StavNazev = reader.IsDBNull(4) ? null : reader.GetString(4),  // Название статуса из STAVY_JIZDY
+                            StavJizdyId = reader.GetInt32(3), 
+                            StavNazev = reader.IsDBNull(4) ? null : reader.GetString(4),  
                             LinkaId = reader.GetInt32(5),
                             RidicId = reader.GetInt32(6),
                             VozidloId = reader.GetInt32(7)
@@ -90,8 +90,8 @@ namespace DopravniPodnikSem.Repository
                             JizdaId = reader.GetInt32(0),
                             CasOd = reader.GetDateTime(1),
                             CasDo = reader.GetDateTime(2),
-                            StavJizdyId = reader.GetInt32(3), // FK на статус
-                            StavNazev = reader.GetString(4),  // Название статуса из STAVY_JIZDY
+                            StavJizdyId = reader.GetInt32(3), 
+                            StavNazev = reader.GetString(4),  
                             LinkaId = reader.GetInt32(5),
                             RidicId = reader.GetInt32(6),
                             VozidloId = reader.GetInt32(7)
@@ -125,7 +125,7 @@ END;";
                 command.Parameters.Add(new OracleParameter(":JizdaId", OracleDbType.Int32)
                 {
                     Direction = ParameterDirection.InputOutput,
-                    Value = DBNull.Value // Передаём NULL, чтобы процедура создала новый ID
+                    Value = DBNull.Value 
                 });
                 command.Parameters.Add(new OracleParameter(":CasOd", jizda.CasOd));
                 command.Parameters.Add(new OracleParameter(":CasDo", jizda.CasDo));
@@ -138,7 +138,6 @@ END;";
 
                 await command.ExecuteNonQueryAsync();
 
-                // Получаем ID новой записи
                 jizda.JizdaId = Convert.ToInt32(command.Parameters[":JizdaId"].Value.ToString());
             }
         }
@@ -186,7 +185,6 @@ END;";
                 {
                     try
                     {
-                        // Сначала удаляем связанные записи в ZASTAVKA_TRASA
                         var deleteZastavkaTrasaQuery = "DELETE FROM ZASTAVKY_TRASY WHERE JIZDA_JIZDA_ID = :JizdaId";
                         using (var deleteZastavkaTrasaCommand = new OracleCommand(deleteZastavkaTrasaQuery, connection))
                         {
@@ -195,7 +193,6 @@ END;";
                             await deleteZastavkaTrasaCommand.ExecuteNonQueryAsync();
                         }
 
-                        // Затем удаляем запись из JIZDY
                         var deleteJizdaQuery = "DELETE FROM JIZDY WHERE JIZDA_ID = :JizdaId";
                         using (var deleteJizdaCommand = new OracleCommand(deleteJizdaQuery, connection))
                         {
@@ -209,7 +206,7 @@ END;";
                     catch (Exception ex)
                     {
                         await transaction.RollbackAsync();
-                        throw new Exception($"Ошибка при удалении Jizda: {ex.Message}", ex);
+                        throw new Exception($"Error during deletion Jizda: {ex.Message}", ex);
                     }
                 }
             }

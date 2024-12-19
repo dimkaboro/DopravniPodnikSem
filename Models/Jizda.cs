@@ -67,7 +67,6 @@ namespace DopravniPodnikSem.Models
             set => SetField(ref _vozidloId, value);
         }
 
-        // Навигационные свойства
         public virtual Linka Linka { get; set; }
         public virtual Ridic Ridic { get; set; }
         public virtual Vozidlo Vozidlo { get; set; }

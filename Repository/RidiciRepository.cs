@@ -127,14 +127,11 @@ namespace DopravniPodnikSem.Repository
             {
                 command.CommandType = CommandType.Text;
 
-                // Подключение DBMS_OUTPUT для чтения вывода из процедуры
                 OracleCommand enableDbmsOutput = new OracleCommand("BEGIN DBMS_OUTPUT.ENABLE(); END;", connection);
                 await enableDbmsOutput.ExecuteNonQueryAsync();
 
-                // Выполнение процедуры
                 await command.ExecuteNonQueryAsync();
 
-                // Чтение вывода
                 OracleCommand readDbmsOutput = new OracleCommand("BEGIN DBMS_OUTPUT.GET_LINE(:line, :status); END;", connection);
                 readDbmsOutput.Parameters.Add("line", OracleDbType.Varchar2, 4000).Direction = ParameterDirection.Output;
                 readDbmsOutput.Parameters.Add("status", OracleDbType.Int32).Direction = ParameterDirection.Output;
